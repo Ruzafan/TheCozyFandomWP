@@ -1,0 +1,12 @@
+{
+  "name": "cozy-fandom-child",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npx tailwindcss -i ./src/input.css -o ./assets/css/main.css --minify",
+    "watch": "npx tailwindcss -i ./src/input.css -o ./assets/css/main.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

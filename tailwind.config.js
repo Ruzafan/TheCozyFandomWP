@@ -1,0 +1,36 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './*.php',
+    './template-parts/**/*.php',
+    './woocommerce/**/*.php',
+    './inc/**/*.php',
+  ],
+  safelist: [
+    'hidden', 'translate-x-full',
+    'bg-white', 'bg-cozy-sand', 'bg-cozy-mintLight', 'bg-white',
+    'text-cozy-mint', 'text-cozy-accent',
+    'bg-cozy-mint/10', 'bg-cozy-accent/10',
+  ],
+  important: true,
+  theme: {
+    extend: {
+      colors: {
+        cozy: {
+          cream:    '#FAF6EE',
+          sand:     '#F5EDE0',
+          coffee:   '#4A3F35',
+          mint:     '#88C4B5',
+          mintDark: '#72b0a2',
+          mintLight:'#EAF6F3',
+          accent:   '#D4A373',
+        }
+      },
+      fontFamily: {
+        sans:  ['"Plus Jakarta Sans"', 'sans-serif'],
+        serif: ['"Playfair Display"', 'serif'],
+      }
+    }
+  },
+  plugins: [],
+}

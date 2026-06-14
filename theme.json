@@ -1,0 +1,76 @@
+{
+  "version": 2,
+  "settings": {
+    "color": {
+      "palette": [
+        {
+          "slug": "cozy-cream",
+          "color": "#FAF6EE",
+          "name": "Crema Cozy"
+        },
+        {
+          "slug": "cozy-sand",
+          "color": "#F5EDE0",
+          "name": "Arena Cozy"
+        },
+        {
+          "slug": "cozy-mint",
+          "color": "#88C4B5",
+          "name": "Verde Menta"
+        },
+        {
+          "slug": "cozy-coffee",
+          "color": "#4A3F35",
+          "name": "Marrón Café"
+        },
+        {
+          "slug": "cozy-accent",
+          "color": "#D4A373",
+          "name": "Arena Tostada"
+        }
+      ],
+      "custom": false,
+      "link": true
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+          "slug": "sans",
+          "name": "Plus Jakarta Sans (Cuerpo Cozy)"
+        },
+        {
+          "fontFamily": "\"Playfair Display\", serif",
+          "slug": "serif",
+          "name": "Playfair Display (Títulos Cozy)"
+        }
+      ],
+      "customFontSize": true
+    },
+    "border": {
+      "customRadius": true,
+      "radius": "16px"
+    },
+    "layout": {
+      "contentSize": "800px",
+      "wideSize": "1200px"
+    }
+  },
+  "styles": {
+    "elements": {
+      "button": {
+        "border": {
+          "radius": "16px"
+        },
+        "color": {
+          "text": "#4A3F35",
+          "background": "#88C4B5"
+        },
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--sans)",
+          "fontWeight": "600"
+        }
+      }
+    }
+  }
+}

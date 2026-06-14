@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo( 'charset' ); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <?php wp_head(); ?>
+</head>
+<body <?php body_class( 'bg-cozy-cream text-cozy-coffee font-sans min-h-screen selection:bg-cozy-mint selection:text-white' ); ?>>
+<?php wp_body_open(); ?>
+
+<!-- TOP NOTIFICATION BAR -->
+<div class="bg-cozy-sand text-xs text-center py-2 px-4 tracking-wide font-medium border-b border-cozy-coffee/10 flex items-center justify-center gap-2">
+    <span>✨ ¡Envíos gratis en compras superiores a 50€! Empaquetado de fan a fan con mucho mimo 📦</span>
+</div>
