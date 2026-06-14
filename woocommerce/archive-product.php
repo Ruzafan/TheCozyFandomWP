@@ -122,7 +122,10 @@ do_action( 'woocommerce_before_main_content' );
 <!-- ============================================================ -->
 <!-- PRODUCTS                                                       -->
 <!-- ============================================================ -->
-<?php if ( woocommerce_product_loop() ) : ?>
+<?php
+wc_setup_loop();
+
+if ( woocommerce_product_loop() ) : ?>
 
     <div class="cozy-sort-bar flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <?php woocommerce_result_count(); ?>
@@ -137,13 +140,16 @@ do_action( 'woocommerce_before_main_content' );
 
     <?php woocommerce_product_loop_end(); ?>
 
+    <?php do_action( 'woocommerce_after_shop_loop' ); ?>
+
     <?php woocommerce_pagination(); ?>
 
 <?php else : ?>
 
     <?php do_action( 'woocommerce_no_products_found' ); ?>
 
-<?php endif; ?>
+<?php endif;
+wc_reset_loop(); ?>
 
 <script>
 (function () {
