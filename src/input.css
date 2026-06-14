@@ -139,27 +139,30 @@ html { scroll-behavior: smooth; }
   grid-column: auto !important;
 }
 
-/* ─── Product grid (override WC/Astra default floats) ───────── */
+/* ─── Product grid (override WC/Astra default floats + grid) ── */
+/* Astra uses .woocommerce ul.products:not(.elementor-grid) { repeat(4,1fr) }
+   with higher specificity — we need !important on grid-template-columns to win. */
 .woocommerce ul.products,
 .woocommerce-page ul.products {
   display: grid !important;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(1, 1fr) !important;
+  gap: 1.5rem !important;
   float: none !important;
   margin: 0 !important;
   padding: 0 !important;
   list-style: none !important;
+  width: 100% !important;
 }
 @media (min-width: 640px) {
   .woocommerce ul.products,
   .woocommerce-page ul.products {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 @media (min-width: 1024px) {
   .woocommerce ul.products,
   .woocommerce-page ul.products {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) !important;
   }
 }
 .woocommerce ul.products li.product,
@@ -168,6 +171,8 @@ html { scroll-behavior: smooth; }
   float: none !important;
   margin: 0 !important;
 }
+/* .ast-grid-common-col adds padding-left/right:20px — Tailwind p-4 (!important) already
+   overrides it since both have !important but p-4 targets the class directly. */
 
 /* ─── Pagination ─────────────────────────────────────────────── */
 .woocommerce-pagination .page-numbers {
