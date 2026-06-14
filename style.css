@@ -257,3 +257,5 @@ input[type="submit"] {
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 12px rgba(136, 196, 181, 0.3) !important;
 }
+#primary{margin:1em 0}
+#page .site-content{margin: 0px 20px}
