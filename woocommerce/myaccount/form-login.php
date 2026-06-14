@@ -53,7 +53,6 @@ do_action( 'woocommerce_before_customer_login_form' );
                         id="username"
                         autocomplete="username"
                         required
-                        placeholder="tunombre@email.com"
                         value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; ?>"
                         class="w-full bg-cozy-cream border border-cozy-sand rounded-2xl px-4 py-3 text-sm text-cozy-coffee placeholder-cozy-coffee/40 focus:outline-none focus:border-cozy-mint focus:ring-2 focus:ring-cozy-mint/20 transition-all"
                     />
