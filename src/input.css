@@ -124,6 +124,21 @@ html { scroll-behavior: smooth; }
   box-shadow: 0 0 0 3px rgba(136, 196, 181, 0.2);
 }
 
+/* ─── Astra product card injection neutralizer ──────────────── */
+/* Astra injects astra-shop-thumbnail-wrap + an extra <a> via hooks.
+   display:contents makes the div invisible to layout so our flex-col li works. */
+.woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
+  display: contents !important;
+}
+/* Hide the Astra/WC injected link that duplicates our own link */
+.woocommerce ul.products li.product .woocommerce-LoopProduct-link {
+  display: none !important;
+}
+/* Astra adds ast-full-width which can conflict with our grid cells */
+.woocommerce ul.products li.product.ast-full-width {
+  grid-column: auto !important;
+}
+
 /* ─── Product grid (override WC/Astra default floats) ───────── */
 .woocommerce ul.products,
 .woocommerce-page ul.products {

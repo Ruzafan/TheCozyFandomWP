@@ -28,8 +28,6 @@ if ( ! empty( $cat_ids ) ) {
 
 <li <?php wc_product_class( 'bg-white rounded-[24px] p-4 border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col', $product ); ?>>
 
-    <?php do_action( 'woocommerce_before_shop_loop_item' ); ?>
-
     <!-- Product image -->
     <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block no-underline">
         <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
@@ -95,6 +93,5 @@ if ( ! empty( $cat_ids ) ) {
 
     </div>
 
-    <?php do_action( 'woocommerce_after_shop_loop_item' ); ?>
 
 </li>
