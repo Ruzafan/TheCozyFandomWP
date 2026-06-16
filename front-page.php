@@ -118,41 +118,50 @@ $cozy_cats = [
 </section>
 
 <!-- ============================================================ -->
-<!--  BRAND VALUES                                                 -->
+<!--  NEW PRODUCTS SECTION                                         -->
 <!-- ============================================================ -->
-<section class="bg-white py-12 px-6 md:px-12 border-y border-cozy-sand">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-
-        <div class="flex items-start gap-4">
-            <div class="w-12 h-12 shrink-0 rounded-2xl bg-cozy-mintLight flex items-center justify-center text-cozy-mint text-xl">
-                <i class="fa-solid fa-certificate" aria-hidden="true"></i>
-            </div>
-            <div>
-                <h4 class="font-bold text-cozy-coffee text-base mb-1">Productos 100% Oficiales</h4>
-                <p class="text-xs text-cozy-coffee/70 leading-relaxed">Licencias seleccionadas con mucho mimo y bajo los estándares estéticos más limpios.</p>
-            </div>
+<section id="nuevos" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+            <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Recién Llegados</span>
+            <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Lo más nuevo en la boutique</h2>
+            <p class="text-sm text-cozy-coffee/70 mt-2">Los últimos tesoros en incorporarse a nuestra colección.</p>
         </div>
-
-        <div class="flex items-start gap-4">
-            <div class="w-12 h-12 shrink-0 rounded-2xl bg-cozy-mintLight flex items-center justify-center text-cozy-mint text-xl">
-                <i class="fa-solid fa-box-open" aria-hidden="true"></i>
-            </div>
-            <div>
-                <h4 class="font-bold text-cozy-coffee text-base mb-1">Envío Súper Protegido</h4>
-                <p class="text-xs text-cozy-coffee/70 leading-relaxed">Cajas cuidadas, packaging libre de plásticos dañinos y unboxing mágico garantizado.</p>
-            </div>
+        <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+        <div class="mt-4 md:mt-0">
+            <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
+               class="bg-white hover:bg-cozy-mintLight text-cozy-coffee px-5 py-2 rounded-full text-xs font-medium border border-cozy-sand transition-colors">
+                Ver todos los productos →
+            </a>
         </div>
+        <?php endif; ?>
+    </div>
 
-        <div class="flex items-start gap-4">
-            <div class="w-12 h-12 shrink-0 rounded-2xl bg-cozy-mintLight flex items-center justify-center text-cozy-mint text-xl">
-                <i class="fa-solid fa-heart" aria-hidden="true"></i>
-            </div>
-            <div>
-                <h4 class="font-bold text-cozy-coffee text-base mb-1">Atención de Fan a Fan</h4>
-                <p class="text-xs text-cozy-coffee/70 leading-relaxed">Amamos lo que hacemos. Si tienes dudas, te atendemos con un té calentito online.</p>
-            </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <?php
+    $new_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
+        'limit'   => 4,
+        'status'  => 'publish',
+        'orderby' => 'date',
+        'order'   => 'DESC',
+    ] ) : [];
+
+    if ( $new_products ) :
+        foreach ( $new_products as $product ) {
+            cozy_fandom_home_product_card( $product, 'Nuevo', '✨' );
+        }
+    else : ?>
+        <div class="col-span-4 text-center py-16">
+            <i class="fa-solid fa-store text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
+            <p class="text-cozy-coffee/60 text-sm">Cargando productos... Asegúrate de que WooCommerce está activo y tienes productos publicados.</p>
+            <?php if ( current_user_can( 'manage_options' ) ) : ?>
+            <a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=product' ) ); ?>"
+               class="inline-block mt-4 bg-cozy-mint text-cozy-coffee px-6 py-2 rounded-xl text-sm font-bold">
+                Añadir primer producto
+            </a>
+            <?php endif; ?>
         </div>
-
+    <?php endif; ?>
     </div>
 </section>
 
@@ -193,16 +202,16 @@ $cozy_cats = [
 </section>
 
 <!-- ============================================================ -->
-<!--  FEATURED PRODUCTS SECTION                                    -->
+<!--  TOP SELLS SECTION (products tagged "top-sell")               -->
 <!-- ============================================================ -->
-<section id="productos" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative">
+<section id="top-ventas" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative">
     <div class="max-w-7xl mx-auto">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-                <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Boutique de Selección</span>
-                <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Los favoritos de la comunidad</h2>
-                <p class="text-sm text-cozy-coffee/70 mt-2">Productos de distribuidores oficiales seleccionados especialmente para el verano.</p>
+                <span class="text-xs font-bold text-cozy-accent uppercase tracking-widest block mb-2">Los Más Buscados</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Top ventas de la comunidad</h2>
+                <p class="text-sm text-cozy-coffee/70 mt-2">Los favoritos indiscutibles de nuestros fans cozy.</p>
             </div>
             <?php if ( class_exists( 'WooCommerce' ) ) : ?>
             <div class="mt-4 md:mt-0">
@@ -215,70 +224,29 @@ $cozy_cats = [
         </div>
 
         <!-- Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <?php
-        $products = function_exists( 'wc_get_products' ) ? wc_get_products( [
-            'limit'   => 6,
+        $top_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
+            'limit'   => 4,
             'status'  => 'publish',
+            'tag'     => [ 'top-sell' ],
             'orderby' => 'date',
             'order'   => 'DESC',
         ] ) : [];
 
-        if ( $products ) :
-            foreach ( $products as $product ) :
-                $cat_ids  = $product->get_category_ids();
-                $cat_name = '';
-                if ( ! empty( $cat_ids ) ) {
-                    $term = get_term( reset( $cat_ids ), 'product_cat' );
-                    if ( $term && ! is_wp_error( $term ) ) $cat_name = $term->name;
-                }
-        ?>
-            <div class="bg-white rounded-[24px] p-4 border border-cozy-sand shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
-                <div>
-                    <!-- Product Image -->
-                    <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
-                        <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); ?>
-                    </div>
-                    <!-- Category label -->
-                    <?php if ( $cat_name ) : ?>
-                    <span class="text-[10px] text-cozy-mint font-bold uppercase tracking-wider block mb-1"><?php echo esc_html( $cat_name ); ?></span>
-                    <?php endif; ?>
-                    <!-- Name -->
-                    <h3 class="font-bold text-sm text-cozy-coffee line-clamp-2">
-                        <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="hover:text-cozy-mint transition-colors">
-                            <?php echo esc_html( $product->get_name() ); ?>
-                        </a>
-                    </h3>
-                </div>
-                <!-- Price + Add to cart -->
-                <div class="flex items-center justify-between pt-4 border-t border-cozy-sand mt-4">
-                    <span class="text-base font-bold text-cozy-coffee"><?php echo $product->get_price_html(); ?></span>
-                    <?php if ( $product->is_purchasable() && $product->is_in_stock() ) : ?>
-                    <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
-                       data-quantity="1"
-                       data-product_id="<?php echo esc_attr( $product->get_id() ); ?>"
-                       data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
-                       class="ajax_add_to_cart add_to_cart_button bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
-                       aria-label="Añadir <?php echo esc_attr( $product->get_name() ); ?> al carrito">
-                        <i class="fa-solid fa-plus" aria-hidden="true"></i> Añadir
-                    </a>
-                    <?php else : ?>
-                    <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
-                       class="bg-cozy-sand text-cozy-coffee p-2.5 px-4 rounded-xl text-xs font-bold flex items-center gap-1.5">
-                        Ver producto
-                    </a>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <?php endforeach;
+        if ( $top_products ) :
+            foreach ( $top_products as $product ) {
+                cozy_fandom_home_product_card( $product, 'Top Venta', '🔥' );
+            }
         else : ?>
-            <div class="col-span-3 text-center py-16">
-                <i class="fa-solid fa-store text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
-                <p class="text-cozy-coffee/60 text-sm">Cargando productos... Asegúrate de que WooCommerce está activo y tienes productos publicados.</p>
+            <div class="col-span-4 text-center py-16">
+                <i class="fa-solid fa-fire text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
+                <p class="text-cozy-coffee/60 text-sm">Aún no hay productos marcados como "Top Venta".</p>
                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
-                <a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=product' ) ); ?>"
+                <p class="text-cozy-coffee/50 text-xs mt-2">Añade la etiqueta <code>top-sell</code> a tus productos más vendidos desde Productos → Editar producto → Etiquetas del producto.</p>
+                <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>"
                    class="inline-block mt-4 bg-cozy-mint text-cozy-coffee px-6 py-2 rounded-xl text-sm font-bold">
-                    Añadir primer producto
+                    Gestionar productos
                 </a>
                 <?php endif; ?>
             </div>

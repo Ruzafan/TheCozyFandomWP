@@ -247,6 +247,64 @@ function cozy_fandom_render_footer() {
 }
 add_action( 'wp_footer', 'cozy_fandom_render_footer' );
 
+/* ------------------------------------------------------------------ */
+/*  HOME PRODUCT CARD (shared by "Nuevos" and "Top ventas" sections)   */
+/* ------------------------------------------------------------------ */
+function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon = '' ) {
+    $cat_ids  = $product->get_category_ids();
+    $cat_name = '';
+    if ( ! empty( $cat_ids ) ) {
+        $term = get_term( reset( $cat_ids ), 'product_cat' );
+        if ( $term && ! is_wp_error( $term ) ) {
+            $cat_name = $term->name;
+        }
+    }
+    ?>
+    <div class="bg-white rounded-[24px] p-4 border border-cozy-sand shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+        <div>
+            <!-- Product Image -->
+            <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
+                <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); ?>
+                <?php if ( $badge_label ) : ?>
+                <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    <?php echo esc_html( $badge_icon ); ?> <?php echo esc_html( $badge_label ); ?>
+                </span>
+                <?php endif; ?>
+            </div>
+            <!-- Category label -->
+            <?php if ( $cat_name ) : ?>
+            <span class="text-[10px] text-cozy-mint font-bold uppercase tracking-wider block mb-1"><?php echo esc_html( $cat_name ); ?></span>
+            <?php endif; ?>
+            <!-- Name -->
+            <h3 class="font-bold text-sm text-cozy-coffee line-clamp-2">
+                <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="hover:text-cozy-mint transition-colors">
+                    <?php echo esc_html( $product->get_name() ); ?>
+                </a>
+            </h3>
+        </div>
+        <!-- Price + Add to cart -->
+        <div class="flex items-center justify-between pt-4 border-t border-cozy-sand mt-4">
+            <span class="text-base font-bold text-cozy-coffee"><?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+            <?php if ( $product->is_purchasable() && $product->is_in_stock() ) : ?>
+            <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
+               data-quantity="1"
+               data-product_id="<?php echo esc_attr( $product->get_id() ); ?>"
+               data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
+               class="ajax_add_to_cart add_to_cart_button bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
+               aria-label="<?php echo esc_attr( sprintf( __( 'Añadir %s al carrito', 'woocommerce' ), $product->get_name() ) ); ?>">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i> Añadir
+            </a>
+            <?php else : ?>
+            <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
+               class="bg-cozy-sand text-cozy-coffee p-2.5 px-4 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                Ver producto
+            </a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+}
+
 function cozy_nav_fallback() {
     $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/tienda' );
     $links = [
