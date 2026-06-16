@@ -493,14 +493,20 @@ html { scroll-behavior: smooth; }
   width: 100% !important;
 }
 
-/* WC Cart Block — make it fill available space */
+/* WC Cart/Checkout Block — make it fill available space */
 .wp-block-woocommerce-cart,
+.wp-block-woocommerce-checkout,
 .wc-block-cart {
   max-width: 100% !important;
   width: 100% !important;
 }
 
-/* Two-column layout: items | summary */
+/* Two-column layout: items/steps | summary sidebar.
+   WC Blocks normally handles this itself via @container queries on
+   .wp-block-woocommerce-cart/-checkout (container-type:inline-size), but that
+   only works if the container itself is wide — force it explicitly here too. */
+.wp-block-woocommerce-cart .wc-block-components-sidebar-layout,
+.wp-block-woocommerce-checkout .wc-block-components-sidebar-layout,
 .wc-block-components-sidebar-layout {
   display: grid !important;
   grid-template-columns: 1fr !important;
@@ -508,13 +514,20 @@ html { scroll-behavior: smooth; }
   align-items: start !important;
 }
 @media (min-width: 768px) {
+  .wp-block-woocommerce-cart .wc-block-components-sidebar-layout,
+  .wp-block-woocommerce-checkout .wc-block-components-sidebar-layout,
   .wc-block-components-sidebar-layout {
     grid-template-columns: 1fr 340px !important;
   }
 }
+.wc-block-components-main,
+.wc-block-components-sidebar {
+  width: 100% !important;
+  margin: 0 !important;
+}
 
 /* Items column card */
-.wc-block-components-sidebar-layout__content {
+.wc-block-components-main {
   background: #fff !important;
   border-radius: 24px !important;
   border: 1px solid #F5EDE0 !important;
@@ -522,12 +535,12 @@ html { scroll-behavior: smooth; }
   box-shadow: 0 1px 4px rgba(74,63,53,0.06) !important;
 }
 
-/* Individual cart item */
-.wc-block-cart-item {
+/* Individual cart item row */
+.wc-block-cart-items__row {
   padding: 1rem 0 !important;
   border-bottom: 1px solid #F5EDE0 !important;
 }
-.wc-block-cart-item:last-child {
+.wc-block-cart-items__row:last-child {
   border-bottom: none !important;
   padding-bottom: 0 !important;
 }
@@ -581,7 +594,7 @@ html { scroll-behavior: smooth; }
 .wc-block-cart-item__remove-link:hover { color: #ef4444 !important; }
 
 /* Sticky sidebar on desktop */
-.wc-block-components-sidebar-layout__sidebar {
+.wc-block-components-sidebar {
   position: sticky !important;
   top: 1rem !important;
 }
@@ -612,13 +625,14 @@ html { scroll-behavior: smooth; }
 .wc-block-components-totals-item__value { color: #4A3F35 !important; font-weight: 700 !important; }
 
 /* Coupon link */
-.wc-block-components-totals-coupon__button-link {
+.wc-block-components-totals-coupon__button,
+.wc-block-components-totals-coupon-link {
   color: #88C4B5 !important;
   font-size: 0.8rem !important;
 }
 
-/* Proceed to checkout button — fix clip + apply cozy style */
-.wc-block-components-checkout-proceed-button {
+/* Proceed to checkout button (cart page) — fix clip + apply cozy style */
+.wc-block-cart__submit-button {
   background: #88C4B5 !important;
   border-color: #88C4B5 !important;
   color: #4A3F35 !important;
@@ -638,7 +652,7 @@ html { scroll-behavior: smooth; }
   box-shadow: 0 4px 12px rgba(136,196,181,0.35) !important;
   line-height: 1.4 !important;
 }
-.wc-block-components-checkout-proceed-button:hover {
+.wc-block-cart__submit-button:hover {
   background: #72b0a2 !important;
   border-color: #72b0a2 !important;
   color: #fff !important;
@@ -646,9 +660,8 @@ html { scroll-behavior: smooth; }
 }
 
 /* Cart empty state */
-.wc-block-cart-empty-feedback {
+.wc-block-cart__empty-cart__title {
   text-align: center;
-  padding: 3rem 1rem;
   color: rgba(74,63,53,0.6);
 }
 
@@ -706,10 +719,8 @@ html { scroll-behavior: smooth; }
 }
 
 /* Country / state dropdowns */
-.wc-block-components-dropdown-select-input__button,
-.wc-block-components-combobox__control,
-select.wc-block-components-country-input,
-select.wc-block-components-state-input {
+.wc-block-components-select-input select,
+.wc-block-components-select-input .components-select-control__input {
   border: 1px solid #F5EDE0 !important;
   border-radius: 12px !important;
   background: #fff !important;
@@ -733,7 +744,7 @@ select.wc-block-components-state-input {
   margin-bottom: 0.5rem !important;
   background: #fff !important;
 }
-.wc-block-components-radio-control__option--checked {
+.wc-block-components-radio-control__option:has(.wc-block-components-radio-control__input:checked) {
   border-color: #88C4B5 !important;
   background: #EAF6F3 !important;
 }
