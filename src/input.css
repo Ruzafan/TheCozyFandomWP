@@ -312,6 +312,131 @@ input[type="submit"] {
   box-shadow: 0 0 0 3px rgba(136, 196, 181, 0.2);
 }
 
+/* ─── Shop filters sidebar ──────────────────────────────────── */
+.cozy-shop-filters {
+  position: sticky;
+  top: 1rem;
+}
+
+.cozy-filter-widget {
+  background: #fff;
+  border: 1px solid #F5EDE0;
+  border-radius: 20px;
+  padding: 1.25rem;
+}
+.cozy-filter-widget__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #4A3F35;
+  margin: 0 0 1rem;
+}
+
+/* Price filter (jQuery UI slider) */
+.cozy-filter-widget .price_slider {
+  margin-bottom: 1rem;
+  height: 4px;
+  background: #F5EDE0;
+  border-radius: 999px;
+  border: none;
+}
+.cozy-filter-widget .price_slider .ui-slider-range {
+  background: #88C4B5;
+  border-radius: 999px;
+}
+.cozy-filter-widget .price_slider .ui-slider-handle {
+  width: 16px;
+  height: 16px;
+  top: -6px;
+  background: #fff;
+  border: 2px solid #88C4B5;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 1px 3px rgba(74,63,53,0.2);
+}
+.cozy-filter-widget .price_slider_amount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.cozy-filter-widget .price_slider_amount .price_label {
+  font-size: 0.75rem;
+  color: rgba(74,63,53,0.7);
+}
+.cozy-filter-widget .price_slider_amount .price_label span { font-weight: 700; color: #4A3F35; }
+.cozy-filter-widget .price_slider_amount button {
+  background: #88C4B5 !important;
+  color: #4A3F35 !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 0.4rem 0.9rem !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cozy-filter-widget .price_slider_amount button:hover { background: #72b0a2 !important; }
+
+/* Layered nav / rating filter lists */
+.cozy-filter-widget ul.woocommerce-widget-layered-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.cozy-filter-widget .woocommerce-widget-layered-nav-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.cozy-filter-widget .woocommerce-widget-layered-nav-list__item a {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: rgba(74,63,53,0.75);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.cozy-filter-widget .woocommerce-widget-layered-nav-list__item a:hover { color: #88C4B5; }
+.cozy-filter-widget .woocommerce-widget-layered-nav-list__item--chosen a {
+  color: #4A3F35;
+  font-weight: 700;
+}
+.cozy-filter-widget .woocommerce-widget-layered-nav-list__item .count {
+  font-size: 0.7rem;
+  color: rgba(74,63,53,0.4);
+}
+.cozy-filter-widget .star-rating {
+  color: #D4A373;
+  font-size: 0.8rem;
+}
+
+/* Active filters (removable chips) */
+.cozy-filter-widget.widget_layered_nav_filters ul.woocommerce-widget-layered-nav-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cozy-filter-widget.widget_layered_nav_filters .woocommerce-widget-layered-nav-list__item a {
+  background: #EAF6F3;
+  color: #4A3F35;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.cozy-filter-widget.widget_layered_nav_filters .woocommerce-widget-layered-nav-list__item a:hover {
+  background: #88C4B5;
+  color: #fff;
+}
+
 /* ─── Astra product card injection neutralizer ──────────────── */
 /* Astra injects astra-shop-thumbnail-wrap + an extra <a> via hooks.
    display:contents makes the div invisible to layout so our flex-col li works. */

@@ -125,24 +125,58 @@ do_action( 'woocommerce_before_main_content' );
 <?php
 wc_setup_loop();
 
-if ( woocommerce_product_loop() ) : ?>
-    <div class="p-6 md:p-8">
-        <div class="cozy-sort-bar flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <?php woocommerce_result_count(); ?>
-            <?php woocommerce_catalog_ordering(); ?>
+if ( woocommerce_product_loop() ) :
+    $cozy_widget_args = [
+        'before_widget' => '<div class="cozy-filter-widget">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h3 class="cozy-filter-widget__title">',
+        'after_title'   => '</h3>',
+    ];
+    ?>
+    <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
+
+        <!-- ==================================================== -->
+        <!-- FILTERS SIDEBAR                                        -->
+        <!-- ==================================================== -->
+        <aside class="cozy-shop-filters space-y-5">
+            <?php
+            the_widget( 'WC_Widget_Layered_Nav_Filters', [], $cozy_widget_args );
+            the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
+            the_widget( 'WC_Widget_Rating_Filter', [ 'title' => __( 'Valoración', 'woocommerce' ) ], $cozy_widget_args );
+            /* Filter by Attribute (color, talla, etc.) appears here automatically
+               once attributes are created in Productos → Atributos — none exist yet. */
+            foreach ( wc_get_attribute_taxonomies() as $tax ) {
+                the_widget( 'WC_Widget_Layered_Nav', [
+                    'title'      => $tax->attribute_label,
+                    'attribute'  => $tax->attribute_name,
+                    'query_type' => 'and',
+                ], $cozy_widget_args );
+            }
+            ?>
+        </aside>
+
+        <!-- ==================================================== -->
+        <!-- PRODUCT GRID                                           -->
+        <!-- ==================================================== -->
+        <div>
+            <div class="cozy-sort-bar flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                <?php woocommerce_result_count(); ?>
+                <?php woocommerce_catalog_ordering(); ?>
+            </div>
+
+            <?php woocommerce_product_loop_start(); ?>
+
+            <?php while ( have_posts() ) : the_post(); ?>
+                <?php wc_get_template_part( 'content', 'product' ); ?>
+            <?php endwhile; ?>
+
+            <?php woocommerce_product_loop_end(); ?>
+
+            <?php do_action( 'woocommerce_after_shop_loop' ); ?>
+
+            <?php woocommerce_pagination(); ?>
         </div>
 
-        <?php woocommerce_product_loop_start(); ?>
-
-        <?php while ( have_posts() ) : the_post(); ?>
-            <?php wc_get_template_part( 'content', 'product' ); ?>
-        <?php endwhile; ?>
-
-        <?php woocommerce_product_loop_end(); ?>
-
-        <?php do_action( 'woocommerce_after_shop_loop' ); ?>
-
-        <?php woocommerce_pagination(); ?>
     </div>
 <?php else : ?>
 
