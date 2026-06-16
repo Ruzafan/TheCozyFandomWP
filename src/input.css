@@ -652,6 +652,142 @@ html { scroll-behavior: smooth; }
   color: rgba(74,63,53,0.6);
 }
 
+/* ─── Checkout (WC Checkout Block) ───────────────────────────── */
+
+/* Page title */
+.woocommerce-checkout h1.entry-title,
+.woocommerce-checkout .wp-block-post-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: #4A3F35 !important;
+}
+
+/* Each step card (contact info, billing address, shipping, payment) */
+.wc-block-components-checkout-step {
+  background: #fff !important;
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 24px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: 0 1px 4px rgba(74,63,53,0.06) !important;
+}
+.wc-block-components-checkout-step__heading {
+  margin-bottom: 1rem !important;
+}
+.wc-block-components-checkout-step__title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: #4A3F35 !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+}
+.wc-block-components-checkout-step__description {
+  color: rgba(74,63,53,0.6) !important;
+  font-size: 0.8rem !important;
+}
+
+/* Text inputs (email, name, address, postcode, city, phone...) */
+.wc-block-components-text-input input[type="text"],
+.wc-block-components-text-input input[type="email"],
+.wc-block-components-text-input input[type="tel"],
+.wc-block-components-text-input input[type="number"] {
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  color: #4A3F35 !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+.wc-block-components-text-input input:focus {
+  border-color: #88C4B5 !important;
+  box-shadow: 0 0 0 3px rgba(136,196,181,0.2) !important;
+  outline: none !important;
+}
+.wc-block-components-text-input label {
+  color: rgba(74,63,53,0.5) !important;
+}
+
+/* Country / state dropdowns */
+.wc-block-components-dropdown-select-input__button,
+.wc-block-components-combobox__control,
+select.wc-block-components-country-input,
+select.wc-block-components-state-input {
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  color: #4A3F35 !important;
+}
+
+/* "Add apartment, suite, etc." toggle link */
+.wc-block-components-address-form__address_2-toggle {
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 12px !important;
+  color: #4A3F35 !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+}
+
+/* Radio control groups (shipping/payment method options) */
+.wc-block-components-radio-control__option {
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 12px !important;
+  padding: 0.875rem 1rem !important;
+  margin-bottom: 0.5rem !important;
+  background: #fff !important;
+}
+.wc-block-components-radio-control__option--checked {
+  border-color: #88C4B5 !important;
+  background: #EAF6F3 !important;
+}
+.wc-block-components-radio-control-accordion-option {
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 12px !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Express payment area (Google Pay / Apple Pay / Amazon Pay buttons) */
+.wc-block-components-express-payment {
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 20px !important;
+  padding: 1.25rem !important;
+  background: #FAF6EE !important;
+  margin-bottom: 1.5rem !important;
+}
+.wc-block-components-express-payment-continue-rule {
+  color: rgba(74,63,53,0.45) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Order summary sidebar reuses cart's totals styling already added above */
+.wc-block-checkout__sidebar .wc-block-components-totals-wrapper,
+.wc-block-components-order-summary {
+  background: #fff !important;
+  border-radius: 24px !important;
+  border: 1px solid #F5EDE0 !important;
+}
+
+/* Place order button */
+.wc-block-components-checkout-place-order-button {
+  background: #88C4B5 !important;
+  border-color: #88C4B5 !important;
+  color: #4A3F35 !important;
+  border-radius: 16px !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  padding: 1rem 1.5rem !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: normal !important;
+  min-height: 52px !important;
+  height: auto !important;
+  box-shadow: 0 4px 12px rgba(136,196,181,0.35) !important;
+}
+.wc-block-components-checkout-place-order-button:hover {
+  background: #72b0a2 !important;
+  border-color: #72b0a2 !important;
+  color: #fff !important;
+}
+
 /* ─── Footer ──────────────────────────────────────────────────── */
 /* Hide Astra's default footer — replaced by the custom Cozy footer (wp_footer hook) */
 #colophon,
