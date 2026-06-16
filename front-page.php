@@ -120,48 +120,52 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  NEW PRODUCTS SECTION                                         -->
 <!-- ============================================================ -->
-<section id="nuevos" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-        <div>
-            <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Recién Llegados</span>
-            <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Lo más nuevo en la boutique</h2>
-            <p class="text-sm text-cozy-coffee/70 mt-2">Los últimos tesoros en incorporarse a nuestra colección.</p>
-        </div>
-        <?php if ( class_exists( 'WooCommerce' ) ) : ?>
-        <div class="mt-4 md:mt-0">
-            <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
-               class="bg-white hover:bg-cozy-mintLight text-cozy-coffee px-5 py-2 rounded-full text-xs font-medium border border-cozy-sand transition-colors">
-                Ver todos los productos →
-            </a>
-        </div>
-        <?php endif; ?>
-    </div>
+<section id="nuevos" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative">
+    <div class="max-w-7xl mx-auto">
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-    <?php
-    $new_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
-        'limit'   => 4,
-        'status'  => 'publish',
-        'orderby' => 'date',
-        'order'   => 'DESC',
-    ] ) : [];
-
-    if ( $new_products ) :
-        foreach ( $new_products as $product ) {
-            cozy_fandom_home_product_card( $product, 'Nuevo', '✨' );
-        }
-    else : ?>
-        <div class="col-span-4 text-center py-16">
-            <i class="fa-solid fa-store text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
-            <p class="text-cozy-coffee/60 text-sm">Cargando productos... Asegúrate de que WooCommerce está activo y tienes productos publicados.</p>
-            <?php if ( current_user_can( 'manage_options' ) ) : ?>
-            <a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=product' ) ); ?>"
-               class="inline-block mt-4 bg-cozy-mint text-cozy-coffee px-6 py-2 rounded-xl text-sm font-bold">
-                Añadir primer producto
-            </a>
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div>
+                <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Recién Llegados</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Lo más nuevo en la boutique</h2>
+                <p class="text-sm text-cozy-coffee/70 mt-2">Los últimos tesoros en incorporarse a nuestra colección.</p>
+            </div>
+            <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+            <div class="mt-4 md:mt-0">
+                <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
+                   class="bg-white hover:bg-cozy-mintLight text-cozy-coffee px-5 py-2 rounded-full text-xs font-medium border border-cozy-sand transition-colors">
+                    Ver todos los productos →
+                </a>
+            </div>
             <?php endif; ?>
         </div>
-    <?php endif; ?>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <?php
+        $new_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
+            'limit'   => 4,
+            'status'  => 'publish',
+            'orderby' => 'date',
+            'order'   => 'DESC',
+        ] ) : [];
+
+        if ( $new_products ) :
+            foreach ( $new_products as $product ) {
+                cozy_fandom_home_product_card( $product, 'Nuevo', '✨' );
+            }
+        else : ?>
+            <div class="col-span-4 text-center py-16">
+                <i class="fa-solid fa-store text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
+                <p class="text-cozy-coffee/60 text-sm">Cargando productos... Asegúrate de que WooCommerce está activo y tienes productos publicados.</p>
+                <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                <a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=product' ) ); ?>"
+                   class="inline-block mt-4 bg-cozy-mint text-cozy-coffee px-6 py-2 rounded-xl text-sm font-bold">
+                    Añadir primer producto
+                </a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+        </div>
+
     </div>
 </section>
 
