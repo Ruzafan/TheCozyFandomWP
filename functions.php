@@ -30,6 +30,19 @@ add_action( 'wp', function() {
 /*  STYLES                                                              */
 /* ------------------------------------------------------------------ */
 function cozy_fandom_enqueue_styles() {
+    wp_enqueue_style(
+        'cozy-google-fonts',
+        'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap',
+        [],
+        null
+    );
+    wp_enqueue_style(
+        'cozy-fontawesome',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+        [],
+        '6.4.0'
+    );
+
     wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
 
     wp_enqueue_style(
