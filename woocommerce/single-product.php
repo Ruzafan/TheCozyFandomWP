@@ -71,15 +71,6 @@ while ( have_posts() ) :
 
                 <?php do_action( 'woocommerce_single_product_summary' ); ?>
 
-                <!-- Back to shop -->
-                <div class="pt-4 border-t border-cozy-sand">
-                    <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
-                       class="inline-flex items-center gap-2 text-xs text-cozy-coffee/60 hover:text-cozy-mint transition-colors no-underline font-medium">
-                        <i class="fa-solid fa-arrow-left text-[10px]" aria-hidden="true"></i>
-                        <?php esc_html_e( 'Volver a la tienda', 'woocommerce' ); ?>
-                    </a>
-                </div>
-
             </div>
         </div>
 

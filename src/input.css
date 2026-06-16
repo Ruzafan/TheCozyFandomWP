@@ -392,6 +392,15 @@ html { scroll-behavior: smooth; }
 .cozy-single-product .product_meta a { color: #88C4B5; text-decoration: none; }
 .cozy-single-product .product_meta a:hover { text-decoration: underline; }
 
+/* Yoast auto-inserts a 2nd breadcrumb + WooCommerce Payments adds its BNPL
+   (Klarna) message and express checkout (GPay/Amazon Pay) buttons into the
+   product summary. Keep those only for cart/checkout, not the product page. */
+.single-product .summary nav.woocommerce-breadcrumb,
+.single-product #payment-method-message,
+.single-product .wcpay-express-checkout-wrapper {
+  display: none !important;
+}
+
 /* ─── Tabs (description / reviews) ─────────────────────────── */
 .cozy-product-lower .woocommerce-tabs,
 .cozy-product-lower .wc-tabs-wrapper {
