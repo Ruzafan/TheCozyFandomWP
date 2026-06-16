@@ -652,6 +652,13 @@ html { scroll-behavior: smooth; }
   color: rgba(74,63,53,0.6);
 }
 
+/* ─── Footer ──────────────────────────────────────────────────── */
+/* Hide Astra's default footer — replaced by the custom Cozy footer (wp_footer hook) */
+#colophon,
+.site-footer {
+  display: none !important;
+}
+
 /* ─── Account dashboard grids ────────────────────────────────── */
 .cozy-stats-grid {
   display: grid;

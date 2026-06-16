@@ -146,6 +146,95 @@ class Cozy_Nav_Walker extends Walker_Nav_Menu {
     public function end_el( &$output, $data_object, $depth = 0, $args = null ) {}
 }
 
+/* ------------------------------------------------------------------ */
+/*  CUSTOM FOOTER                                                       */
+/* ------------------------------------------------------------------ */
+/* Resolves a legal page by slug; falls back to '#' until the page is created in WP Admin */
+function cozy_fandom_legal_link( $slug ) {
+    $page = get_page_by_path( $slug );
+    return $page ? get_permalink( $page ) : '#';
+}
+
+function cozy_fandom_render_footer() {
+    $shop_url    = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
+    $account_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : home_url( '/' );
+    $cart_url    = class_exists( 'WooCommerce' ) ? wc_get_cart_url() : home_url( '/' );
+
+    /* Swap these for the real profile URLs once they're live */
+    $instagram_url = '#';
+    $tiktok_url     = '#';
+    ?>
+    <footer class="cozy-footer bg-cozy-coffee text-white/70 pt-14 pb-6 px-6 md:px-12 relative overflow-hidden">
+        <div class="absolute top-0 left-1/4 w-72 h-72 bg-cozy-mint/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-white/10">
+
+                <!-- Brand + social -->
+                <div class="space-y-4">
+                    <span class="font-serif text-xl font-bold text-white block">🌿 The Cozy Fandom</span>
+                    <p class="text-xs text-white/60 leading-relaxed max-w-xs">
+                        Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado.
+                    </p>
+                    <div class="flex items-center gap-3 pt-1">
+                        <a href="<?php echo esc_url( $instagram_url ); ?>" target="_blank" rel="noopener noreferrer"
+                           aria-label="Instagram"
+                           class="w-10 h-10 rounded-full bg-white/10 hover:bg-cozy-mint flex items-center justify-center text-white hover:text-cozy-coffee transition-colors">
+                            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="<?php echo esc_url( $tiktok_url ); ?>" target="_blank" rel="noopener noreferrer"
+                           aria-label="TikTok"
+                           class="w-10 h-10 rounded-full bg-white/10 hover:bg-cozy-mint flex items-center justify-center text-white hover:text-cozy-coffee transition-colors">
+                            <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tienda -->
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Tienda</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="hover:text-cozy-mint transition-colors">Inicio</a></li>
+                        <li><a href="<?php echo esc_url( $shop_url ); ?>" class="hover:text-cozy-mint transition-colors">Boutique</a></li>
+                        <li><a href="<?php echo esc_url( $account_url ); ?>" class="hover:text-cozy-mint transition-colors">Mi cuenta</a></li>
+                        <li><a href="<?php echo esc_url( $cart_url ); ?>" class="hover:text-cozy-mint transition-colors">Carrito</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal / información -->
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Información</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'envios-y-devoluciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Envíos y devoluciones</a></li>
+                        <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-privacidad' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de privacidad</a></li>
+                        <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'proteccion-de-datos' ) ); ?>" class="hover:text-cozy-mint transition-colors">Protección de datos</a></li>
+                        <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'terminos-y-condiciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Términos y condiciones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contacto -->
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Contacto</h4>
+                    <p class="text-xs text-white/60 leading-relaxed mb-3">¿Tienes dudas? Te atendemos con un té calentito 🍵</p>
+                    <a href="mailto:<?php echo esc_attr( get_option( 'admin_email' ) ); ?>" class="text-xs font-bold text-cozy-mint hover:underline break-all">
+                        <?php echo esc_html( get_option( 'admin_email' ) ); ?>
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="pt-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-white/40">
+                <span>&copy; <?php echo esc_html( date( 'Y' ) ); ?> The Cozy Fandom. Todos los derechos reservados.</span>
+                <span>Hecho con 🌿 para fans cozy</span>
+            </div>
+
+        </div>
+    </footer>
+    <?php
+}
+add_action( 'wp_footer', 'cozy_fandom_render_footer' );
+
 function cozy_nav_fallback() {
     $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/tienda' );
     $links = [
