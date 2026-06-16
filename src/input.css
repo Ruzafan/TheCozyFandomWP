@@ -47,9 +47,12 @@ input[type="submit"] {
   background-color: #FAF6EE;
 }
 
-/* Neutralize Astra's flex container so our front-page sections stack vertically */
-.ast-page-builder-template .site-content > .ast-container,
-#content .ast-container {
+/* Neutralize Astra's flex container so our front-page sections stack vertically.
+   Scoped to .home only — this was unscoped before and stripped the side
+   padding from .ast-container on every page (legal pages, etc), leaving
+   text flush against the screen edges on mobile. */
+.home .ast-page-builder-template .site-content > .ast-container,
+.home #content .ast-container {
   display: block !important;
   max-width: none !important;
   padding: 0 !important;
