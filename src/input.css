@@ -430,24 +430,68 @@ input[type="submit"] {
   font-size: 0.8rem;
 }
 
-/* Active filters (removable chips) */
-.cozy-filter-widget.widget_layered_nav_filters ul.woocommerce-widget-layered-nav-list {
-  flex-direction: row;
+/* Active filters (removable chips with a clear "×")
+   WC_Widget_Layered_Nav_Filters renders plain <ul><li class="chosen"><a>
+   with no widget-type class on the wrapper, so it gets its own
+   .cozy-active-filters class from archive-product.php to target it. */
+.cozy-active-filters ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-.cozy-filter-widget.widget_layered_nav_filters .woocommerce-widget-layered-nav-list__item a {
+.cozy-active-filters li.chosen a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   background: #EAF6F3;
   color: #4A3F35;
   border-radius: 999px;
-  padding: 0.3rem 0.75rem;
+  padding: 0.3rem 0.5rem 0.3rem 0.75rem;
   font-size: 0.7rem;
   font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
 }
-.cozy-filter-widget.widget_layered_nav_filters .woocommerce-widget-layered-nav-list__item a:hover {
-  background: #88C4B5;
-  color: #fff;
+.cozy-active-filters li.chosen a::after {
+  content: "\2715";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(74, 63, 53, 0.15);
+  font-size: 0.55rem;
+  line-height: 1;
 }
+.cozy-active-filters li.chosen a:hover { background: #88C4B5; color: #fff; }
+.cozy-active-filters li.chosen a:hover::after { background: rgba(255, 255, 255, 0.35); }
+
+/* Rating filter — WC_Widget_Rating_Filter also renders a plain <ul>
+   with no class, so it gets its own .cozy-rating-filter wrapper too. */
+.cozy-rating-filter ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.cozy-rating-filter li a {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: rgba(74, 63, 53, 0.75);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.cozy-rating-filter li a:hover { color: #88C4B5; }
+.cozy-rating-filter li.chosen a { color: #4A3F35; font-weight: 700; }
 
 /* ─── Astra product card injection neutralizer ──────────────── */
 /* Astra injects astra-shop-thumbnail-wrap + an extra <a> via hooks.

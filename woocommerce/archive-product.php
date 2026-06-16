@@ -140,9 +140,19 @@ if ( woocommerce_product_loop() ) :
         <!-- ==================================================== -->
         <aside class="cozy-shop-filters space-y-5">
             <?php
-            the_widget( 'WC_Widget_Layered_Nav_Filters', [], $cozy_widget_args );
+            the_widget( 'WC_Widget_Layered_Nav_Filters', [], [
+                'before_widget' => '<div class="cozy-filter-widget cozy-active-filters">',
+                'after_widget'  => '</div>',
+                'before_title'  => '<h3 class="cozy-filter-widget__title">',
+                'after_title'   => '</h3>',
+            ] );
             the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
-            the_widget( 'WC_Widget_Rating_Filter', [ 'title' => __( 'Valoración', 'woocommerce' ) ], $cozy_widget_args );
+            the_widget( 'WC_Widget_Rating_Filter', [ 'title' => __( 'Valoración', 'woocommerce' ) ], [
+                'before_widget' => '<div class="cozy-filter-widget cozy-rating-filter">',
+                'after_widget'  => '</div>',
+                'before_title'  => '<h3 class="cozy-filter-widget__title">',
+                'after_title'   => '</h3>',
+            ] );
             /* Filter by Attribute (color, talla, etc.) appears here automatically
                once attributes are created in Productos → Atributos — none exist yet. */
             foreach ( wc_get_attribute_taxonomies() as $tax ) {
