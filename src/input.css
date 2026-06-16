@@ -501,7 +501,7 @@ html { scroll-behavior: smooth; }
 }
 .woocommerce-cart #primary,
 .woocommerce-checkout #primary {
-  width: 100% !important;
+  width: 100vw !important;
   max-width: 1240px !important;
   margin-left: auto !important;
   margin-right: auto !important;
