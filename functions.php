@@ -221,7 +221,6 @@ function cozy_fandom_render_footer() {
                     <ul class="space-y-2.5 text-xs">
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'envios-y-devoluciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Envíos y devoluciones</a></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-privacidad' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de privacidad</a></li>
-                        <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'proteccion-de-datos' ) ); ?>" class="hover:text-cozy-mint transition-colors">Protección de datos</a></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'terminos-y-condiciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Términos y condiciones</a></li>
                     </ul>
                 </div>
