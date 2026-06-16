@@ -49,7 +49,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  HERO SECTION                                                 -->
 <!-- ============================================================ -->
-<section id="home" class="relative py-12 md:py-24 px-6 md:px-12 overflow-hidden bg-gradient-to-b from-cozy-cream via-cozy-cream to-cozy-sand">
+<section id="home" class="relative py-12 md:py-24 px-6 md:px-12 overflow-hidden bg-cozy-cream">
 
     <!-- Background decorative blobs -->
     <div class="absolute top-10 right-10 w-96 h-96 bg-cozy-mint/10 rounded-full blur-3xl -z-10" aria-hidden="true"></div>
@@ -70,7 +70,10 @@ $cozy_cats = [
                 Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado. Merchandising oficial seleccionado con un toque cálido y sofisticado.
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-                <a href="#productos" class="w-full sm:w-auto text-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                <?php
+                $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos';
+                ?>
+                <a href="<?php echo esc_url( $shop_url ); ?>" class="w-full sm:w-auto text-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                     Explorar la Tienda <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                 </a>
                 <a href="#filosofia" class="w-full sm:w-auto text-center border-2 border-cozy-coffee/20 hover:border-cozy-coffee hover:bg-cozy-coffee hover:text-white text-cozy-coffee font-semibold px-8 py-4 rounded-2xl transition-all">
@@ -103,9 +106,6 @@ $cozy_cats = [
                 </div>
                 <h3 class="font-serif text-lg font-bold text-cozy-coffee">Pack Escritorio Mágico</h3>
                 <p class="text-xs text-cozy-coffee/60 mt-1 mb-4">La conjunción perfecta de tranquilidad para tu rincón de trabajo.</p>
-                <?php
-                $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos';
-                ?>
                 <div class="flex items-center justify-between pt-2 border-t border-cozy-sand">
                     <a href="<?php echo esc_url( $shop_url ); ?>" class="bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
                         <i class="fa-solid fa-basket-shopping"></i> Ver tienda
