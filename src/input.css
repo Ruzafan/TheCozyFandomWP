@@ -246,14 +246,9 @@ html { scroll-behavior: smooth; }
   width: 100% !important;
   float: none !important;
 }
-.cozy-product-gallery .woocommerce-product-gallery__wrapper {
-  width: 100% !important;
-  margin: 0 !important;
-}
-.cozy-product-gallery .woocommerce-product-gallery__image {
-  width: 100% !important;
-  float: none !important;
-}
+/* Don't force width/float here — FlexSlider sets inline width/float via JS
+   on the wrapper and each slide to lay them out in a horizontal strip.
+   Overriding those with !important breaks navigation (slides stack vertically). */
 .cozy-product-gallery .woocommerce-product-gallery__image a { display: block; }
 .cozy-product-gallery .woocommerce-product-gallery__image img {
   width: 100% !important;
