@@ -264,3 +264,9 @@ input[type="submit"] {
     margin-left: auto !important;
     margin-right: auto !important;
 }
+
+.woocommerce-cart #primary, 
+.woocommerce-checkout #primary {
+    width: 100vw !important;
+    max-width: 1240px;
+}
