@@ -492,6 +492,13 @@ html { scroll-behavior: smooth; }
 .woocommerce-checkout .entry-content {
   max-width: 100% !important;
 }
+/* Astra's .ast-container caps at --ast-container-width (1200px on this site),
+   which sits between #primary and the viewport and was the real bottleneck —
+   widen it here so #primary can actually reach our intended 1240px on large screens. */
+.woocommerce-cart .ast-container,
+.woocommerce-checkout .ast-container {
+  max-width: 1240px !important;
+}
 .woocommerce-cart #primary,
 .woocommerce-checkout #primary {
   width: 100% !important;
