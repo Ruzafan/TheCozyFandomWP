@@ -753,7 +753,7 @@ input[type="submit"] {
   transform: translateY(-1px);
 }
 
-/* Meta (SKU, categories) */
+/* Meta (SKU only — category and tag are redundant: category pill above title covers them) */
 .cozy-single-product .product_meta {
   font-size: 0.75rem;
   color: rgba(74,63,53,0.55);
@@ -761,6 +761,8 @@ input[type="submit"] {
 }
 .cozy-single-product .product_meta a { color: #88C4B5; text-decoration: none; }
 .cozy-single-product .product_meta a:hover { text-decoration: underline; }
+.cozy-single-product .product_meta .posted_in,
+.cozy-single-product .product_meta .tagged_as { display: none !important; }
 
 /* Yoast auto-inserts a 2nd breadcrumb + WooCommerce Payments adds its BNPL
    (Klarna) message and express checkout (GPay/Amazon Pay) buttons into the
