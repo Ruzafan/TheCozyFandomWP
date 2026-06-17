@@ -122,6 +122,57 @@ $cozy_cats = [
 </section>
 
 <!-- ============================================================ -->
+<!--  TRUST BADGES                                                 -->
+<!-- ============================================================ -->
+<section id="garantias" class="bg-white border-t border-b border-cozy-cream">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 py-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+
+            <div class="flex items-center gap-4">
+                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div>
+                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Empaquetado Aesthetic</h4>
+                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Unboxings que enamoran</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div>
+                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Envíos Rápidos</h4>
+                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">24/48h en Península</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Pagos 100% Seguros</h4>
+                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Tarjeta, PayPal o Bizum</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <div>
+                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Atención Cercana</h4>
+                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Te ayudamos por WhatsApp</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
 <!--  NEW PRODUCTS SECTION                                         -->
 <!-- ============================================================ -->
 <section id="nuevos" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative">
@@ -364,8 +415,60 @@ $latest_posts = new WP_Query( [
 
 </section>
 
-<?php
-?>
+<!-- ============================================================ -->
+<!--  NEWSLETTER                                                   -->
+<!-- ============================================================ -->
+<section id="newsletter" class="px-6 md:px-12 py-16 md:py-20">
+    <div class="max-w-2xl mx-auto bg-cozy-sand rounded-[40px] px-8 md:px-16 py-16 md:py-20 text-center relative overflow-hidden">
+
+        <!-- Decorative blobs -->
+        <div class="absolute -top-16 -left-16 w-64 h-64 bg-cozy-cream rounded-full blur-3xl opacity-60 pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-cozy-cream rounded-full blur-3xl opacity-60 pointer-events-none" aria-hidden="true"></div>
+
+        <div class="relative z-10 flex flex-col items-center gap-5">
+
+            <!-- Badge -->
+            <span class="inline-flex items-center gap-1.5 bg-white text-cozy-accent text-xs font-bold px-4 py-1.5 rounded-full border border-cozy-accent/20">
+                ✨ Únete al Cozy Club
+            </span>
+
+            <!-- Title -->
+            <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee leading-tight m-0">
+                Un rincón de paz en tu<br> bandeja de entrada.
+            </h2>
+
+            <!-- Body -->
+            <p class="text-sm md:text-base text-cozy-coffee/80 max-w-md leading-relaxed m-0">
+                Apúntate a nuestra newsletter y recibe un <strong>10% de descuento</strong> en tu primer pedido. Cero spam, solo novedades bonitas, tips de decoración geek y ofertas exclusivas para la comunidad.
+            </p>
+
+            <!-- Form -->
+            <form id="newsletter-form" onsubmit="handleNewsletterSubmit(event)" class="w-full flex flex-col sm:flex-row gap-3 mt-2">
+                <input type="email" required
+                       placeholder="tu@email.com"
+                       class="flex-1 bg-white border-2 border-white rounded-2xl px-5 py-3.5 text-sm text-cozy-coffee placeholder-cozy-coffee/40 outline-none focus:border-cozy-mint transition-colors"
+                       style="border-radius:16px">
+                <button type="submit"
+                        class="shrink-0 bg-cozy-mint hover:bg-cozy-mintDark text-white font-bold px-7 py-3.5 rounded-2xl text-sm transition-all hover:-translate-y-0.5 hover:shadow-lg whitespace-nowrap"
+                        style="border-radius:16px">
+                    Quiero mi descuento
+                </button>
+            </form>
+
+            <!-- Success state -->
+            <div id="newsletter-success" class="hidden text-center py-2">
+                <span class="text-cozy-mint font-bold text-sm">🌿 ¡Bienvenida al club! Revisa tu bandeja de entrada.</span>
+            </div>
+
+            <!-- Micro-text -->
+            <p class="text-cozy-coffee/60 m-0" style="font-size:11px">
+                Prometemos cuidar de tus datos tanto como cuidamos nuestros envíos.
+            </p>
+
+        </div>
+    </div>
+</section>
+
 </div><!-- /#cozy-front-page -->
 <?php
 get_footer();
