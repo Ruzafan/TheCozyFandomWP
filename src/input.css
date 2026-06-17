@@ -753,7 +753,7 @@ input[type="submit"] {
   transform: translateY(-1px);
 }
 
-/* Meta (SKU only — category and tag are redundant: category pill above title covers them) */
+/* Meta — removed via remove_action; CSS as safety net for cache lag */
 .cozy-single-product .product_meta {
   font-size: 0.75rem;
   color: rgba(74,63,53,0.55);
@@ -761,8 +761,12 @@ input[type="submit"] {
 }
 .cozy-single-product .product_meta a { color: #88C4B5; text-decoration: none; }
 .cozy-single-product .product_meta a:hover { text-decoration: underline; }
+/* Hide category/tag lines in meta and any Astra category injection above the title */
 .cozy-single-product .product_meta .posted_in,
-.cozy-single-product .product_meta .tagged_as { display: none !important; }
+.cozy-single-product .product_meta .tagged_as,
+.single-product .summary .ast-single-product-category,
+.single-product .summary .ast-woo-product-category,
+.single-product .summary [class*="ast-woo"][class*="categ"] { display: none !important; }
 
 /* Yoast auto-inserts a 2nd breadcrumb + WooCommerce Payments adds its BNPL
    (Klarna) message and express checkout (GPay/Amazon Pay) buttons into the

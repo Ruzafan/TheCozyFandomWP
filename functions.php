@@ -30,6 +30,17 @@ add_action( 'wp', function() {
    "X se ha añadido a tu carrito" banner is redundant — remove it. */
 add_filter( 'wc_add_to_cart_message_html', '__return_empty_string' );
 
+/* Single product page: remove redundant category/tag output.
+   - woocommerce_template_single_meta (priority 40) outputs the SKU/Category/Tag row.
+   - Astra injects the product category above the title at priority 3 via its own hook.
+   Both are replaced by the custom category pill in single-product.php. */
+add_action( 'wp', function() {
+    if ( ! is_product() ) return;
+    remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+    remove_action( 'woocommerce_single_product_summary', 'astra_woo_product_category', 3 );
+    remove_action( 'woocommerce_single_product_summary', 'astra_woo_single_product_taxonomy', 3 );
+}, 20 );
+
 /* Hide the WooCommerce "Marca" brand from product detail pages.
    Brands are for internal use / filtering only, not customer-facing.
    WC_Brands hooks show_brand() into woocommerce_product_meta_end at
