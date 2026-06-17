@@ -76,8 +76,12 @@ $cozy_cats = [
                 <a href="<?php echo esc_url( $shop_url ); ?>" class="w-full sm:w-auto text-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                     Explorar la Tienda <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                 </a>
-                <a href="#filosofia" class="w-full sm:w-auto text-center border-2 border-cozy-coffee/20 hover:border-cozy-coffee hover:bg-cozy-coffee hover:text-white text-cozy-coffee font-semibold px-8 py-4 rounded-2xl transition-all">
-                    Nuestra Filosofía
+                <?php
+                $blog_page_id  = get_option( 'page_for_posts' );
+                $blog_url      = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/blog' );
+                ?>
+                <a href="<?php echo esc_url( $blog_url ); ?>" class="w-full sm:w-auto text-center border-2 border-cozy-coffee/20 hover:border-cozy-coffee hover:bg-cozy-coffee hover:text-white text-cozy-coffee font-semibold px-8 py-4 rounded-2xl transition-all">
+                    Nuestro Blog <i class="fa-solid fa-pen-nib ml-2 text-xs"></i>
                 </a>
             </div>
         </div>
@@ -261,52 +265,103 @@ $cozy_cats = [
 </section>
 
 <!-- ============================================================ -->
-<!--  PHILOSOPHY / ABOUT SECTION                                   -->
+<!--  BLOG PREVIEW SECTION                                         -->
 <!-- ============================================================ -->
-<section id="filosofia" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<?php
+$blog_page_id  = get_option( 'page_for_posts' );
+$blog_url      = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/blog' );
 
-        <!-- Left: Illustration -->
-        <div class="lg:col-span-5">
-            <div class="bg-cozy-sand rounded-[32px] p-8 border border-cozy-coffee/10 shadow-inner relative overflow-hidden">
-                <div class="h-80 flex items-center justify-center">
-                    <svg class="w-64 h-64 text-cozy-coffee" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                        <rect x="35" y="10" width="30" height="40" rx="15" fill="#FAF6EE" stroke="#4A3F35"/>
-                        <line x1="50" y1="10" x2="50" y2="50" stroke="#4A3F35"/>
-                        <line x1="35" y1="30" x2="65" y2="30" stroke="#4A3F35"/>
-                        <circle cx="45" cy="22" r="4" fill="#88C4B5" stroke="none"/>
-                        <path d="M20 70 C20 60 25 55 35 55 H65 C75 55 80 60 80 70 V85 H20 V70 Z" fill="#F5EDE0" stroke="#4A3F35"/>
-                        <rect x="25" y="70" width="50" height="10" rx="4" fill="#FAF6EE"/>
-                        <ellipse cx="50" cy="73" rx="8" ry="5" fill="#D4A373" stroke="#4A3F35"/>
-                        <path d="M56 70 Q58 66 57 71" stroke="#4A3F35"/>
-                    </svg>
-                </div>
-            </div>
+$latest_posts = new WP_Query( [
+    'posts_per_page' => 1,
+    'post_status'    => 'publish',
+    'post_type'      => 'post',
+    'ignore_sticky_posts' => true,
+] );
+?>
+<section id="blog" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+            <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Del Blog</span>
+            <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Universo Cozy Geek</h2>
+            <p class="text-sm text-cozy-coffee/70 mt-2">Artículos, reseñas y curiosidades del mundo friki con alma cozy.</p>
         </div>
-
-        <!-- Right: Text -->
-        <div class="lg:col-span-7 space-y-6">
-            <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block">Filosofía Cozy Geek</span>
-            <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Tu pasión y el diseño, en completa armonía</h2>
-            <p class="text-sm md:text-base text-cozy-coffee/80 leading-relaxed font-light">
-                En <strong>The Cozy Fandom</strong> creemos firmemente que tu amor por los videojuegos, el anime clásico o el cine fantástico no tiene por qué estar reñido con un hogar luminoso, ordenado y relajante.
-            </p>
-            <p class="text-xs md:text-sm text-cozy-coffee/70 leading-relaxed">
-                Buscamos alejarnos del merchandising plástico estándar. Preferimos tazas con esmaltes artesanales, papelería de portadas limpias y pequeños coleccionables que se sienten como obras de arte botánico sobre tu escritorio. Queremos que cada unboxing sea un ritual de relax.
-            </p>
-            <div class="pt-4 grid grid-cols-2 gap-4">
-                <div class="border-l-4 border-cozy-mint pl-4">
-                    <span class="block text-2xl font-serif font-bold text-cozy-coffee">100%</span>
-                    <span class="text-xs text-cozy-coffee/60">Licencia Oficial</span>
-                </div>
-                <div class="border-l-4 border-cozy-mint pl-4">
-                    <span class="block text-2xl font-serif font-bold text-cozy-coffee">0%</span>
-                    <span class="text-xs text-cozy-coffee/60">Plásticos Innecesarios</span>
-                </div>
-            </div>
+        <div class="mt-4 md:mt-0">
+            <a href="<?php echo esc_url( $blog_url ); ?>"
+               class="bg-white hover:bg-cozy-mintLight text-cozy-coffee px-5 py-2 rounded-full text-xs font-medium border border-cozy-sand transition-colors">
+                Ver todos los artículos →
+            </a>
         </div>
-
     </div>
+
+    <?php if ( $latest_posts->have_posts() ) :
+        $latest_posts->the_post();
+        $post_cats   = get_the_category();
+        $cat_name    = $post_cats ? $post_cats[0]->name : '';
+        $thumb_url   = get_the_post_thumbnail_url( null, 'medium_large' );
+    ?>
+    <a href="<?php the_permalink(); ?>" class="group block no-underline">
+        <div class="bg-white rounded-[32px] border border-cozy-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden grid grid-cols-1 md:grid-cols-2">
+
+            <!-- Featured image -->
+            <div class="bg-cozy-cream h-64 md:h-auto flex items-center justify-center overflow-hidden relative">
+                <?php if ( $thumb_url ) : ?>
+                <img src="<?php echo esc_url( $thumb_url ); ?>"
+                     alt="<?php the_title_attribute(); ?>"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <?php else : ?>
+                <svg class="w-32 h-32 text-cozy-coffee/20" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <rect x="15" y="20" width="70" height="60" rx="4"/>
+                    <path d="M15 65 L35 45 L55 60 L70 47 L85 65"/>
+                    <circle cx="35" cy="38" r="8"/>
+                </svg>
+                <?php endif; ?>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 md:p-10 flex flex-col justify-center gap-4">
+                <div class="flex items-center gap-3">
+                    <?php if ( $cat_name ) : ?>
+                    <span class="inline-flex items-center gap-1.5 bg-cozy-mintLight text-cozy-mint text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-cozy-mint/20">
+                        <?php echo esc_html( $cat_name ); ?>
+                    </span>
+                    <?php endif; ?>
+                    <span class="text-[11px] text-cozy-coffee/50"><?php echo esc_html( get_the_date( 'j M Y' ) ); ?></span>
+                </div>
+
+                <h3 class="font-serif text-2xl md:text-3xl font-bold text-cozy-coffee leading-snug group-hover:text-cozy-mint transition-colors">
+                    <?php the_title(); ?>
+                </h3>
+
+                <?php if ( has_excerpt() || get_the_content() ) : ?>
+                <p class="text-sm text-cozy-coffee/70 leading-relaxed line-clamp-3">
+                    <?php echo wp_trim_words( get_the_excerpt() ?: get_the_content(), 30 ); ?>
+                </p>
+                <?php endif; ?>
+
+                <span class="inline-flex items-center gap-2 text-xs font-bold text-cozy-mint mt-2">
+                    Leer artículo <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
+                </span>
+            </div>
+
+        </div>
+    </a>
+    <?php wp_reset_postdata(); ?>
+
+    <?php else : ?>
+    <!-- Placeholder shown until the first post is published -->
+    <div class="bg-white rounded-[32px] border border-cozy-sand border-dashed p-12 text-center">
+        <i class="fa-solid fa-pen-nib text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
+        <p class="text-cozy-coffee/60 text-sm font-medium">Pronto aquí aparecerá el primer artículo del blog.</p>
+        <?php if ( current_user_can( 'publish_posts' ) ) : ?>
+        <a href="<?php echo esc_url( admin_url( 'post-new.php' ) ); ?>"
+           class="inline-block mt-5 bg-cozy-mint text-cozy-coffee px-6 py-2.5 rounded-xl text-xs font-bold hover:bg-cozy-mintDark transition-colors">
+            <i class="fa-solid fa-plus mr-1.5"></i> Escribir primer artículo
+        </a>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+
 </section>
 
 <?php
