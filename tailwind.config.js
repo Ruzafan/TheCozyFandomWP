@@ -17,9 +17,9 @@ module.exports = {
     extend: {
       colors: {
         cozy: {
-          cream:    '#FAF6EE',
-          sand:     '#F5EDE0',
-          coffee:   '#4A3F35',
+          cream:    '#FCF9F5',
+          sand:     '#F2E6D5',
+          coffee:   '#3A3128',
           mint:     '#88C4B5',
           mintDark: '#72b0a2',
           mintLight:'#EAF6F3',
