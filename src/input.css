@@ -1227,6 +1227,20 @@ input[type="submit"] {
   color: #fff !important;
 }
 
+/* ─── Sticky header ──────────────────────────────────────────── */
+#masthead {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+#masthead.cozy-scrolled {
+  background-color: rgba(245, 237, 224, 0.96) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 2px 20px rgba(74, 63, 53, 0.1) !important;
+}
+
 /* ─── Footer ──────────────────────────────────────────────────── */
 /* Hide Astra's default footer — replaced by the custom Cozy footer (wp_footer hook) */
 #colophon,

@@ -37,6 +37,15 @@
         if (menu) menu.classList.toggle('hidden');
     };
 
+    /* ---------- STICKY HEADER ---------- */
+    (function () {
+        var header = document.getElementById('masthead');
+        if (!header) return;
+        window.addEventListener('scroll', function () {
+            header.classList.toggle('cozy-scrolled', window.scrollY > 60);
+        }, { passive: true });
+    })();
+
     /* ---------- NEWSLETTER (placeholder — replace with real plugin) ---------- */
     window.handleNewsletterSubmit = function (e) {
         e.preventDefault();
