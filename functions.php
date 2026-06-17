@@ -98,12 +98,71 @@ function cozy_fandom_enqueue_scripts() {
         true
     );
 
+    wp_localize_script( 'cozy-main', 'cozyAjax', [
+        'url'   => admin_url( 'admin-ajax.php' ),
+        'nonce' => wp_create_nonce( 'cozy_newsletter' ),
+    ] );
+
     if ( class_exists( 'WooCommerce' ) ) {
         wp_enqueue_script( 'wc-add-to-cart' );
         wp_enqueue_script( 'wc-cart-fragments' );
     }
 }
 add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_scripts', 20 );
+
+/* ------------------------------------------------------------------ */
+/*  NEWSLETTER — Mailchimp API subscription                            */
+/* ------------------------------------------------------------------ */
+add_action( 'wp_ajax_cozy_newsletter_subscribe',        'cozy_newsletter_subscribe' );
+add_action( 'wp_ajax_nopriv_cozy_newsletter_subscribe', 'cozy_newsletter_subscribe' );
+
+function cozy_newsletter_subscribe() {
+    check_ajax_referer( 'cozy_newsletter', 'nonce' );
+
+    $email = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+    if ( ! is_email( $email ) ) {
+        wp_send_json_error( [ 'message' => 'Por favor introduce un email válido.' ] );
+    }
+
+    // Mailchimp for WooCommerce stores the API key in this option
+    $mc_options = get_option( 'mailchimp-woocommerce', [] );
+    $api_key    = $mc_options['api_key'] ?? '';
+
+    if ( ! $api_key ) {
+        wp_send_json_error( [ 'message' => 'Newsletter no configurada.' ] );
+    }
+
+    // Data center is the suffix after the last dash (e.g. "us14")
+    $dc      = substr( $api_key, strrpos( $api_key, '-' ) + 1 );
+    $list_id = '667877ef18';
+    $url     = "https://{$dc}.api.mailchimp.com/3.0/lists/{$list_id}/members/" . md5( strtolower( $email ) );
+
+    $response = wp_remote_request( $url, [
+        'method'  => 'PUT',
+        'headers' => [
+            'Authorization' => 'Basic ' . base64_encode( 'anystring:' . $api_key ),
+            'Content-Type'  => 'application/json',
+        ],
+        'body'    => wp_json_encode( [
+            'email_address' => $email,
+            'status_if_new' => 'subscribed',
+            'status'        => 'subscribed',
+        ] ),
+        'timeout' => 10,
+    ] );
+
+    if ( is_wp_error( $response ) ) {
+        wp_send_json_error( [ 'message' => 'Error de conexión. Inténtalo de nuevo.' ] );
+    }
+
+    $code = wp_remote_retrieve_response_code( $response );
+    if ( $code === 200 || $code === 201 ) {
+        wp_send_json_success();
+    } else {
+        $body   = json_decode( wp_remote_retrieve_body( $response ), true );
+        wp_send_json_error( [ 'message' => $body['detail'] ?? 'Error al suscribir. Inténtalo de nuevo.' ] );
+    }
+}
 
 /* ------------------------------------------------------------------ */
 /*  WOOCOMMERCE CART FRAGMENTS                                          */

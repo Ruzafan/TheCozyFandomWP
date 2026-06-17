@@ -46,13 +46,37 @@
         }, { passive: true });
     })();
 
-    /* ---------- NEWSLETTER (placeholder — replace with real plugin) ---------- */
+    /* ---------- NEWSLETTER — Mailchimp via WP AJAX ---------- */
     window.handleNewsletterSubmit = function (e) {
         e.preventDefault();
         var form    = document.getElementById('newsletter-form');
         var success = document.getElementById('newsletter-success');
-        if (form)    form.classList.add('hidden');
-        if (success) success.classList.remove('hidden');
+        var btn     = form ? form.querySelector('button[type="submit"]') : null;
+        var input   = form ? form.querySelector('input[type="email"]') : null;
+
+        if (!form || !input) return;
+
+        var originalText = btn ? btn.textContent : '';
+        if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+
+        $.post(cozyAjax.url, {
+            action: 'cozy_newsletter_subscribe',
+            nonce:  cozyAjax.nonce,
+            email:  input.value.trim()
+        })
+        .done(function (res) {
+            if (res.success) {
+                if (form)    form.classList.add('hidden');
+                if (success) success.classList.remove('hidden');
+            } else {
+                if (btn) { btn.disabled = false; btn.textContent = originalText; }
+                alert(res.data && res.data.message ? res.data.message : 'Ha ocurrido un error. Inténtalo de nuevo.');
+            }
+        })
+        .fail(function () {
+            if (btn) { btn.disabled = false; btn.textContent = originalText; }
+            alert('Error de conexión. Inténtalo de nuevo.');
+        });
     };
 
 })(jQuery);
