@@ -1238,13 +1238,23 @@ input[type="submit"] {
   position: sticky !important;
   top: 0 !important;
   z-index: 999 !important;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+  background: #FCF9F5 !important;
+  padding: 8px 16px !important;
 }
-#masthead.cozy-scrolled {
-  background-color: rgba(245, 237, 224, 0.96) !important;
+/* Inner bar — rounded pill */
+#masthead .ast-primary-header-bar {
+  max-width: 1024px !important;
+  margin: 0 auto !important;
+  border-radius: 34px !important;
+  background-color: #F6EEE1 !important;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease !important;
+}
+/* On scroll: add depth to the pill, keep masthead transparent */
+#masthead.cozy-scrolled .ast-primary-header-bar {
+  background-color: rgba(246, 238, 225, 0.95) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  box-shadow: 0 2px 20px rgba(74, 63, 53, 0.1) !important;
+  box-shadow: 0 4px 24px rgba(74, 63, 53, 0.12) !important;
 }
 
 /* ─── Footer ──────────────────────────────────────────────────── */
