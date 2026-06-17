@@ -26,6 +26,16 @@ add_action( 'wp', function() {
     }
 }, 5 );
 
+/* Hide the WooCommerce "Marca" brand from product detail pages.
+   Brands are for internal use / filtering only, not customer-facing.
+   WC_Brands hooks show_brand() into woocommerce_product_meta_end at
+   plugins_loaded:11, so we remove it at init (which runs later). */
+add_action( 'init', function() {
+    if ( ! empty( $GLOBALS['WC_Brands'] ) ) {
+        remove_action( 'woocommerce_product_meta_end', [ $GLOBALS['WC_Brands'], 'show_brand' ] );
+    }
+} );
+
 /* ------------------------------------------------------------------ */
 /*  STYLES                                                              */
 /* ------------------------------------------------------------------ */
