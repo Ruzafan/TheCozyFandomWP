@@ -1238,7 +1238,6 @@ input[type="submit"] {
   position: sticky !important;
   top: 0 !important;
   z-index: 999 !important;
-  background: #FCF9F5 !important;
   padding: 8px 16px !important;
 }
 /* Inner bar — rounded pill */
@@ -1249,6 +1248,21 @@ input[type="submit"] {
   background-color: #F6EEE1 !important;
   transition: box-shadow 0.3s ease, background-color 0.3s ease !important;
 }
+/* Mobile menu toggle — force coffee color for contrast on the sand pill */
+#masthead .menu-toggle.ast-mobile-menu-trigger-minimal,
+#masthead .menu-toggle.ast-mobile-menu-trigger-minimal span,
+#masthead .menu-toggle.ast-mobile-menu-trigger-minimal .ast-icon {
+  color: #3A3128 !important;
+  border-color: #3A3128 !important;
+  fill: #3A3128 !important;
+}
+#masthead .menu-toggle.ast-mobile-menu-trigger-minimal span.ast-mobile-menu-open,
+#masthead .menu-toggle.ast-mobile-menu-trigger-minimal .ast-icon svg {
+  color: #3A3128 !important;
+  stroke: #3A3128 !important;
+  fill: #3A3128 !important;
+}
+
 /* On scroll: add depth to the pill, keep masthead transparent */
 #masthead.cozy-scrolled .ast-primary-header-bar {
   background-color: rgba(246, 238, 225, 0.95) !important;
