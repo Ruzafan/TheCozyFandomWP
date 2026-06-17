@@ -896,10 +896,10 @@ input[type="submit"] {
   width: 100% !important;
 }
 
-/* Two-column layout: items/steps | summary sidebar.
-   WC Blocks normally handles this itself via @container queries on
-   .wp-block-woocommerce-cart/-checkout (container-type:inline-size), but that
-   only works if the container itself is wide — force it explicitly here too. */
+/* Two-column layout — cart and checkout handled separately because
+   WC Checkout Block outputs the sidebar (summary) FIRST in the DOM,
+   which means auto-placement would put it in the wide column.
+   We use explicit grid-column to force the correct visual order. */
 .wp-block-woocommerce-cart .wc-block-components-sidebar-layout,
 .wp-block-woocommerce-checkout .wc-block-components-sidebar-layout,
 .wc-block-components-sidebar-layout {
@@ -908,11 +908,29 @@ input[type="submit"] {
   gap: 1.5rem !important;
   align-items: start !important;
 }
+
+/* Cart: items (wide left) | totals (narrow right) — DOM order matches visual order */
 @media (min-width: 768px) {
-  .wp-block-woocommerce-cart .wc-block-components-sidebar-layout,
-  .wp-block-woocommerce-checkout .wc-block-components-sidebar-layout,
-  .wc-block-components-sidebar-layout {
+  .wp-block-woocommerce-cart .wc-block-components-sidebar-layout {
     grid-template-columns: 1fr 340px !important;
+  }
+}
+
+/* Checkout: form (wide left) | summary (narrow right)
+   WC outputs sidebar/summary first in DOM so we pin each to its column explicitly */
+@media (min-width: 768px) {
+  .wp-block-woocommerce-checkout .wc-block-components-sidebar-layout {
+    grid-template-columns: 1fr 360px !important;
+  }
+  .wp-block-woocommerce-checkout .wc-block-checkout__main,
+  .wp-block-woocommerce-checkout .wc-block-components-main {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+  .wp-block-woocommerce-checkout .wc-block-checkout__sidebar,
+  .wp-block-woocommerce-checkout .wc-block-components-sidebar {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
   }
 }
 .wc-block-components-main,
