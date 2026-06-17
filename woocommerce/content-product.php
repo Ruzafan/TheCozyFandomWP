@@ -74,22 +74,11 @@ if ( ! empty( $cat_ids ) ) {
             <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         </span>
 
-        <?php if ( $product->is_purchasable() && $product->is_in_stock() ) : ?>
-        <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
-           data-quantity="1"
-           data-product_id="<?php echo esc_attr( $product->get_id() ); ?>"
-           data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
-           class="ajax_add_to_cart add_to_cart_button bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 no-underline"
-           aria-label="<?php echo esc_attr( sprintf( __( 'Añadir %s al carrito', 'woocommerce' ), $product->get_name() ) ); ?>">
-            <i class="fa-solid fa-plus text-[10px]" aria-hidden="true"></i>
-            <?php esc_html_e( 'Añadir', 'woocommerce' ); ?>
-        </a>
-        <?php else : ?>
         <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
-           class="bg-cozy-sand text-cozy-coffee/80 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 no-underline">
+           class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white' : 'bg-cozy-sand text-cozy-coffee/60'; ?> px-4 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 no-underline">
+            <i class="fa-solid fa-eye text-[10px]" aria-hidden="true"></i>
             <?php esc_html_e( 'Ver producto', 'woocommerce' ); ?>
         </a>
-        <?php endif; ?>
 
     </div>
 
