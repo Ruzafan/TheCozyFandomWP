@@ -543,7 +543,8 @@ input[type="submit"] {
 /* .ast-grid-common-col adds padding-left/right:20px — Tailwind p-4 (!important) already
    overrides it since both have !important but p-4 targets the class directly. */
 
-/* ─── Pagination ─────────────────────────────────────────────── */
+/* ─── Pagination (shared by WooCommerce and blog) ────────────── */
+#cozy-blog .page-numbers,
 .woocommerce-pagination .page-numbers {
   display: flex;
   flex-wrap: wrap;
@@ -553,7 +554,10 @@ input[type="submit"] {
   padding: 0;
   margin: 2.5rem 0 0;
 }
+#cozy-blog .page-numbers li,
 .woocommerce-pagination .page-numbers li { margin: 0; }
+#cozy-blog .page-numbers a,
+#cozy-blog .page-numbers span,
 .woocommerce-pagination .page-numbers a,
 .woocommerce-pagination .page-numbers span {
   display: flex;
@@ -570,11 +574,13 @@ input[type="submit"] {
   background: #fff;
   transition: all 0.15s;
 }
+#cozy-blog .page-numbers a:hover,
 .woocommerce-pagination .page-numbers a:hover {
   border-color: #88C4B5;
   background: #EAF6F3;
   color: #4A3F35;
 }
+#cozy-blog .page-numbers .current,
 .woocommerce-pagination .page-numbers .current {
   background: #88C4B5;
   border-color: #88C4B5;
