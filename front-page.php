@@ -49,7 +49,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  HERO SECTION                                                 -->
 <!-- ============================================================ -->
-<section id="home" class="relative py-12 md:py-24 px-6 md:px-12 overflow-hidden bg-cozy-cream">
+<section id="home" class="relative py-12 md:py-24 px-6 md:px-12 overflow-hidden">
 
     <!-- Background decorative blobs -->
     <div class="absolute top-10 right-10 w-96 h-96 bg-cozy-mint/10 rounded-full blur-3xl -z-10" aria-hidden="true"></div>
@@ -124,7 +124,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  TRUST BADGES                                                 -->
 <!-- ============================================================ -->
-<section id="garantias" class="bg-white border-t border-b border-cozy-cream">
+<section id="garantias" class="bg-white border-t border-b border-cozy-cream rounded-[32px] mb-10">
     <div class="max-w-7xl mx-auto px-6 md:px-12 py-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
 
@@ -175,7 +175,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  NEW PRODUCTS SECTION                                         -->
 <!-- ============================================================ -->
-<section id="nuevos" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative">
+<section id="nuevos" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative rounded-[32px]">
     <div class="max-w-7xl mx-auto">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
@@ -227,7 +227,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  CATEGORIES SECTION                                           -->
 <!-- ============================================================ -->
-<section id="categorias" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
+<section id="categorias" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto rounded-[32px]">
 
     <div class="text-center max-w-2xl mx-auto mb-16">
         <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Colecciones Seleccionadas</span>
@@ -263,7 +263,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  TOP SELLS SECTION (products tagged "top-sell")               -->
 <!-- ============================================================ -->
-<section id="top-ventas" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative">
+<section id="top-ventas" class="bg-cozy-sand/50 py-16 md:py-24 px-6 md:px-12 relative rounded-[32px]">
     <div class="max-w-7xl mx-auto">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
@@ -329,7 +329,7 @@ $latest_posts = new WP_Query( [
     'ignore_sticky_posts' => true,
 ] );
 ?>
-<section id="blog" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto">
+<section id="blog" class="py-16 md:py-24 px-6 md:px-12 max-w-7xl mx-auto rounded-[32px]">
 
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
         <div>
@@ -418,7 +418,7 @@ $latest_posts = new WP_Query( [
 <!-- ============================================================ -->
 <!--  NEWSLETTER                                                   -->
 <!-- ============================================================ -->
-<section id="newsletter" class="px-6 md:px-12 py-16 md:py-20">
+<section id="newsletter" class="px-6 md:px-12 py-16 md:py-20 rounded-[32px]">
     <div class="max-w-2xl mx-auto bg-cozy-sand rounded-[40px] px-8 md:px-16 py-16 md:py-20 text-center relative overflow-hidden">
 
         <!-- Decorative blobs -->
