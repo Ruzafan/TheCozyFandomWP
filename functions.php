@@ -26,6 +26,10 @@ add_action( 'wp', function() {
     }
 }, 5 );
 
+/* The cart drawer opens automatically on added_to_cart, so the WC
+   "X se ha añadido a tu carrito" banner is redundant — remove it. */
+add_filter( 'wc_add_to_cart_message_html', '__return_empty_string' );
+
 /* Hide the WooCommerce "Marca" brand from product detail pages.
    Brands are for internal use / filtering only, not customer-facing.
    WC_Brands hooks show_brand() into woocommerce_product_meta_end at
