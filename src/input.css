@@ -875,15 +875,15 @@ input[type="submit"] {
 }
 /* Astra's .ast-container caps at --ast-container-width (1200px on this site),
    which sits between #primary and the viewport and was the real bottleneck —
-   widen it here so #primary can actually reach our intended 1240px on large screens. */
+   widen it here so #primary can actually reach our intended 95rem on large screens. */
 .woocommerce-cart .ast-container,
 .woocommerce-checkout .ast-container {
-  max-width: 1240px !important;
+  max-width: 95rem !important;
 }
 .woocommerce-cart #primary,
 .woocommerce-checkout #primary {
   width: 100vw !important;
-  max-width: 1240px !important;
+  max-width: 95rem !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
