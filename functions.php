@@ -285,21 +285,10 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
         <!-- Price + Add to cart -->
         <div class="flex items-center justify-between pt-4 border-t border-cozy-sand mt-4">
             <span class="text-base font-bold text-cozy-coffee"><?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-            <?php if ( $product->is_purchasable() && $product->is_in_stock() ) : ?>
-            <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
-               data-quantity="1"
-               data-product_id="<?php echo esc_attr( $product->get_id() ); ?>"
-               data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
-               class="ajax_add_to_cart add_to_cart_button bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
-               aria-label="<?php echo esc_attr( sprintf( __( 'Añadir %s al carrito', 'woocommerce' ), $product->get_name() ) ); ?>">
-                <i class="fa-solid fa-plus" aria-hidden="true"></i> Añadir
-            </a>
-            <?php else : ?>
             <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
-               class="bg-cozy-sand text-cozy-coffee p-2.5 px-4 rounded-xl text-xs font-bold flex items-center gap-1.5">
-                Ver producto
+               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white' : 'bg-cozy-sand text-cozy-coffee/60'; ?> p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i> Ver producto
             </a>
-            <?php endif; ?>
         </div>
     </div>
     <?php
