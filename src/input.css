@@ -1037,11 +1037,28 @@ input[type="submit"] {
 .wc-block-components-totals-item__label { color: rgba(74,63,53,0.7) !important; }
 .wc-block-components-totals-item__value { color: #4A3F35 !important; font-weight: 700 !important; }
 
-/* Coupon link */
-.wc-block-components-totals-coupon__button,
+/* Coupon toggle link (text-only link to open the coupon field) */
 .wc-block-components-totals-coupon-link {
   color: #88C4B5 !important;
   font-size: 0.8rem !important;
+}
+/* Coupon apply button — dark text on mint so it's readable */
+.wc-block-components-totals-coupon__button,
+.wc-block-components-totals-coupon .wc-block-components-button,
+.wc-block-components-totals-coupon button {
+  background: #88C4B5 !important;
+  color: #3A3128 !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.6rem 1rem !important;
+}
+.wc-block-components-totals-coupon__button:hover,
+.wc-block-components-totals-coupon .wc-block-components-button:hover,
+.wc-block-components-totals-coupon button:hover {
+  background: #72b0a2 !important;
+  color: #fff !important;
 }
 
 /* Proceed to checkout button (cart page) — fix clip + apply cozy style */
@@ -1158,7 +1175,7 @@ input[type="submit"] {
   background: #fff !important;
 }
 .wc-block-components-radio-control__option:has(.wc-block-components-radio-control__input:checked) {
-  border-color: #88C4B5 !important;
+  border-color: #F2E6D5 !important;
   background: #EAF6F3 !important;
 }
 .wc-block-components-radio-control-accordion-option {
