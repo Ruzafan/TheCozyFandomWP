@@ -28,22 +28,30 @@ if ( ! empty( $cat_ids ) ) {
 
 <li <?php wc_product_class( 'bg-white rounded-[24px] p-4 border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col', $product ); ?>>
 
-    <!-- Product image -->
-    <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block no-underline">
-        <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
-            <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); ?>
-            <?php if ( $product->is_on_sale() ) : ?>
-            <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                <?php esc_html_e( 'Oferta', 'woocommerce' ); ?>
-            </span>
-            <?php endif; ?>
-            <?php if ( ! $product->is_in_stock() ) : ?>
-            <span class="absolute top-3 right-3 bg-cozy-sand text-cozy-coffee/70 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                <?php esc_html_e( 'Agotado', 'woocommerce' ); ?>
-            </span>
-            <?php endif; ?>
-        </div>
-    </a>
+    <!-- Product image + heart button wrapper -->
+    <div class="relative mb-4">
+        <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block no-underline">
+            <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden relative">
+                <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); ?>
+                <?php if ( $product->is_on_sale() ) : ?>
+                <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    <?php esc_html_e( 'Oferta', 'woocommerce' ); ?>
+                </span>
+                <?php endif; ?>
+                <?php if ( ! $product->is_in_stock() ) : ?>
+                <span class="absolute top-3 right-3 bg-cozy-sand text-cozy-coffee/70 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    <?php esc_html_e( 'Agotado', 'woocommerce' ); ?>
+                </span>
+                <?php endif; ?>
+            </div>
+        </a>
+        <button onclick="toggleFavorite(<?php echo absint( $product->get_id() ); ?>)"
+                class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
+                data-product-id="<?php echo absint( $product->get_id() ); ?>"
+                aria-label="<?php esc_attr_e( 'Guardar en favoritos', 'woocommerce' ); ?>">
+            <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+    </div>
 
     <!-- Text content (fills available space, pushing CTA to bottom) -->
     <div class="flex-grow">

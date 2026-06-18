@@ -137,9 +137,17 @@ function cozy_fandom_enqueue_scripts() {
         true
     );
 
+    $fav_ids = is_user_logged_in()
+        ? array_values( array_filter( array_map( 'absint', (array) get_user_meta( get_current_user_id(), '_cozy_wishlist', true ) ) ) )
+        : [];
+
     wp_localize_script( 'cozy-main', 'cozyAjax', [
-        'url'   => admin_url( 'admin-ajax.php' ),
-        'nonce' => wp_create_nonce( 'cozy_newsletter' ),
+        'url'        => admin_url( 'admin-ajax.php' ),
+        'nonce'      => wp_create_nonce( 'cozy_newsletter' ),
+        'favNonce'   => wp_create_nonce( 'cozy_favorites' ),
+        'isLoggedIn' => is_user_logged_in(),
+        'favorites'  => $fav_ids,
+        'loginUrl'   => class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : wp_login_url(),
     ] );
 
     if ( class_exists( 'WooCommerce' ) ) {
@@ -201,6 +209,78 @@ function cozy_newsletter_subscribe() {
         $body   = json_decode( wp_remote_retrieve_body( $response ), true );
         wp_send_json_error( [ 'message' => $body['detail'] ?? 'Error al suscribir. Inténtalo de nuevo.' ] );
     }
+}
+
+/* ------------------------------------------------------------------ */
+/*  FAVORITOS — wishlist stored in user meta                           */
+/* ------------------------------------------------------------------ */
+add_action( 'wp_ajax_cozy_toggle_favorite', 'cozy_toggle_favorite' );
+
+function cozy_toggle_favorite() {
+    check_ajax_referer( 'cozy_favorites', 'nonce' );
+
+    $product_id = absint( $_POST['product_id'] ?? 0 );
+    if ( ! $product_id ) {
+        wp_send_json_error( [ 'message' => 'Producto no válido.' ] );
+    }
+
+    $user_id   = get_current_user_id();
+    $favorites = array_values( array_filter( array_map( 'absint', (array) get_user_meta( $user_id, '_cozy_wishlist', true ) ) ) );
+
+    $key = array_search( $product_id, $favorites, true );
+    if ( false !== $key ) {
+        unset( $favorites[ $key ] );
+        $is_favorited = false;
+        $item_html    = '';
+    } else {
+        $favorites[]  = $product_id;
+        $is_favorited = true;
+        ob_start();
+        cozy_render_favorite_item( $product_id );
+        $item_html = ob_get_clean();
+    }
+
+    update_user_meta( $user_id, '_cozy_wishlist', array_values( $favorites ) );
+
+    wp_send_json_success( [
+        'is_favorited' => $is_favorited,
+        'count'        => count( $favorites ),
+        'product_id'   => $product_id,
+        'item_html'    => $item_html,
+    ] );
+}
+
+function cozy_render_favorite_item( $product_id ) {
+    $product = wc_get_product( $product_id );
+    if ( ! $product ) return;
+    ?>
+    <div class="cozy-fav-item flex items-center gap-3 py-3 border-b border-cozy-sand" data-product-id="<?php echo absint( $product_id ); ?>">
+        <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="shrink-0">
+            <div class="w-16 h-16 rounded-xl overflow-hidden bg-cozy-cream flex items-center justify-center">
+                <?php echo $product->get_image( 'thumbnail', [ 'class' => 'w-full h-full object-cover' ] ); // phpcs:ignore ?>
+            </div>
+        </a>
+        <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-xs text-cozy-coffee line-clamp-2 mb-0.5">
+                <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="hover:text-cozy-mint transition-colors no-underline">
+                    <?php echo esc_html( $product->get_name() ); ?>
+                </a>
+            </h4>
+            <p class="text-xs text-cozy-coffee/60 m-0"><?php echo $product->get_price_html(); // phpcs:ignore ?></p>
+        </div>
+        <div class="flex flex-col items-center gap-1.5 shrink-0">
+            <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
+               class="text-[10px] font-bold bg-cozy-mintLight text-cozy-mint px-2.5 py-1 rounded-lg hover:bg-cozy-mint hover:text-white transition-colors no-underline">
+                Ver
+            </a>
+            <button onclick="toggleFavorite(<?php echo absint( $product_id ); ?>)"
+                    class="text-cozy-coffee/30 hover:text-red-400 transition-colors leading-none"
+                    aria-label="Quitar de favoritos">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+    <?php
 }
 
 /* ------------------------------------------------------------------ */
@@ -375,12 +455,18 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
         <div>
             <!-- Product Image -->
             <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
-                <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); ?>
+                <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); // phpcs:ignore ?>
                 <?php if ( $badge_label ) : ?>
                 <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                     <?php echo esc_html( $badge_icon ); ?> <?php echo esc_html( $badge_label ); ?>
                 </span>
                 <?php endif; ?>
+                <button onclick="toggleFavorite(<?php echo absint( $product->get_id() ); ?>)"
+                        class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
+                        data-product-id="<?php echo absint( $product->get_id() ); ?>"
+                        aria-label="Guardar en favoritos">
+                    <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
             </div>
             <!-- Category label -->
             <?php if ( $cat_name ) : ?>

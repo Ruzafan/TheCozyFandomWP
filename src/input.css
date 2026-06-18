@@ -1730,6 +1730,23 @@ input[type="submit"] {
   display: none !important;
 }
 
+/* ─── Favorites / Wishlist ────────────────────────────────────── */
+#fav-drawer { transition: transform 0.3s ease-in-out; }
+
+/* Circular shape for icon-only heart buttons (overrides global button rule) */
+.cozy-fav-icon { border-radius: 9999px !important; }
+
+/* Favorited heart — fill red */
+.cozy-fav-btn.is-favorited .cozy-fav-heart {
+    fill: #f87171;
+    stroke: #f87171;
+}
+/* Favorited button border + text (single product pill button) */
+.cozy-fav-btn.is-favorited {
+    border-color: #f87171 !important;
+    color: #f87171 !important;
+}
+
 /* ─── Account dashboard grids ────────────────────────────────── */
 .cozy-stats-grid {
   display: grid !important;

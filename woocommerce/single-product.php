@@ -57,17 +57,32 @@ while ( have_posts() ) :
             <div class="summary entry-summary flex flex-col gap-5">
 
                 <?php
-                // Category pill above title
-                $cat_ids = $product->get_category_ids();
-                if ( ! empty( $cat_ids ) ) :
-                    $term = get_term( reset( $cat_ids ), 'product_cat' );
-                    if ( $term && ! is_wp_error( $term ) ) : ?>
-                    <a href="<?php echo esc_url( get_term_link( $term ) ); ?>"
+                // Top row: category pill + favorites button
+                $cat_ids  = $product->get_category_ids();
+                $cat_term = null;
+                if ( ! empty( $cat_ids ) ) {
+                    $maybe = get_term( reset( $cat_ids ), 'product_cat' );
+                    if ( $maybe && ! is_wp_error( $maybe ) ) $cat_term = $maybe;
+                }
+                ?>
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <?php if ( $cat_term ) : ?>
+                    <a href="<?php echo esc_url( get_term_link( $cat_term ) ); ?>"
                        class="self-start inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-cozy-mint/20 no-underline hover:bg-cozy-mint hover:text-white transition-colors">
-                        🌿 <?php echo esc_html( $term->name ); ?>
+                        🌿 <?php echo esc_html( $cat_term->name ); ?>
                     </a>
-                    <?php endif;
-                endif; ?>
+                    <?php else : ?>
+                    <div></div>
+                    <?php endif; ?>
+
+                    <button onclick="toggleFavorite(<?php echo get_the_ID(); ?>)"
+                            class="cozy-fav-btn inline-flex items-center gap-1.5 border border-cozy-sand rounded-2xl px-3 py-1.5 text-xs font-medium text-cozy-coffee/50 hover:border-red-200 hover:text-red-400 transition-all"
+                            data-product-id="<?php echo get_the_ID(); ?>"
+                            aria-label="Guardar en favoritos">
+                        <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span class="cozy-fav-label">Guardar</span>
+                    </button>
+                </div>
 
                 <?php do_action( 'woocommerce_single_product_summary' ); ?>
 

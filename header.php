@@ -58,10 +58,23 @@
             <!-- Icons -->
             <div class="cozy-hdr-actions">
 
-                <?php $account_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : home_url( '/' ); ?>
+                <?php
+                $account_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : home_url( '/' );
+                $fav_user_id = get_current_user_id();
+                $fav_ids_raw = is_user_logged_in() ? (array) get_user_meta( $fav_user_id, '_cozy_wishlist', true ) : [];
+                $fav_ids     = array_values( array_filter( array_map( 'absint', $fav_ids_raw ) ) );
+                $fav_count   = count( $fav_ids );
+                ?>
                 <a href="<?php echo esc_url( $account_url ); ?>" class="cozy-hdr-icon" aria-label="<?php esc_attr_e( 'Mi cuenta', 'woocommerce' ); ?>">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </a>
+
+                <button onclick="openFavorites()" class="cozy-hdr-icon relative" aria-label="Mis favoritos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <span id="fav-badge" class="<?php echo $fav_count > 0 ? '' : 'hidden '; ?>absolute -top-0.5 -right-0.5 bg-red-400 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">
+                        <?php echo absint( $fav_count ); ?>
+                    </span>
+                </button>
 
                 <button onclick="openCart()" class="cozy-hdr-icon cozy-hdr-cart" aria-label="<?php esc_attr_e( 'Carrito', 'woocommerce' ); ?>">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -252,6 +265,98 @@
             Ver carrito
         </a>
         <?php endif; ?>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FAVORITES DRAWER                                               -->
+<!-- ============================================================ -->
+<div id="fav-overlay"
+     class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm"
+     onclick="closeFavorites()" aria-hidden="true"></div>
+
+<div id="fav-drawer"
+     class="translate-x-full fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[1001] flex flex-col shadow-2xl"
+     role="dialog" aria-modal="true" aria-label="Mis favoritos">
+
+    <div class="flex items-center justify-between p-6 border-b border-cozy-sand">
+        <h2 class="font-serif text-xl font-bold text-cozy-coffee">Mis favoritos</h2>
+        <button onclick="closeFavorites()"
+                class="w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors"
+                aria-label="Cerrar favoritos">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+
+    <div id="fav-items" class="p-6 overflow-y-auto flex-grow">
+        <?php if ( is_user_logged_in() ) :
+            if ( ! empty( $fav_ids ) ) :
+                foreach ( $fav_ids as $fav_pid ) :
+                    cozy_render_favorite_item( $fav_pid );
+                endforeach;
+            else : ?>
+            <div id="fav-empty" class="text-center py-12 space-y-4">
+                <svg class="mx-auto text-cozy-coffee/20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <p class="text-sm text-cozy-coffee/60">Aún no tienes favoritos guardados.</p>
+                <button onclick="closeFavorites()" class="text-xs font-bold text-cozy-mint hover:underline">¡Descubre la tienda!</button>
+            </div>
+            <?php endif;
+        else : ?>
+        <div class="text-center py-12 space-y-4">
+            <svg class="mx-auto text-cozy-coffee/20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <p class="text-sm text-cozy-coffee/60">Inicia sesión para ver tus favoritos.</p>
+            <a href="<?php echo esc_url( $account_url ); ?>"
+               class="inline-block text-xs font-bold bg-cozy-mint text-white px-4 py-2 rounded-xl hover:bg-cozy-mintDark transition-colors no-underline">
+                Iniciar sesión
+            </a>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="p-6 border-t border-cozy-sand bg-white mt-auto">
+        <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+        <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
+           onclick="closeFavorites()"
+           class="block w-full text-center border border-cozy-sand hover:border-cozy-coffee text-cozy-coffee font-medium py-3 rounded-2xl transition-colors text-sm no-underline">
+            Seguir explorando
+        </a>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- LOGIN MODAL (for non-logged users trying to favorite)         -->
+<!-- ============================================================ -->
+<div id="login-modal-overlay"
+     class="hidden fixed inset-0 bg-cozy-coffee/50 z-[2000] flex items-center justify-center p-4 backdrop-blur-sm"
+     onclick="closeLoginModal()">
+    <div class="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl relative text-center"
+         onclick="event.stopPropagation()">
+        <button onclick="closeLoginModal()"
+                class="absolute top-4 right-4 w-8 h-8 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors"
+                aria-label="Cerrar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+
+        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-5">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+
+        <h3 class="font-serif text-xl font-bold text-cozy-coffee mb-2">Guarda tus favoritos</h3>
+        <p class="text-sm text-cozy-coffee/60 mb-6 leading-relaxed">
+            Inicia sesión para guardar productos y acceder a ellos cuando quieras.
+        </p>
+
+        <div class="space-y-3">
+            <a href="<?php echo esc_url( $account_url ); ?>"
+               class="block w-full text-center bg-cozy-mint hover:bg-cozy-mintDark text-white font-bold py-3.5 rounded-2xl transition-colors text-sm no-underline">
+                Iniciar sesión
+            </a>
+            <a href="<?php echo esc_url( add_query_arg( 'action', 'register', $account_url ) ); ?>"
+               class="block w-full text-center border border-cozy-sand hover:border-cozy-coffee text-cozy-coffee font-medium py-3 rounded-2xl transition-colors text-sm no-underline">
+                Crear cuenta gratis
+            </a>
+        </div>
     </div>
 </div>
 
