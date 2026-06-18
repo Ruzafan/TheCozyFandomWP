@@ -933,6 +933,13 @@ input[type="submit"] {
     grid-row: 1 !important;
   }
 }
+.wp-block-woocommerce-checkout-order-summary-block,
+.wp-block-woocommerce-checkout-order-summary-totals-block,
+.wc-block-components-express-payment--checkout .wc-block-components-express-payment__content,
+.wc-block-checkout__terms.wc-block-checkout__terms--with-separator{
+ border: 0 !important;
+}
+
 .wc-block-components-main,
 .wc-block-components-sidebar {
   width: 100% !important;
@@ -1230,7 +1237,6 @@ input[type="submit"] {
 .wc-block-components-order-summary {
   background: #fff !important;
   border-radius: 24px !important;
-  border: 1px solid #F5EDE0 !important;
 }
 /* WC collapses empty totals rows (no shipping chosen yet, no discount, etc.)
    via :empty with no !important — our card styling above was overriding that
