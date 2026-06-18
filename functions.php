@@ -267,22 +267,6 @@ function cozy_render_mini_cart() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  NAVIGATION WALKER                                                   */
-/* ------------------------------------------------------------------ */
-class Cozy_Nav_Walker extends Walker_Nav_Menu {
-    public function start_lvl( &$output, $depth = 0, $args = null ) {}
-    public function end_lvl( &$output, $depth = 0, $args = null ) {}
-    public function start_el( &$output, $data_object, $depth = 0, $args = null, $current_object_id = 0 ) {
-        $is_active = in_array( 'current-menu-item', (array) $data_object->classes, true );
-        $class     = 'cozy-nav-link' . ( $is_active ? ' cozy-nav-link--active' : '' );
-        $output .= '<a href="' . esc_url( $data_object->url ) . '" class="' . esc_attr( $class ) . '">'
-            . esc_html( $data_object->title )
-            . '</a>';
-    }
-    public function end_el( &$output, $data_object, $depth = 0, $args = null ) {}
-}
-
-/* ------------------------------------------------------------------ */
 /*  CUSTOM FOOTER                                                       */
 /* ------------------------------------------------------------------ */
 /* Resolves a legal page by slug; falls back to '#' until the page is created in WP Admin */
@@ -417,15 +401,3 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
     <?php
 }
 
-function cozy_nav_fallback() {
-    $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/tienda' );
-    $links = [
-        [ home_url( '/' ),   'Inicio'        ],
-        [ '#categorias',     'Categorías'    ],
-        [ $shop_url,         'Boutique'      ],
-        [ '#filosofia',      'Filosofía Cozy' ],
-    ];
-    foreach ( $links as [ $url, $label ] ) {
-        echo '<a href="' . esc_url( $url ) . '" class="cozy-nav-link">' . esc_html( $label ) . '</a>';
-    }
-}

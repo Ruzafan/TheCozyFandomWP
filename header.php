@@ -34,7 +34,7 @@
                 <?php
                 $logo_id = get_theme_mod( 'custom_logo' );
                 if ( $logo_id ) :
-                    echo wp_get_attachment_image( $logo_id, 'full', false, [
+                    echo wp_get_attachment_image( $logo_id, array( 320, 80 ), false, [
                         'class' => 'cozy-hdr-logo__img',
                         'alt'   => get_bloginfo( 'name' ),
                     ] );
@@ -87,13 +87,66 @@
         <div class="cozy-hdr-nav-inner">
             <nav id="mobile-menu" class="cozy-hdr-nav" aria-label="Navegación principal">
                 <?php
-                wp_nav_menu( [
-                    'theme_location' => 'cozy-primary-menu',
-                    'fallback_cb'    => 'cozy_nav_fallback',
-                    'walker'         => new Cozy_Nav_Walker(),
-                    'container'      => false,
-                    'items_wrap'     => '%3$s',
+                $uncategorised_id = absint( get_option( 'default_product_cat' ) );
+                $nav_cats = get_terms( [
+                    'taxonomy'   => 'product_cat',
+                    'hide_empty' => true,
+                    'exclude'    => $uncategorised_id ? [ $uncategorised_id ] : [],
+                    'orderby'    => 'count',
+                    'order'      => 'DESC',
+                    'number'     => 10,
                 ] );
+                $current_cat = is_product_category() ? get_queried_object() : null;
+
+                if ( ! is_wp_error( $nav_cats ) ) :
+                    foreach ( $nav_cats as $cat ) :
+                        $cat_url   = get_term_link( $cat );
+                        $is_active = $current_cat && $current_cat->term_id === $cat->term_id;
+                        if ( is_wp_error( $cat_url ) ) continue;
+                        ?>
+                        <a href="<?php echo esc_url( $cat_url ); ?>"
+                           class="cozy-nav-link<?php echo $is_active ? ' cozy-nav-link--active' : ''; ?>">
+                            <?php echo esc_html( $cat->name ); ?>
+                        </a>
+                        <?php
+                    endforeach;
+                endif;
+
+                // Licencias dropdown
+                $nav_licenses = get_terms( [ 'taxonomy' => 'product_licencia', 'hide_empty' => false ] );
+                if ( ! is_wp_error( $nav_licenses ) && ! empty( $nav_licenses ) ) :
+                    $raw_lic     = isset( $_GET['licencia'] ) ? sanitize_text_field( wp_unslash( $_GET['licencia'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+                    $active_lics = $raw_lic ? array_filter( array_map( 'sanitize_title', explode( ',', $raw_lic ) ) ) : [];
+                    $has_act_lic = ! empty( $active_lics );
+                    $shop_url    = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
+                    ?>
+                    <div class="cozy-nav-item cozy-nav-has-dropdown">
+                        <button class="cozy-nav-link cozy-nav-link--has-arrow<?php echo $has_act_lic ? ' cozy-nav-link--active' : ''; ?>"
+                                aria-haspopup="true" aria-expanded="false"
+                                onclick="cozyToggleDropdown(this)">
+                            Licencias
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                        <div class="cozy-nav-dropdown" role="menu">
+                            <?php foreach ( $nav_licenses as $lic ) :
+                                $is_lic_active = in_array( $lic->slug, $active_lics, true );
+                                $lic_href      = add_query_arg( 'licencia', $lic->slug, remove_query_arg( 'licencia', $shop_url ) );
+                            ?>
+                            <a href="<?php echo esc_url( $lic_href ); ?>"
+                               class="cozy-nav-dropdown__link<?php echo $is_lic_active ? ' is-active' : ''; ?>"
+                               role="menuitem">
+                                <?php if ( $is_lic_active ) : ?>
+                                <span class="cozy-nav-dropdown__check" aria-hidden="true">
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
+                                </span>
+                                <?php endif; ?>
+                                <?php echo esc_html( $lic->name ); ?>
+                            </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php
+                endif;
                 ?>
             </nav>
         </div>

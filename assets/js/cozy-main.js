@@ -40,6 +40,31 @@
         if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     };
 
+    /* ---------- NAV DROPDOWN ---------- */
+    window.cozyToggleDropdown = function (btn) {
+        var item = btn.closest('.cozy-nav-item');
+        if (!item) return;
+        var isOpen = item.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        document.querySelectorAll('.cozy-nav-item.is-open').forEach(function (other) {
+            if (other !== item) {
+                other.classList.remove('is-open');
+                var otherBtn = other.querySelector('[aria-expanded]');
+                if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    };
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.cozy-nav-item')) {
+            document.querySelectorAll('.cozy-nav-item.is-open').forEach(function (item) {
+                item.classList.remove('is-open');
+                var b = item.querySelector('[aria-expanded]');
+                if (b) b.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
+
     /* ---------- STICKY HEADER ---------- */
     (function () {
         var header = document.getElementById('masthead');
