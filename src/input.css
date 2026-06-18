@@ -1588,14 +1588,20 @@ input[type="submit"] {
 /* Mobile: show inline below trigger when .is-open */
 .cozy-hdr-nav.is-open .cozy-nav-item.is-open .cozy-nav-dropdown {
   display: block;
-  position: static;
-  box-shadow: none;
-  border: none;
-  border-left: 2px solid #F2E6D5;
-  border-radius: 0;
-  background: transparent;
-  padding: 0.25rem 0 0.25rem 0.5rem;
-  margin: 0.125rem 0 0.125rem 0.5rem;
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.125rem 0 0.25rem 1rem;
+  margin: 0;
+  z-index: auto !important;
+}
+.cozy-hdr-nav.is-open .cozy-nav-item.is-open .cozy-nav-dropdown__divider {
+  display: none;
 }
 
 .cozy-nav-dropdown__link {
