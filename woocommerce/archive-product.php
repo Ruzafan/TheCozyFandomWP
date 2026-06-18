@@ -175,8 +175,7 @@ $cozy_widget_args = [
     </div>
 
 </div>
-<?php
-wc_reset_loop();
+<?php wc_reset_loop(); ?>
 
 <script>
 (function () {
