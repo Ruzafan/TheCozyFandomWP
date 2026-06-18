@@ -279,6 +279,8 @@ function cozy_fandom_render_footer() {
     $shop_url    = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
     $account_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : home_url( '/' );
     $cart_url    = class_exists( 'WooCommerce' ) ? wc_get_cart_url() : home_url( '/' );
+    $blog_page_id = get_option( 'page_for_posts' );
+    $blog_url     = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/blog/' );
 
     /* Swap these for the real profile URLs once they're live */
     $instagram_url = '#';
@@ -317,6 +319,7 @@ function cozy_fandom_render_footer() {
                     <ul class="space-y-2.5 text-xs">
                         <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="hover:text-cozy-mint transition-colors">Inicio</a></li>
                         <li><a href="<?php echo esc_url( $shop_url ); ?>" class="hover:text-cozy-mint transition-colors">Boutique</a></li>
+                        <li><a href="<?php echo esc_url( $blog_url ); ?>" class="hover:text-cozy-mint transition-colors">Blog</a></li>
                         <li><a href="<?php echo esc_url( $account_url ); ?>" class="hover:text-cozy-mint transition-colors">Mi cuenta</a></li>
                         <li><a href="<?php echo esc_url( $cart_url ); ?>" class="hover:text-cozy-mint transition-colors">Carrito</a></li>
                     </ul>
@@ -329,6 +332,7 @@ function cozy_fandom_render_footer() {
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'envios-y-devoluciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Envíos y devoluciones</a></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-privacidad' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de privacidad</a></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'terminos-y-condiciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Términos y condiciones</a></li>
+                        <li><a href="<?php echo esc_url( home_url( '/mapa-del-sitio/' ) ); ?>" class="hover:text-cozy-mint transition-colors">Mapa del sitio</a></li>
                     </ul>
                 </div>
 
