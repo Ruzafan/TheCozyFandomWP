@@ -1552,6 +1552,17 @@ input[type="submit"] {
 
 /* ── Dropdown ───────────────────────────────────────────────── */
 .cozy-nav-item { position: relative; }
+
+/* Bridge the 4px gap between the button and dropdown so hover isn't lost */
+.cozy-nav-has-dropdown::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
 .cozy-nav-link--has-arrow { gap: 0.25rem; }
 .cozy-nav-link--has-arrow svg { flex-shrink: 0; transition: transform 0.2s; }
 .cozy-nav-item:hover .cozy-nav-link--has-arrow svg,
