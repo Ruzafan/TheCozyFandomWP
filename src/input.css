@@ -793,7 +793,8 @@ input[type="submit"] {
 /* Hide category/tag lines in meta and any Astra category injection above the title */
 .cozy-single-product .product_meta .posted_in,
 .cozy-single-product .product_meta .tagged_as,
-.single-product .summary .ast-single-product-category,
+.single-product .summary .ast-single-product-category
+.single-product .summary .single-product-category,
 .single-product .summary .ast-woo-product-category,
 .single-product .summary [class*="ast-woo"][class*="categ"] { display: none !important; }
 
