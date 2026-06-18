@@ -79,7 +79,6 @@ $cozy_widget_args = [
     'before_title'  => '<h3 class="cozy-filter-widget__title">',
     'after_title'   => '</h3>',
 ];
-<?php
 // Detect any active filters for the mobile button indicator
 $_cozy_has_filters = false;
 foreach ( [ 'licencia', 'min_price', 'max_price', 'rating_filter' ] as $_fk ) {
