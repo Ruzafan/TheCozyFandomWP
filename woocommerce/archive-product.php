@@ -53,18 +53,11 @@ do_action( 'woocommerce_before_main_content' );
            role="listitem"
            class="cozy-cat-card <?php echo ! $current_cat ? 'cozy-cat-card--active' : ''; ?>"
            <?php echo ! $current_cat ? 'aria-current="true"' : ''; ?>>
-            <div class="cozy-cat-card__img">
-                <div class="w-full h-full flex items-center justify-center bg-cozy-mintLight">
-                    <i class="fa-solid fa-store text-cozy-mint text-3xl" aria-hidden="true"></i>
-                </div>
-            </div>
             <div class="cozy-cat-card__body">
                 <span class="cozy-cat-card__name"><?php esc_html_e( 'Todos', 'woocommerce' ); ?></span>
                 <span class="cozy-cat-card__count">
-                    <?php
-                    $total = wp_count_posts( 'product' );
-                    echo absint( $total->publish ) . ' productos';
-                    ?>
+                    <?php $total = wp_count_posts( 'product' );
+                    echo absint( $total->publish ) . ' productos'; ?>
                 </span>
             </div>
         </a>
@@ -81,18 +74,6 @@ do_action( 'woocommerce_before_main_content' );
            role="listitem"
            class="cozy-cat-card <?php echo $is_active ? 'cozy-cat-card--active' : ''; ?>"
            <?php echo $is_active ? 'aria-current="true"' : ''; ?>>
-            <div class="cozy-cat-card__img">
-                <?php if ( $img_src ) : ?>
-                <img src="<?php echo esc_url( $img_src ); ?>"
-                     alt="<?php echo esc_attr( $cat->name ); ?>"
-                     loading="lazy" width="200" height="120"
-                     class="w-full h-full object-cover">
-                <?php else : ?>
-                <div class="w-full h-full flex items-center justify-center bg-cozy-sand">
-                    <i class="fa-solid fa-tag text-cozy-coffee/40 text-2xl" aria-hidden="true"></i>
-                </div>
-                <?php endif; ?>
-            </div>
             <div class="cozy-cat-card__body">
                 <span class="cozy-cat-card__name"><?php echo esc_html( $cat->name ); ?></span>
                 <span class="cozy-cat-card__count">
