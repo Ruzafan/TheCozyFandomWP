@@ -41,6 +41,45 @@ add_action( 'wp', function() {
     remove_action( 'woocommerce_single_product_summary', 'astra_woo_single_product_taxonomy', 3 );
 }, 20 );
 
+/* ------------------------------------------------------------------ */
+/*  LICENCIA — custom product taxonomy + URL-based shop filtering      */
+/* ------------------------------------------------------------------ */
+add_action( 'init', function () {
+    register_taxonomy( 'product_licencia', 'product', [
+        'label'             => 'Licencia',
+        'public'            => true,
+        'hierarchical'      => false,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'rewrite'           => [ 'slug' => 'licencia' ],
+    ] );
+
+    foreach ( [ 'Pokemon', 'Garfield', 'Snoopy', 'Disney', 'Pusheen' ] as $name ) {
+        if ( ! get_term_by( 'name', $name, 'product_licencia' ) ) {
+            wp_insert_term( $name, 'product_licencia' );
+        }
+    }
+} );
+
+// Filter shop/category queries when ?licencia=snoopy,disney is in the URL
+add_action( 'pre_get_posts', function ( WP_Query $q ) {
+    if ( ! $q->is_main_query() || is_admin() ) return;
+    if ( ! is_shop() && ! is_product_category() && ! is_product_tag() ) return;
+
+    $raw   = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) );
+    $slugs = array_filter( array_map( 'sanitize_title', explode( ',', $raw ) ) );
+    if ( empty( $slugs ) ) return;
+
+    $tq   = (array) $q->get( 'tax_query' );
+    $tq[] = [
+        'taxonomy' => 'product_licencia',
+        'field'    => 'slug',
+        'terms'    => array_values( $slugs ),
+        'operator' => 'IN',
+    ];
+    $q->set( 'tax_query', $tq );
+} );
+
 /* Hide the WooCommerce "Marca" brand from product detail pages.
    Brands are for internal use / filtering only, not customer-facing.
    WC_Brands hooks show_brand() into woocommerce_product_meta_end at

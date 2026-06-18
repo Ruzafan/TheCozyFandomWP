@@ -28,34 +28,22 @@ do_action( 'woocommerce_before_main_content' );
 <!-- ============================================================ -->
 <!-- CATEGORY CAROUSEL                                             -->
 <!-- ============================================================ -->
-<div class="relative overflow-hidden bg-gradient-to-b from-cozy-cream to-cozy-sand rounded-[32px] p-6 md:p-8 border border-cozy-sand mb-10">
+<div class="bg-cozy-sand rounded-[32px] px-6 md:px-8 pt-5 pb-5 border border-cozy-sand mb-10">
 
-    <div class="absolute top-0 right-0 w-72 h-72 bg-cozy-mint/10 rounded-full blur-3xl -z-10" aria-hidden="true"></div>
-
-    <!-- Title row -->
-    <div class="flex items-center justify-between gap-4 mb-6">
-        <div>
-            <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-2">
-                🌿 Boutique de Selección
-            </div>
-            <h1 class="font-serif text-2xl md:text-3xl font-bold text-cozy-coffee m-0">
-                <?php woocommerce_page_title(); ?>
-            </h1>
-        </div>
-
-        <?php if ( ! is_wp_error( $categories ) && count( $categories ) >= 3 ) : ?>
-        <div class="hidden md:flex items-center gap-2 shrink-0">
+    <?php if ( ! is_wp_error( $categories ) && count( $categories ) >= 3 ) : ?>
+    <div class="flex justify-end mb-3">
+        <div class="flex items-center gap-2">
             <button onclick="cozyScrollCat(-1)" aria-label="<?php esc_attr_e( 'Categoría anterior', 'woocommerce' ); ?>"
-                class="w-10 h-10 rounded-2xl bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
-                <i class="fa-solid fa-chevron-left text-sm" aria-hidden="true"></i>
+                class="w-9 h-9 rounded-2xl bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
+                <i class="fa-solid fa-chevron-left text-xs" aria-hidden="true"></i>
             </button>
             <button onclick="cozyScrollCat(1)" aria-label="<?php esc_attr_e( 'Siguiente categoría', 'woocommerce' ); ?>"
-                class="w-10 h-10 rounded-2xl bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
-                <i class="fa-solid fa-chevron-right text-sm" aria-hidden="true"></i>
+                class="w-9 h-9 rounded-2xl bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
+                <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
             </button>
         </div>
-        <?php endif; ?>
     </div>
+    <?php endif; ?>
 
     <!-- Carousel track -->
     <div id="cozy-cat-carousel" class="cozy-cat-carousel" role="list" aria-label="<?php esc_attr_e( 'Filtrar por categoría', 'woocommerce' ); ?>">
@@ -147,6 +135,43 @@ if ( woocommerce_product_loop() ) :
                 'after_title'   => '</h3>',
             ] );
             the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
+
+            // Licencia filter — custom taxonomy with checkbox-style links
+            $all_licenses = get_terms( [ 'taxonomy' => 'product_licencia', 'hide_empty' => false ] );
+            if ( ! is_wp_error( $all_licenses ) && ! empty( $all_licenses ) ) :
+                $raw_sel      = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) );
+                $selected     = array_filter( array_map( 'sanitize_title', explode( ',', $raw_sel ) ) );
+                $base_url     = remove_query_arg( 'licencia' );
+                ?>
+                <div class="cozy-filter-widget">
+                    <h3 class="cozy-filter-widget__title">Licencia</h3>
+                    <ul class="cozy-license-list">
+                        <?php foreach ( $all_licenses as $lic ) :
+                            $slug    = $lic->slug;
+                            $checked = in_array( $slug, $selected, true );
+                            $new_sel = $checked
+                                ? array_values( array_diff( $selected, [ $slug ] ) )
+                                : array_merge( $selected, [ $slug ] );
+                            $href = $new_sel
+                                ? add_query_arg( 'licencia', implode( ',', $new_sel ), $base_url )
+                                : $base_url;
+                        ?>
+                        <li>
+                            <a href="<?php echo esc_url( $href ); ?>"
+                               class="cozy-license-link<?php echo $checked ? ' is-active' : ''; ?>">
+                                <span class="cozy-license-box" aria-hidden="true">
+                                    <?php if ( $checked ) : ?>
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
+                                    <?php endif; ?>
+                                </span>
+                                <span class="cozy-license-name"><?php echo esc_html( $lic->name ); ?></span>
+                            </a>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif;
+
             the_widget( 'WC_Widget_Rating_Filter', [ 'title' => __( 'Valoración', 'woocommerce' ) ], [
                 'before_widget' => '<div class="cozy-filter-widget cozy-rating-filter">',
                 'after_widget'  => '</div>',
