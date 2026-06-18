@@ -26,48 +26,6 @@ do_action( 'woocommerce_before_main_content' );
 ?>
 
 <!-- ============================================================ -->
-<!-- CATEGORY CAROUSEL                                             -->
-<!-- ============================================================ -->
-<div class="bg-cozy-sand rounded-[32px] p-4 border border-cozy-sand mb-10">
-    <div class="flex items-center gap-2">
-
-        <?php if ( ! is_wp_error( $categories ) && count( $categories ) >= 3 ) : ?>
-        <button onclick="cozyScrollCat(-1)" aria-label="<?php esc_attr_e( 'Categoría anterior', 'woocommerce' ); ?>"
-            class="shrink-0 w-9 h-9 rounded-full bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
-            <i class="fa-solid fa-chevron-left text-xs" aria-hidden="true"></i>
-        </button>
-        <?php endif; ?>
-
-        <div id="cozy-cat-carousel" class="cozy-cat-carousel flex-1 min-w-0" role="list" aria-label="<?php esc_attr_e( 'Filtrar por categoría', 'woocommerce' ); ?>">
-            <?php if ( ! is_wp_error( $categories ) ) :
-                foreach ( $categories as $cat ) :
-                    $is_active = $current_cat && $current_cat->term_id === $cat->term_id;
-            ?>
-            <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>"
-               role="listitem"
-               class="cozy-cat-card <?php echo $is_active ? 'cozy-cat-card--active' : ''; ?>"
-               <?php echo $is_active ? 'aria-current="true"' : ''; ?>>
-                <div class="cozy-cat-card__body">
-                    <span class="cozy-cat-card__name"><?php echo esc_html( $cat->name ); ?></span>
-                    <span class="cozy-cat-card__count">
-                        <?php echo absint( $cat->count ) . ' ' . esc_html( _n( 'producto', 'productos', $cat->count, 'woocommerce' ) ); ?>
-                    </span>
-                </div>
-            </a>
-            <?php endforeach; endif; ?>
-        </div>
-
-        <?php if ( ! is_wp_error( $categories ) && count( $categories ) >= 3 ) : ?>
-        <button onclick="cozyScrollCat(1)" aria-label="<?php esc_attr_e( 'Siguiente categoría', 'woocommerce' ); ?>"
-            class="shrink-0 w-9 h-9 rounded-full bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
-            <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
-        </button>
-        <?php endif; ?>
-
-    </div>
-</div>
-
-<!-- ============================================================ -->
 <!-- PRODUCTS                                                       -->
 <!-- ============================================================ -->
 <?php
