@@ -273,9 +273,9 @@ class Cozy_Nav_Walker extends Walker_Nav_Menu {
     public function start_lvl( &$output, $depth = 0, $args = null ) {}
     public function end_lvl( &$output, $depth = 0, $args = null ) {}
     public function start_el( &$output, $data_object, $depth = 0, $args = null, $current_object_id = 0 ) {
-        $active = in_array( 'current-menu-item', (array) $data_object->classes, true ) ? ' text-cozy-mint' : '';
-        $output .= '<a href="' . esc_url( $data_object->url ) . '"'
-            . ' class="hover:text-cozy-mint transition-colors text-cozy-coffee font-medium text-sm' . $active . '">'
+        $is_active = in_array( 'current-menu-item', (array) $data_object->classes, true );
+        $class     = 'cozy-nav-link' . ( $is_active ? ' cozy-nav-link--active' : '' );
+        $output .= '<a href="' . esc_url( $data_object->url ) . '" class="' . esc_attr( $class ) . '">'
             . esc_html( $data_object->title )
             . '</a>';
     }
@@ -426,6 +426,6 @@ function cozy_nav_fallback() {
         [ '#filosofia',      'Filosofía Cozy' ],
     ];
     foreach ( $links as [ $url, $label ] ) {
-        echo '<a href="' . esc_url( $url ) . '" class="hover:text-cozy-mint transition-colors text-cozy-coffee font-medium text-sm">' . esc_html( $label ) . '</a>';
+        echo '<a href="' . esc_url( $url ) . '" class="cozy-nav-link">' . esc_html( $label ) . '</a>';
     }
 }

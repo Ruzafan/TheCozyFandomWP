@@ -34,7 +34,10 @@
     /* ---------- MOBILE MENU ---------- */
     window.toggleMobileMenu = function () {
         var menu = document.getElementById('mobile-menu');
-        if (menu) menu.classList.toggle('hidden');
+        var btn  = document.querySelector('.cozy-hdr-hamburger');
+        if (!menu) return;
+        var isOpen = menu.classList.toggle('is-open');
+        if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     };
 
     /* ---------- STICKY HEADER ---------- */

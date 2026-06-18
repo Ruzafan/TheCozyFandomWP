@@ -304,7 +304,7 @@ input[type="submit"] {
 /* ─── Shop filters sidebar ──────────────────────────────────── */
 .cozy-shop-filters {
   position: sticky;
-  top: 1rem;
+  top: 7.5rem;
 }
 
 .cozy-filter-widget {
@@ -791,6 +791,7 @@ input[type="submit"] {
 .cozy-single-product .product_meta a { color: #88C4B5; text-decoration: none; }
 .cozy-single-product .product_meta a:hover { text-decoration: underline; }
 /* Hide category/tag lines in meta and any Astra category injection above the title */
+.cozy-single-product .product_meta,
 .cozy-single-product .product_meta .posted_in,
 .cozy-single-product .product_meta .tagged_as,
 .single-product .summary .ast-single-product-category
@@ -1046,7 +1047,7 @@ input[type="submit"] {
 /* Sticky sidebar on desktop */
 .wc-block-components-sidebar {
   position: sticky !important;
-  top: 1rem !important;
+  top: 7.5rem !important;
 }
 
 /* Order summary / totals block */
@@ -1304,43 +1305,183 @@ input[type="submit"] {
   color: #fff !important;
 }
 
-/* ─── Sticky header ──────────────────────────────────────────── */
+/* ─── Sticky header (two-row custom layout) ─────────────────── */
 #masthead {
   position: sticky !important;
   top: 0 !important;
   z-index: 999 !important;
-  padding: 8px 16px !important;
+  background: #F6EEE1 !important;
+  padding: 0 !important;
+  transition: box-shadow 0.3s ease !important;
 }
-/* Inner bar — rounded pill */
 #masthead .ast-primary-header-bar {
-  max-width: 1240px !important;
-  padding: 0px 40px;
-  margin: 0 auto !important;
-  border-radius: 34px !important;
+  max-width: none !important;
+  border-radius: 0 !important;
   background-color: #F6EEE1 !important;
-  transition: box-shadow 0.3s ease, background-color 0.3s ease !important;
-}
-/* Mobile menu toggle — force coffee color for contrast on the sand pill */
-#masthead .menu-toggle.ast-mobile-menu-trigger-minimal,
-#masthead .menu-toggle.ast-mobile-menu-trigger-minimal span,
-#masthead .menu-toggle.ast-mobile-menu-trigger-minimal .ast-icon {
-  color: #3A3128 !important;
-  border-color: #3A3128 !important;
-  fill: #3A3128 !important;
-}
-#masthead .menu-toggle.ast-mobile-menu-trigger-minimal span.ast-mobile-menu-open,
-#masthead .menu-toggle.ast-mobile-menu-trigger-minimal .ast-icon svg {
-  color: #3A3128 !important;
-  stroke: #3A3128 !important;
-  fill: #3A3128 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: background-color 0.3s ease !important;
 }
 
-/* On scroll: add depth to the pill, keep masthead transparent */
+/* ── Row 1 inner layout ──────────────────────────────────────── */
+.cozy-hdr-inner {
+  max-width: 95rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+@media (min-width: 768px) { .cozy-hdr-inner { padding: 0 2rem; } }
+
+.cozy-hdr-logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.cozy-hdr-logo__img { height: 40px; width: auto; }
+.cozy-hdr-logo__text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #3A3128;
+  white-space: nowrap;
+}
+
+.cozy-hdr-search {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 14px;
+  border: 2px solid #F2E6D5;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.cozy-hdr-search:focus-within { border-color: #88C4B5; }
+.cozy-hdr-search__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: #3A3128;
+  background: transparent;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.cozy-hdr-search__input::placeholder { color: rgba(58,49,40,0.38); }
+.cozy-hdr-search__btn {
+  flex-shrink: 0;
+  align-self: stretch;
+  padding: 0 1rem;
+  background: #88C4B5;
+  color: #fff;
+  border: none !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.cozy-hdr-search__btn:hover { background: #72b0a2; }
+
+.cozy-hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  flex-shrink: 0;
+}
+.cozy-hdr-icon {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3A3128 !important;
+  background: transparent;
+  border: none !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.cozy-hdr-icon:hover { background: #F2E6D5; }
+.cozy-hdr-hamburger { display: flex; }
+@media (min-width: 768px) { .cozy-hdr-hamburger { display: none; } }
+
+/* ── Row 2 nav ──────────────────────────────────────────────── */
+.cozy-hdr-nav-row {
+  background: #F6EEE1;
+  border-top: 1px solid rgba(242,230,213,0.7);
+}
+.cozy-hdr-nav-inner {
+  max-width: 95rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+@media (min-width: 768px) { .cozy-hdr-nav-inner { padding: 0 2rem; } }
+
+/* Default: hidden on mobile, visible flex on desktop */
+.cozy-hdr-nav {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 44px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cozy-hdr-nav::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) { .cozy-hdr-nav { display: flex !important; } }
+
+/* Mobile open: vertical column */
+.cozy-hdr-nav.is-open {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0.5rem 0;
+  gap: 0.125rem;
+}
+
+/* Nav links */
+.cozy-hdr-nav .cozy-nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.875rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(58,49,40,0.7);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.cozy-hdr-nav .cozy-nav-link:hover {
+  background: rgba(136,196,181,0.12);
+  color: #3A3128;
+}
+.cozy-hdr-nav .cozy-nav-link.cozy-nav-link--active,
+.cozy-hdr-nav .current-menu-item .cozy-nav-link {
+  color: #3A3128;
+  background: rgba(136,196,181,0.15);
+  font-weight: 700;
+}
+.cozy-hdr-nav.is-open .cozy-nav-link { white-space: normal; }
+
+/* On scroll */
+#masthead.cozy-scrolled {
+  box-shadow: 0 4px 24px rgba(74, 63, 53, 0.1) !important;
+}
 #masthead.cozy-scrolled .ast-primary-header-bar {
   background-color: rgba(246, 238, 225, 0.95) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  box-shadow: 0 4px 24px rgba(74, 63, 53, 0.12) !important;
 }
 
 /* ─── Footer ──────────────────────────────────────────────────── */
