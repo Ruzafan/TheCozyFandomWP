@@ -45,9 +45,9 @@ if ( empty( $product ) || ! $product->is_visible() ) {
     </div>
 
     <!-- Content -->
-    <div class="p-3 sm:p-4 flex flex-col gap-2 flex-grow">
+    <div class="p-2.5 sm:p-4 flex flex-col gap-2 flex-grow">
 
-        <h3 class="font-bold text-[10px] sm:text-[11px] text-cozy-coffee/80 uppercase tracking-wide line-clamp-2 leading-snug flex-grow m-0">
+        <h3 class="font-bold text-[10px] sm:text-[11px] text-cozy-coffee/80 uppercase line-clamp-2 leading-snug flex-grow m-0">
             <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
                class="hover:text-cozy-mint transition-colors no-underline">
                 <?php echo esc_html( $product->get_name() ); ?>
@@ -59,9 +59,10 @@ if ( empty( $product ) || ! $product->is_visible() ) {
                 <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </span>
             <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
-               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60'; ?> px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
+               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60'; ?> px-2 sm:px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
                 <i class="fa-solid fa-eye text-[9px]" aria-hidden="true"></i>
-                Ver producto
+                <span class="hidden sm:inline">Ver producto</span>
+                <span class="sm:hidden">Ver</span>
             </a>
         </div>
 

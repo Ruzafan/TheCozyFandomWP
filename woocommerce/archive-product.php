@@ -62,7 +62,7 @@ if ( ! $_cozy_has_filters ) {
 <div id="cozy-filter-overlay" onclick="closeFilters()"
      class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1099] backdrop-blur-sm" aria-hidden="true"></div>
 
-<div class="cozy-shop-layout p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
+<div class="cozy-shop-layout px-3 py-4 sm:p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
 
     <!-- ==================================================== -->
     <!-- FILTERS SIDEBAR – sticky on desktop, drawer on mobile-->
