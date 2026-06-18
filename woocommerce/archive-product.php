@@ -28,64 +28,43 @@ do_action( 'woocommerce_before_main_content' );
 <!-- ============================================================ -->
 <!-- CATEGORY CAROUSEL                                             -->
 <!-- ============================================================ -->
-<div class="bg-cozy-sand rounded-[32px] px-6 md:px-8 pt-5 pb-5 border border-cozy-sand mb-10">
+<div class="bg-cozy-sand rounded-[32px] p-4 border border-cozy-sand mb-10">
+    <div class="flex items-center gap-2">
 
-    <?php if ( ! is_wp_error( $categories ) && count( $categories ) >= 3 ) : ?>
-    <div class="flex justify-end mb-3">
-        <div class="flex items-center gap-2">
-            <button onclick="cozyScrollCat(-1)" aria-label="<?php esc_attr_e( 'Categoría anterior', 'woocommerce' ); ?>"
-                class="w-9 h-9 rounded-2xl bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
-                <i class="fa-solid fa-chevron-left text-xs" aria-hidden="true"></i>
-            </button>
-            <button onclick="cozyScrollCat(1)" aria-label="<?php esc_attr_e( 'Siguiente categoría', 'woocommerce' ); ?>"
-                class="w-9 h-9 rounded-2xl bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
-                <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
-            </button>
+        <?php if ( ! is_wp_error( $categories ) && count( $categories ) >= 3 ) : ?>
+        <button onclick="cozyScrollCat(-1)" aria-label="<?php esc_attr_e( 'Categoría anterior', 'woocommerce' ); ?>"
+            class="shrink-0 w-9 h-9 rounded-full bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
+            <i class="fa-solid fa-chevron-left text-xs" aria-hidden="true"></i>
+        </button>
+        <?php endif; ?>
+
+        <div id="cozy-cat-carousel" class="cozy-cat-carousel flex-1 min-w-0" role="list" aria-label="<?php esc_attr_e( 'Filtrar por categoría', 'woocommerce' ); ?>">
+            <?php if ( ! is_wp_error( $categories ) ) :
+                foreach ( $categories as $cat ) :
+                    $is_active = $current_cat && $current_cat->term_id === $cat->term_id;
+            ?>
+            <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>"
+               role="listitem"
+               class="cozy-cat-card <?php echo $is_active ? 'cozy-cat-card--active' : ''; ?>"
+               <?php echo $is_active ? 'aria-current="true"' : ''; ?>>
+                <div class="cozy-cat-card__body">
+                    <span class="cozy-cat-card__name"><?php echo esc_html( $cat->name ); ?></span>
+                    <span class="cozy-cat-card__count">
+                        <?php echo absint( $cat->count ) . ' ' . esc_html( _n( 'producto', 'productos', $cat->count, 'woocommerce' ) ); ?>
+                    </span>
+                </div>
+            </a>
+            <?php endforeach; endif; ?>
         </div>
-    </div>
-    <?php endif; ?>
 
-    <!-- Carousel track -->
-    <div id="cozy-cat-carousel" class="cozy-cat-carousel" role="list" aria-label="<?php esc_attr_e( 'Filtrar por categoría', 'woocommerce' ); ?>">
-
-        <!-- "Todos" card -->
-        <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
-           role="listitem"
-           class="cozy-cat-card <?php echo ! $current_cat ? 'cozy-cat-card--active' : ''; ?>"
-           <?php echo ! $current_cat ? 'aria-current="true"' : ''; ?>>
-            <div class="cozy-cat-card__body">
-                <span class="cozy-cat-card__name"><?php esc_html_e( 'Todos', 'woocommerce' ); ?></span>
-                <span class="cozy-cat-card__count">
-                    <?php $total = wp_count_posts( 'product' );
-                    echo absint( $total->publish ) . ' productos'; ?>
-                </span>
-            </div>
-        </a>
-
-        <?php if ( ! is_wp_error( $categories ) ) :
-            foreach ( $categories as $cat ) :
-                $thumbnail_id = get_term_meta( $cat->term_id, 'thumbnail_id', true );
-                $img_src      = $thumbnail_id
-                    ? wp_get_attachment_image_url( $thumbnail_id, 'medium_large' )
-                    : '';
-                $is_active = $current_cat && $current_cat->term_id === $cat->term_id;
-        ?>
-        <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>"
-           role="listitem"
-           class="cozy-cat-card <?php echo $is_active ? 'cozy-cat-card--active' : ''; ?>"
-           <?php echo $is_active ? 'aria-current="true"' : ''; ?>>
-            <div class="cozy-cat-card__body">
-                <span class="cozy-cat-card__name"><?php echo esc_html( $cat->name ); ?></span>
-                <span class="cozy-cat-card__count">
-                    <?php echo absint( $cat->count ) . ' ' . esc_html( _n( 'producto', 'productos', $cat->count, 'woocommerce' ) ); ?>
-                </span>
-            </div>
-        </a>
-        <?php endforeach; endif; ?>
+        <?php if ( ! is_wp_error( $categories ) && count( $categories ) >= 3 ) : ?>
+        <button onclick="cozyScrollCat(1)" aria-label="<?php esc_attr_e( 'Siguiente categoría', 'woocommerce' ); ?>"
+            class="shrink-0 w-9 h-9 rounded-full bg-white border border-cozy-sand hover:border-cozy-mint hover:bg-cozy-mintLight text-cozy-coffee flex items-center justify-center transition-all shadow-sm">
+            <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
+        </button>
+        <?php endif; ?>
 
     </div>
-
-
 </div>
 
 <!-- ============================================================ -->
