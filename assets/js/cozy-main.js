@@ -65,6 +65,29 @@
         }
     });
 
+    /* ---------- SHOP FILTER DRAWER (mobile) ---------- */
+    window.openFilters = function () {
+        var sidebar   = document.getElementById('cozy-shop-filters');
+        var overlay   = document.getElementById('cozy-filter-overlay');
+        var toggleBtn = document.querySelector('[aria-controls="cozy-shop-filters"]');
+        if (sidebar)   sidebar.classList.add('is-open');
+        if (overlay)   overlay.classList.remove('hidden');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+    };
+    window.closeFilters = function () {
+        var sidebar   = document.getElementById('cozy-shop-filters');
+        var overlay   = document.getElementById('cozy-filter-overlay');
+        var toggleBtn = document.querySelector('[aria-controls="cozy-shop-filters"]');
+        if (sidebar)   sidebar.classList.remove('is-open');
+        if (overlay)   overlay.classList.add('hidden');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    };
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') window.closeFilters();
+    });
+
     /* ---------- STICKY HEADER ---------- */
     (function () {
         var header = document.getElementById('masthead');

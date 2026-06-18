@@ -79,14 +79,47 @@ $cozy_widget_args = [
     'before_title'  => '<h3 class="cozy-filter-widget__title">',
     'after_title'   => '</h3>',
 ];
+<?php
+// Detect any active filters for the mobile button indicator
+$_cozy_has_filters = false;
+foreach ( [ 'licencia', 'min_price', 'max_price', 'rating_filter' ] as $_fk ) {
+    if ( ! empty( $_GET[ $_fk ] ) ) { $_cozy_has_filters = true; break; } // phpcs:ignore WordPress.Security.NonceVerification
+}
+if ( ! $_cozy_has_filters ) {
+    foreach ( array_keys( $_GET ) as $_fk ) {
+        if ( strncmp( $_fk, 'filter_', 7 ) === 0 ) { $_cozy_has_filters = true; break; } // phpcs:ignore WordPress.Security.NonceVerification
+    }
+}
 ?>
-<div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
+
+<!-- Mobile filter bar (hidden on lg+) -->
+<div class="cozy-filter-mobile-bar">
+    <button onclick="openFilters()" aria-controls="cozy-shop-filters" aria-expanded="false"
+            class="cozy-filter-mobile-btn<?php echo $_cozy_has_filters ? ' cozy-filter-mobile-btn--active' : ''; ?>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        Filtros<?php if ( $_cozy_has_filters ) : ?><span class="cozy-filter-mobile-dot" aria-hidden="true"></span><?php endif; ?>
+    </button>
+</div>
+
+<!-- Overlay backdrop for filter drawer -->
+<div id="cozy-filter-overlay" onclick="closeFilters()"
+     class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1099] backdrop-blur-sm" aria-hidden="true"></div>
+
+<div class="cozy-shop-layout p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
 
     <!-- ==================================================== -->
-    <!-- FILTERS SIDEBAR (always visible so filters can be    -->
-    <!-- cleared even when a filter returns 0 products)       -->
+    <!-- FILTERS SIDEBAR – sticky on desktop, drawer on mobile-->
     <!-- ==================================================== -->
-    <aside class="cozy-shop-filters space-y-5">
+    <aside class="cozy-shop-filters space-y-5" id="cozy-shop-filters">
+
+        <!-- Mobile drawer header (close button) -->
+        <div class="cozy-filter-drawer-header">
+            <span>Filtros</span>
+            <button onclick="closeFilters()" aria-label="Cerrar filtros"
+                    class="w-8 h-8 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
         <?php
         the_widget( 'WC_Widget_Layered_Nav_Filters', [], [
             'before_widget' => '<div class="cozy-filter-widget cozy-active-filters">',
