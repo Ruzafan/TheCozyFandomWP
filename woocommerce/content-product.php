@@ -14,81 +14,57 @@ global $product;
 if ( empty( $product ) || ! $product->is_visible() ) {
     return;
 }
-
-// Category label
-$cat_ids  = $product->get_category_ids();
-$cat_name = '';
-if ( ! empty( $cat_ids ) ) {
-    $term = get_term( reset( $cat_ids ), 'product_cat' );
-    if ( $term && ! is_wp_error( $term ) ) {
-        $cat_name = $term->name;
-    }
-}
 ?>
 
-<li <?php wc_product_class( 'bg-white rounded-[24px] p-4 border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col', $product ); ?>>
+<li <?php wc_product_class( 'bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col', $product ); ?>>
 
-    <!-- Product image + heart button wrapper -->
-    <div class="relative mb-4">
+    <!-- Full-bleed image -->
+    <div class="relative">
         <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block no-underline">
-            <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden relative">
+            <div class="bg-cozy-cream h-36 sm:h-44 overflow-hidden">
                 <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); ?>
-                <?php if ( $product->is_on_sale() ) : ?>
-                <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                    <?php esc_html_e( 'Oferta', 'woocommerce' ); ?>
-                </span>
-                <?php endif; ?>
-                <?php if ( ! $product->is_in_stock() ) : ?>
-                <span class="absolute top-3 right-3 bg-cozy-sand text-cozy-coffee/70 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                    <?php esc_html_e( 'Agotado', 'woocommerce' ); ?>
-                </span>
-                <?php endif; ?>
             </div>
         </a>
-        <button onclick="toggleFavorite(<?php echo absint( $product->get_id() ); ?>)"
-                class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
-                data-product-id="<?php echo absint( $product->get_id() ); ?>"
-                aria-label="<?php esc_attr_e( 'Guardar en favoritos', 'woocommerce' ); ?>">
-            <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
-    </div>
 
-    <!-- Text content (fills available space, pushing CTA to bottom) -->
-    <div class="flex-grow">
-        <?php if ( $cat_name ) : ?>
-        <span class="text-[10px] text-cozy-mint font-bold uppercase tracking-wider block mb-1">
-            <?php echo esc_html( $cat_name ); ?>
+        <?php if ( $product->is_on_sale() ) : ?>
+        <span class="absolute top-2 left-2 bg-cozy-mint text-cozy-coffee text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider pointer-events-none z-[1]">
+            <?php esc_html_e( 'Oferta', 'woocommerce' ); ?>
+        </span>
+        <?php elseif ( ! $product->is_in_stock() ) : ?>
+        <span class="absolute top-2 left-2 bg-cozy-sand text-cozy-coffee/70 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider pointer-events-none z-[1]">
+            <?php esc_html_e( 'Agotado', 'woocommerce' ); ?>
         </span>
         <?php endif; ?>
 
-        <h3 class="font-bold text-sm text-cozy-coffee line-clamp-2 mb-0">
+        <button onclick="toggleFavorite(<?php echo absint( $product->get_id() ); ?>)"
+                class="cozy-fav-btn cozy-fav-icon absolute top-2 right-2 z-10 w-7 h-7 bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
+                data-product-id="<?php echo absint( $product->get_id() ); ?>"
+                aria-label="<?php esc_attr_e( 'Guardar en favoritos', 'woocommerce' ); ?>">
+            <svg class="cozy-fav-heart" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-3 sm:p-4 flex flex-col gap-2 flex-grow">
+
+        <h3 class="font-bold text-[10px] sm:text-[11px] text-cozy-coffee/80 uppercase tracking-wide line-clamp-2 leading-snug flex-grow m-0">
             <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
                class="hover:text-cozy-mint transition-colors no-underline">
                 <?php echo esc_html( $product->get_name() ); ?>
             </a>
         </h3>
 
-        <?php if ( $product->get_short_description() ) : ?>
-        <p class="text-[11px] text-cozy-coffee/60 mt-1 line-clamp-2 leading-relaxed m-0">
-            <?php echo wp_strip_all_tags( $product->get_short_description() ); ?>
-        </p>
-        <?php endif; ?>
-    </div>
-
-    <!-- Price + Add to cart (always at bottom) -->
-    <div class="flex items-center justify-between pt-4 border-t border-cozy-sand mt-4">
-
-        <span class="text-base font-bold text-cozy-coffee">
-            <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-        </span>
-
-        <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
-           class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white' : 'bg-cozy-sand text-cozy-coffee/60'; ?> px-4 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 no-underline">
-            <i class="fa-solid fa-eye text-[10px]" aria-hidden="true"></i>
-            <?php esc_html_e( 'Ver producto', 'woocommerce' ); ?>
-        </a>
+        <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-cozy-sand/50">
+            <span class="text-sm font-bold text-cozy-coffee shrink-0">
+                <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            </span>
+            <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
+               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60'; ?> px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
+                <i class="fa-solid fa-eye text-[9px]" aria-hidden="true"></i>
+                Ver producto
+            </a>
+        </div>
 
     </div>
-
 
 </li>

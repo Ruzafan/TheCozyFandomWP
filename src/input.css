@@ -622,8 +622,8 @@ input[type="submit"] {
 .woocommerce ul.products,
 .woocommerce-page ul.products {
   display: grid !important;
-  grid-template-columns: repeat(1, 1fr) !important;
-  gap: 1.5rem !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 0.75rem !important;
   float: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -634,6 +634,7 @@ input[type="submit"] {
   .woocommerce ul.products,
   .woocommerce-page ul.products {
     grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
   }
 }
 @media (min-width: 1024px) {
