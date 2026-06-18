@@ -126,6 +126,78 @@ if ( ! $_cozy_has_filters ) {
             'before_title'  => '<h3 class="cozy-filter-widget__title">',
             'after_title'   => '</h3>',
         ] );
+
+        // Hierarchical category filter
+        $top_cats = get_terms( [
+            'taxonomy'   => 'product_cat',
+            'hide_empty' => true,
+            'exclude'    => $uncategorised_id ? [ $uncategorised_id ] : [],
+            'parent'     => 0,
+            'orderby'    => 'name',
+            'order'      => 'ASC',
+        ] );
+        if ( ! is_wp_error( $top_cats ) && ! empty( $top_cats ) ) :
+            $current_cat_obj = is_product_category() ? get_queried_object() : null;
+            ?>
+            <div class="cozy-filter-widget">
+                <h3 class="cozy-filter-widget__title">Categorías</h3>
+                <ul class="cozy-cat-filter-list">
+                    <?php foreach ( $top_cats as $tcat ) :
+                        $tcat_url = get_term_link( $tcat );
+                        if ( is_wp_error( $tcat_url ) ) continue;
+                        $is_top_active   = $current_cat_obj && $current_cat_obj->term_id === $tcat->term_id;
+                        $is_child_active = $current_cat_obj && $current_cat_obj->parent   === $tcat->term_id;
+                        $is_expanded     = $is_top_active || $is_child_active;
+
+                        $sub_cats = get_terms( [
+                            'taxonomy'   => 'product_cat',
+                            'hide_empty' => true,
+                            'parent'     => $tcat->term_id,
+                            'orderby'    => 'name',
+                            'order'      => 'ASC',
+                        ] );
+                        $has_sub = ! is_wp_error( $sub_cats ) && ! empty( $sub_cats );
+                    ?>
+                    <li class="cozy-cat-filter-item<?php echo $has_sub ? ' cozy-cat-filter-item--has-children' : ''; ?>">
+                        <div class="cozy-cat-filter-row">
+                            <a href="<?php echo esc_url( $tcat_url ); ?>"
+                               class="cozy-cat-filter-link<?php echo ( $is_top_active || $is_child_active ) ? ' is-active' : ''; ?>">
+                                <?php echo esc_html( $tcat->name ); ?>
+                            </a>
+                            <?php if ( $has_sub ) : ?>
+                            <button class="cozy-cat-filter-toggle<?php echo $is_expanded ? ' is-open' : ''; ?>"
+                                    aria-expanded="<?php echo $is_expanded ? 'true' : 'false'; ?>"
+                                    aria-label="Expandir <?php echo esc_attr( $tcat->name ); ?>"
+                                    onclick="cozyCatToggle(this)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ( $has_sub ) : ?>
+                        <ul class="cozy-cat-filter-children<?php echo $is_expanded ? ' is-open' : ''; ?>">
+                            <?php foreach ( $sub_cats as $scat ) :
+                                $scat_url = get_term_link( $scat );
+                                if ( is_wp_error( $scat_url ) ) continue;
+                                $is_scat_active = $current_cat_obj && $current_cat_obj->term_id === $scat->term_id;
+                            ?>
+                            <li>
+                                <a href="<?php echo esc_url( $scat_url ); ?>"
+                                   class="cozy-cat-filter-sublink<?php echo $is_scat_active ? ' is-active' : ''; ?>">
+                                    <?php if ( $is_scat_active ) : ?>
+                                    <svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="#88C4B5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
+                                    <?php endif; ?>
+                                    <?php echo esc_html( $scat->name ); ?>
+                                </a>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php endif; ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif;
+
         the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
 
         // Licencia filter — custom taxonomy with checkbox-style links

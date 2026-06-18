@@ -100,6 +100,7 @@
                     'taxonomy'   => 'product_cat',
                     'hide_empty' => true,
                     'exclude'    => $uncategorised_id ? [ $uncategorised_id ] : [],
+                    'parent'     => 0,
                     'orderby'    => 'count',
                     'order'      => 'DESC',
                     'number'     => 10,
@@ -108,15 +109,64 @@
 
                 if ( ! is_wp_error( $nav_cats ) ) :
                     foreach ( $nav_cats as $cat ) :
-                        $cat_url   = get_term_link( $cat );
-                        $is_active = $current_cat && $current_cat->term_id === $cat->term_id;
+                        $cat_url = get_term_link( $cat );
                         if ( is_wp_error( $cat_url ) ) continue;
+
+                        $children = get_terms( [
+                            'taxonomy'   => 'product_cat',
+                            'hide_empty' => true,
+                            'parent'     => $cat->term_id,
+                            'orderby'    => 'name',
+                            'order'      => 'ASC',
+                        ] );
+                        $has_children = ! is_wp_error( $children ) && ! empty( $children );
+
+                        $is_active = $current_cat && (
+                            $current_cat->term_id === $cat->term_id ||
+                            $current_cat->parent  === $cat->term_id
+                        );
+
+                        if ( $has_children ) : ?>
+                        <div class="cozy-nav-item cozy-nav-has-dropdown">
+                            <button class="cozy-nav-link cozy-nav-link--has-arrow<?php echo $is_active ? ' cozy-nav-link--active' : ''; ?>"
+                                    aria-haspopup="true" aria-expanded="false"
+                                    onclick="cozyToggleDropdown(this)">
+                                <?php echo esc_html( $cat->name ); ?>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
+                            <div class="cozy-nav-dropdown" role="menu">
+                                <a href="<?php echo esc_url( $cat_url ); ?>"
+                                   class="cozy-nav-dropdown__link cozy-nav-dropdown__link--all<?php echo ( $current_cat && $current_cat->term_id === $cat->term_id ) ? ' is-active' : ''; ?>"
+                                   role="menuitem">
+                                    Ver todos
+                                </a>
+                                <div class="cozy-nav-dropdown__divider"></div>
+                                <?php foreach ( $children as $child ) :
+                                    $child_url = get_term_link( $child );
+                                    if ( is_wp_error( $child_url ) ) continue;
+                                    $is_child_active = $current_cat && $current_cat->term_id === $child->term_id;
+                                ?>
+                                <a href="<?php echo esc_url( $child_url ); ?>"
+                                   class="cozy-nav-dropdown__link<?php echo $is_child_active ? ' is-active' : ''; ?>"
+                                   role="menuitem">
+                                    <?php if ( $is_child_active ) : ?>
+                                    <span class="cozy-nav-dropdown__check" aria-hidden="true">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
+                                    </span>
+                                    <?php endif; ?>
+                                    <?php echo esc_html( $child->name ); ?>
+                                </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php else :
+                            $is_active_plain = $current_cat && $current_cat->term_id === $cat->term_id;
                         ?>
                         <a href="<?php echo esc_url( $cat_url ); ?>"
-                           class="cozy-nav-link<?php echo $is_active ? ' cozy-nav-link--active' : ''; ?>">
+                           class="cozy-nav-link<?php echo $is_active_plain ? ' cozy-nav-link--active' : ''; ?>">
                             <?php echo esc_html( $cat->name ); ?>
                         </a>
-                        <?php
+                        <?php endif;
                     endforeach;
                 endif;
 
