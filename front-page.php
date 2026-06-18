@@ -126,7 +126,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <section id="garantias" class="bg-white border-t border-b border-cozy-cream rounded-[32px] mb-10">
     <div class="max-w-7xl mx-auto px-6 md:px-12 py-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8">
 
             <div class="flex items-center gap-4">
                 <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">

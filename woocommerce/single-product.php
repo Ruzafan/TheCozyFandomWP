@@ -78,7 +78,7 @@ while ( have_posts() ) :
         <!-- TRUST BADGES                                                   -->
         <!-- ============================================================ -->
         <div class="cozy-product-trust bg-cozy-mintLight/40 rounded-[20px] border border-cozy-mint/15 px-6 md:px-10 py-5 mb-10">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
 
                 <div class="flex items-center gap-3">
                     <div class="shrink-0 w-10 h-10 rounded-[12px] bg-white flex items-center justify-center shadow-sm">
