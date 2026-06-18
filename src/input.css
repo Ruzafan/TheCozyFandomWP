@@ -78,6 +78,7 @@ input[type="submit"] {
   max-width: 80rem !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  width: 100%;
 }
 
 /* ─── My Account – Cozy overrides ─────────────────────────────── */
