@@ -87,6 +87,14 @@
         <div class="cozy-hdr-nav-inner">
             <nav id="mobile-menu" class="cozy-hdr-nav" aria-label="Navegación principal">
                 <?php
+                $shop_url    = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
+                $is_shop_pg  = is_shop() && ! is_product_category();
+                ?>
+                <a href="<?php echo esc_url( $shop_url ); ?>"
+                   class="cozy-nav-link<?php echo $is_shop_pg ? ' cozy-nav-link--active' : ''; ?>">
+                    Tienda
+                </a>
+                <?php
                 $uncategorised_id = absint( get_option( 'default_product_cat' ) );
                 $nav_cats = get_terms( [
                     'taxonomy'   => 'product_cat',
@@ -118,7 +126,6 @@
                     $raw_lic     = isset( $_GET['licencia'] ) ? sanitize_text_field( wp_unslash( $_GET['licencia'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
                     $active_lics = $raw_lic ? array_filter( array_map( 'sanitize_title', explode( ',', $raw_lic ) ) ) : [];
                     $has_act_lic = ! empty( $active_lics );
-                    $shop_url    = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
                     ?>
                     <div class="cozy-nav-item cozy-nav-has-dropdown">
                         <button class="cozy-nav-link cozy-nav-link--has-arrow<?php echo $has_act_lic ? ' cozy-nav-link--active' : ''; ?>"
@@ -130,7 +137,9 @@
                         <div class="cozy-nav-dropdown" role="menu">
                             <?php foreach ( $nav_licenses as $lic ) :
                                 $is_lic_active = in_array( $lic->slug, $active_lics, true );
-                                $lic_href      = add_query_arg( 'licencia', $lic->slug, remove_query_arg( 'licencia', $shop_url ) );
+                                $lic_href      = $is_lic_active
+                                    ? remove_query_arg( 'licencia', $shop_url )
+                                    : add_query_arg( 'licencia', $lic->slug, remove_query_arg( 'licencia', $shop_url ) );
                             ?>
                             <a href="<?php echo esc_url( $lic_href ); ?>"
                                class="cozy-nav-dropdown__link<?php echo $is_lic_active ? ' is-active' : ''; ?>"

@@ -1434,10 +1434,7 @@ input[type="submit"] {
   align-items: center;
   gap: 0.25rem;
   min-height: 44px;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
-.cozy-hdr-nav::-webkit-scrollbar { display: none; }
 @media (min-width: 768px) { .cozy-hdr-nav { display: flex !important; } }
 
 /* Mobile open: vertical column */

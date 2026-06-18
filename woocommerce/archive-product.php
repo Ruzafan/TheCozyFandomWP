@@ -73,87 +73,86 @@ do_action( 'woocommerce_before_main_content' );
 <?php
 wc_setup_loop();
 
-if ( woocommerce_product_loop() ) :
-    $cozy_widget_args = [
-        'before_widget' => '<div class="cozy-filter-widget">',
-        'after_widget'  => '</div>',
-        'before_title'  => '<h3 class="cozy-filter-widget__title">',
-        'after_title'   => '</h3>',
-    ];
-    ?>
-    <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
+$cozy_widget_args = [
+    'before_widget' => '<div class="cozy-filter-widget">',
+    'after_widget'  => '</div>',
+    'before_title'  => '<h3 class="cozy-filter-widget__title">',
+    'after_title'   => '</h3>',
+];
+?>
+<div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
 
-        <!-- ==================================================== -->
-        <!-- FILTERS SIDEBAR                                        -->
-        <!-- ==================================================== -->
-        <aside class="cozy-shop-filters space-y-5">
-            <?php
-            the_widget( 'WC_Widget_Layered_Nav_Filters', [], [
-                'before_widget' => '<div class="cozy-filter-widget cozy-active-filters">',
-                'after_widget'  => '</div>',
-                'before_title'  => '<h3 class="cozy-filter-widget__title">',
-                'after_title'   => '</h3>',
-            ] );
-            the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
+    <!-- ==================================================== -->
+    <!-- FILTERS SIDEBAR (always visible so filters can be    -->
+    <!-- cleared even when a filter returns 0 products)       -->
+    <!-- ==================================================== -->
+    <aside class="cozy-shop-filters space-y-5">
+        <?php
+        the_widget( 'WC_Widget_Layered_Nav_Filters', [], [
+            'before_widget' => '<div class="cozy-filter-widget cozy-active-filters">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h3 class="cozy-filter-widget__title">',
+            'after_title'   => '</h3>',
+        ] );
+        the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
 
-            // Licencia filter — custom taxonomy with checkbox-style links
-            $all_licenses = get_terms( [ 'taxonomy' => 'product_licencia', 'hide_empty' => false ] );
-            if ( ! is_wp_error( $all_licenses ) && ! empty( $all_licenses ) ) :
-                $raw_sel      = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) );
-                $selected     = array_filter( array_map( 'sanitize_title', explode( ',', $raw_sel ) ) );
-                $base_url     = remove_query_arg( 'licencia' );
-                ?>
-                <div class="cozy-filter-widget">
-                    <h3 class="cozy-filter-widget__title">Licencia</h3>
-                    <ul class="cozy-license-list">
-                        <?php foreach ( $all_licenses as $lic ) :
-                            $slug    = $lic->slug;
-                            $checked = in_array( $slug, $selected, true );
-                            $new_sel = $checked
-                                ? array_values( array_diff( $selected, [ $slug ] ) )
-                                : array_merge( $selected, [ $slug ] );
-                            $href = $new_sel
-                                ? add_query_arg( 'licencia', implode( ',', $new_sel ), $base_url )
-                                : $base_url;
-                        ?>
-                        <li>
-                            <a href="<?php echo esc_url( $href ); ?>"
-                               class="cozy-license-link<?php echo $checked ? ' is-active' : ''; ?>">
-                                <span class="cozy-license-box" aria-hidden="true">
-                                    <?php if ( $checked ) : ?>
-                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
-                                    <?php endif; ?>
-                                </span>
-                                <span class="cozy-license-name"><?php echo esc_html( $lic->name ); ?></span>
-                            </a>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif;
-
-            the_widget( 'WC_Widget_Rating_Filter', [ 'title' => __( 'Valoración', 'woocommerce' ) ], [
-                'before_widget' => '<div class="cozy-filter-widget cozy-rating-filter">',
-                'after_widget'  => '</div>',
-                'before_title'  => '<h3 class="cozy-filter-widget__title">',
-                'after_title'   => '</h3>',
-            ] );
-            /* Filter by Attribute (color, talla, etc.) appears here automatically
-               once attributes are created in Productos → Atributos — none exist yet. */
-            foreach ( wc_get_attribute_taxonomies() as $tax ) {
-                the_widget( 'WC_Widget_Layered_Nav', [
-                    'title'      => $tax->attribute_label,
-                    'attribute'  => $tax->attribute_name,
-                    'query_type' => 'and',
-                ], $cozy_widget_args );
-            }
+        // Licencia filter — custom taxonomy with checkbox-style links
+        $all_licenses = get_terms( [ 'taxonomy' => 'product_licencia', 'hide_empty' => false ] );
+        if ( ! is_wp_error( $all_licenses ) && ! empty( $all_licenses ) ) :
+            $raw_sel      = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+            $selected     = array_filter( array_map( 'sanitize_title', explode( ',', $raw_sel ) ) );
+            $base_url     = remove_query_arg( 'licencia' );
             ?>
-        </aside>
+            <div class="cozy-filter-widget">
+                <h3 class="cozy-filter-widget__title">Licencia</h3>
+                <ul class="cozy-license-list">
+                    <?php foreach ( $all_licenses as $lic ) :
+                        $slug    = $lic->slug;
+                        $checked = in_array( $slug, $selected, true );
+                        $new_sel = $checked
+                            ? array_values( array_diff( $selected, [ $slug ] ) )
+                            : array_merge( $selected, [ $slug ] );
+                        $href = $new_sel
+                            ? add_query_arg( 'licencia', implode( ',', $new_sel ), $base_url )
+                            : $base_url;
+                    ?>
+                    <li>
+                        <a href="<?php echo esc_url( $href ); ?>"
+                           class="cozy-license-link<?php echo $checked ? ' is-active' : ''; ?>">
+                            <span class="cozy-license-box" aria-hidden="true">
+                                <?php if ( $checked ) : ?>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
+                                <?php endif; ?>
+                            </span>
+                            <span class="cozy-license-name"><?php echo esc_html( $lic->name ); ?></span>
+                        </a>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif;
 
-        <!-- ==================================================== -->
-        <!-- PRODUCT GRID                                           -->
-        <!-- ==================================================== -->
-        <div>
+        the_widget( 'WC_Widget_Rating_Filter', [ 'title' => __( 'Valoración', 'woocommerce' ) ], [
+            'before_widget' => '<div class="cozy-filter-widget cozy-rating-filter">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h3 class="cozy-filter-widget__title">',
+            'after_title'   => '</h3>',
+        ] );
+        foreach ( wc_get_attribute_taxonomies() as $tax ) {
+            the_widget( 'WC_Widget_Layered_Nav', [
+                'title'      => $tax->attribute_label,
+                'attribute'  => $tax->attribute_name,
+                'query_type' => 'and',
+            ], $cozy_widget_args );
+        }
+        ?>
+    </aside>
+
+    <!-- ==================================================== -->
+    <!-- PRODUCT GRID                                           -->
+    <!-- ==================================================== -->
+    <div>
+        <?php if ( woocommerce_product_loop() ) : ?>
             <div class="cozy-sort-bar flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <?php woocommerce_result_count(); ?>
                 <?php woocommerce_catalog_ordering(); ?>
@@ -170,15 +169,14 @@ if ( woocommerce_product_loop() ) :
             <?php do_action( 'woocommerce_after_shop_loop' ); ?>
 
             <?php woocommerce_pagination(); ?>
-        </div>
-
+        <?php else : ?>
+            <?php do_action( 'woocommerce_no_products_found' ); ?>
+        <?php endif; ?>
     </div>
-<?php else : ?>
 
-    <?php do_action( 'woocommerce_no_products_found' ); ?>
-
-<?php endif;
-wc_reset_loop(); ?>
+</div>
+<?php
+wc_reset_loop();
 
 <script>
 (function () {
