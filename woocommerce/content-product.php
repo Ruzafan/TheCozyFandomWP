@@ -22,7 +22,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
     <div class="relative">
         <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block no-underline">
             <div class="bg-cozy-cream h-36 sm:h-44 overflow-hidden">
-                <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full' ] ); ?>
+                <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); ?>
             </div>
         </a>
 
