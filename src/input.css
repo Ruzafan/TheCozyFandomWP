@@ -726,6 +726,16 @@ input[type="submit"] {
 
 /* ─── Single product page ────────────────────────────────────── */
 
+/* Astra's main.min.css carries wp_die() body styles (max-width:700px,
+   border, margin:2em auto) that leak onto the front-end. Override on body
+   directly using .single-product (WC adds this class to <body>). */
+body.single-product {
+  max-width: none !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 /* Expand Astra's container so the product layout isn't capped at ~700px */
 .single-product .ast-container {
   max-width: 95rem !important;
