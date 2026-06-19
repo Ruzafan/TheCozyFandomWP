@@ -1702,9 +1702,20 @@ ul.wc-block-grid {
 @media (min-width: 768px) { .cozy-hdr-hamburger { display: none; } }
 
 /* ── Row 2 nav ──────────────────────────────────────────────── */
+/* Intentionally outside <header> in the DOM to escape masthead's stacking
+   context (position:sticky + z-index creates one, which would trap the
+   mobile sidebar and prevent it from painting above the overlay).
+   On desktop we re-attach it visually using position:sticky at top:64px. */
 .cozy-hdr-nav-row {
   background: #F6EEE1;
   border-top: 1px solid rgba(242,230,213,0.7);
+}
+@media (min-width: 768px) {
+  .cozy-hdr-nav-row {
+    position: sticky;
+    top: 64px;
+    z-index: 998;
+  }
 }
 .cozy-hdr-nav-inner {
   max-width: 95rem;

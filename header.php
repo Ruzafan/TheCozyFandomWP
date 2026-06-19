@@ -103,8 +103,13 @@
         </div>
     </div>
 
-    <!-- ── Row 2: Category nav (desktop) / Sidebar drawer (mobile) ── -->
-    <div class="cozy-hdr-nav-row" id="cozy-nav-sidebar">
+</header>
+
+<!-- ── Row 2: Category nav (desktop) / Sidebar drawer (mobile) ──
+     Intentionally outside <header> so its z-index participates in the
+     root stacking context, not masthead's (which would cap it at z-index 999).
+-->
+<div class="cozy-hdr-nav-row" id="cozy-nav-sidebar">
 
         <!-- Close button + title — only rendered on mobile via CSS -->
         <div class="cozy-mobile-nav-header">
@@ -264,8 +269,6 @@
             </nav>
         </div>
     </div>
-
-</header>
 
 <!-- Mobile menu overlay (closes sidebar when clicked) -->
 <div id="mobile-menu-overlay" onclick="closeMobileMenu()" aria-hidden="true"></div>
