@@ -41,6 +41,9 @@ input[type="submit"] {
 .woocommerce-js ul.products li.product .woocommerce-loop-product__title,
 .woocommerce-js ul.products li.product h3 {
   padding-top: 5px !important;
+  text-transform: none !important;
+  font-size: 16px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 @media (max-width: 639px) {
   .ast-container,
