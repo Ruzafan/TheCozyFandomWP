@@ -1594,7 +1594,11 @@ ul.wc-block-grid {
   gap: 0.5rem;
   text-decoration: none;
 }
-.cozy-hdr-logo__img { height: 40px !important; width: auto !important; max-width: 44px !important; flex-shrink: 0; }
+.cozy-hdr-logo__img {
+  height: 50px !important;
+  width: auto !important;
+  flex-shrink: 0; 
+}
 .cozy-hdr-logo__text-wrap {
   display: flex;
   flex-direction: column;
@@ -1603,14 +1607,14 @@ ul.wc-block-grid {
 }
 .cozy-hdr-logo__name {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 0.95rem;
+  font-size: 26px;
   font-weight: 700;
   color: #3A3128;
   white-space: nowrap;
   line-height: 1.2;
 }
 .cozy-hdr-logo__tagline {
-  font-size: 0.575rem;
+  font-size: 14px;
   font-weight: 600;
   color: rgba(58,49,40,0.45);
   text-transform: uppercase;
@@ -1898,6 +1902,9 @@ ul.wc-block-grid {
   }
   .cozy-hdr-nav .cozy-nav-link { white-space: normal !important; }
 
+  /* Hide desktop-only icons on mobile (they live inside the sidebar) */
+  .cozy-hdr-actions-icons { display: none !important; }
+
   /* Sub-dropdowns expand inline inside the sidebar */
   .cozy-nav-item.is-open .cozy-nav-dropdown {
     display: block !important;
@@ -1961,6 +1968,60 @@ ul.wc-block-grid {
   flex-shrink: 0;
 }
 .cozy-mobile-nav-close:hover { background: #F2E6D5; }
+
+/* ── Mobile sidebar quick-access icons (account / favorites / cart) */
+.cozy-mobile-nav-actions { display: none; }
+@media (max-width: 767px) {
+  .cozy-mobile-nav-actions {
+    display: flex;
+    align-items: stretch;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid rgba(242,230,213,0.9);
+    margin-bottom: 0.5rem;
+    gap: 0.25rem;
+  }
+  .cozy-mobile-nav-action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.625rem 0.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #3A3128;
+    text-decoration: none;
+    position: relative;
+    border-radius: 12px;
+    transition: background 0.15s;
+  }
+  .cozy-mobile-nav-action-btn:hover { background: rgba(242,230,213,0.7); }
+  .cozy-mobile-nav-action-label {
+    font-size: 0.575rem;
+    font-weight: 700;
+    color: rgba(58,49,40,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .cozy-mobile-action-badge {
+    position: absolute;
+    top: 0.3rem;
+    right: calc(50% - 18px);
+    background: #88C4B5;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+}
 
 /* ─── Sidebar category hierarchy filter ─────────────────────── */
 .cozy-cat-filter-list {
