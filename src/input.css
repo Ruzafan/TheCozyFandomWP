@@ -1676,6 +1676,11 @@ ul.wc-block-grid {
   gap: 0.125rem;
   flex-shrink: 0;
 }
+.cozy-hdr-actions-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
 .cozy-hdr-icon {
   position: relative;
   width: 2.5rem;
