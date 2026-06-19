@@ -726,6 +726,18 @@ input[type="submit"] {
 
 /* ─── Single product page ────────────────────────────────────── */
 
+/* Expand Astra's container so the product layout isn't capped at ~700px */
+.single-product .ast-container {
+  max-width: 95rem !important;
+}
+.single-product #primary {
+  width: 100% !important;
+  max-width: 95rem !important;
+}
+.single-product .entry-content {
+  max-width: 100% !important;
+}
+
 /* Reset WooCommerce default float layout for our grid-based design */
 .woocommerce div.product div.summary,
 .woocommerce #content div.product div.summary,
