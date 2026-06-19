@@ -34,13 +34,17 @@
                 <?php
                 $logo_id = get_theme_mod( 'custom_logo' );
                 if ( $logo_id ) :
-                    echo wp_get_attachment_image( $logo_id, array( 320, 80 ), false, [
+                    echo wp_get_attachment_image( $logo_id, array( 80, 80 ), false, [
                         'class' => 'cozy-hdr-logo__img',
                         'alt'   => get_bloginfo( 'name' ),
                     ] );
-                else : ?>
-                <span class="cozy-hdr-logo__text">🌿 <?php bloginfo( 'name' ); ?></span>
-                <?php endif; ?>
+                endif; ?>
+                <div class="cozy-hdr-logo__text-wrap">
+                    <span class="cozy-hdr-logo__name"><?php bloginfo( 'name' ); ?></span>
+                    <?php if ( get_bloginfo( 'description' ) ) : ?>
+                    <span class="cozy-hdr-logo__tagline"><?php bloginfo( 'description' ); ?></span>
+                    <?php endif; ?>
+                </div>
             </a>
 
             <!-- Search -->
@@ -95,8 +99,17 @@
         </div>
     </div>
 
-    <!-- ── Row 2: Category nav ─────────────────────────────────── -->
-    <div class="cozy-hdr-nav-row">
+    <!-- ── Row 2: Category nav (desktop) / Sidebar drawer (mobile) ── -->
+    <div class="cozy-hdr-nav-row" id="cozy-nav-sidebar">
+
+        <!-- Close button + title — only rendered on mobile via CSS -->
+        <div class="cozy-mobile-nav-header">
+            <span class="cozy-mobile-nav-title">Menú</span>
+            <button onclick="closeMobileMenu()" class="cozy-mobile-nav-close" aria-label="Cerrar menú">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+
         <div class="cozy-hdr-nav-inner">
             <nav id="mobile-menu" class="cozy-hdr-nav" aria-label="Navegación principal">
                 <?php
@@ -225,6 +238,9 @@
     </div>
 
 </header>
+
+<!-- Mobile menu overlay (closes sidebar when clicked) -->
+<div id="mobile-menu-overlay" onclick="closeMobileMenu()" aria-hidden="true"></div>
 
 <!-- ============================================================ -->
 <!-- CART DRAWER                                                    -->

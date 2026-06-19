@@ -110,6 +110,14 @@ add_action( 'init', function() {
 } );
 
 /* ------------------------------------------------------------------ */
+/*  PRODUCT REVIEWS — verified purchasers only                          */
+/* ------------------------------------------------------------------ */
+/* Only users who actually bought the product can leave a review.
+   Combines WC's verification setting + WP's login-required comment setting. */
+add_filter( 'pre_option_woocommerce_review_rating_verification_required', '__return_yes' );
+add_filter( 'pre_option_comment_registration', '__return_one' ); // WP: login required to comment
+
+/* ------------------------------------------------------------------ */
 /*  STYLES                                                              */
 /* ------------------------------------------------------------------ */
 function cozy_fandom_enqueue_styles() {

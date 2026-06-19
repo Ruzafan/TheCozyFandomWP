@@ -137,13 +137,25 @@
         }
     });
 
-    /* ---------- MOBILE MENU ---------- */
+    /* ---------- MOBILE MENU (left-side drawer) ---------- */
     window.toggleMobileMenu = function () {
-        var menu = document.getElementById('mobile-menu');
-        var btn  = document.querySelector('.cozy-hdr-hamburger');
-        if (!menu) return;
-        var isOpen = menu.classList.toggle('is-open');
+        var sidebar = document.getElementById('cozy-nav-sidebar');
+        var overlay = document.getElementById('mobile-menu-overlay');
+        var btn     = document.querySelector('.cozy-hdr-hamburger');
+        if (!sidebar) return;
+        var isOpen = sidebar.classList.toggle('is-open');
+        if (overlay) overlay.classList.toggle('is-open', isOpen);
         if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    };
+    window.closeMobileMenu = function () {
+        var sidebar = document.getElementById('cozy-nav-sidebar');
+        var overlay = document.getElementById('mobile-menu-overlay');
+        var btn     = document.querySelector('.cozy-hdr-hamburger');
+        if (sidebar) sidebar.classList.remove('is-open');
+        if (overlay) overlay.classList.remove('is-open');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
     };
 
     /* ---------- NAV DROPDOWN ---------- */
@@ -205,6 +217,7 @@
             window.closeFilters();
             window.closeFavorites();
             window.closeLoginModal();
+            window.closeMobileMenu();
         }
     });
 
