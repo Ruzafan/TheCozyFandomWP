@@ -154,7 +154,7 @@ $cozy_cats = [
                 </div>
                 <div>
                     <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Pagos 100% Seguros</h4>
-                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Tarjeta, PayPal o Bizum</p>
+                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Tarjeta, Google Pay, Apple Pay o Amazon Pay</p>
                 </div>
             </div>
 

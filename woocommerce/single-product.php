@@ -121,7 +121,7 @@ while ( have_posts() ) :
                     </div>
                     <div>
                         <p class="font-bold text-cozy-coffee m-0 leading-tight" style="font-size:13px">Pagos 100% Seguros</p>
-                        <p class="text-cozy-coffee/60 m-0 leading-tight" style="font-size:11px">Tarjeta, PayPal o Bizum</p>
+                        <p class="text-cozy-coffee/60 m-0 leading-tight" style="font-size:11px">Tarjeta, Google Pay, Apple Pay o Amazon Pay</p>
                     </div>
                 </div>
 
