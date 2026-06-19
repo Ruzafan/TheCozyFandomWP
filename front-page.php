@@ -194,7 +194,7 @@ $cozy_cats = [
             <?php endif; ?>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <?php
         $new_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
             'limit'   => 4,
