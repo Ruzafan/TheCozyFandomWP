@@ -152,7 +152,7 @@ function cozy_fandom_enqueue_scripts() {
         'cozy-main',
         get_stylesheet_directory_uri() . '/assets/js/cozy-main.js',
         [ 'jquery' ],
-        wp_get_theme()->get( 'Version' ),
+        filemtime( get_stylesheet_directory() . '/assets/js/cozy-main.js' ),
         true
     );
 

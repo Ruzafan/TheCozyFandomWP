@@ -67,6 +67,8 @@
 
     /* ---------- TOGGLE FAVORITE ---------- */
     window.toggleFavorite = function (productId) {
+        if (typeof cozyAjax === 'undefined') return;
+
         if (!cozyAjax.isLoggedIn) {
             openLoginModal();
             return;
@@ -78,7 +80,7 @@
             product_id: productId
         })
         .done(function (res) {
-            if (!res.success) return;
+            if (!res || !res.success) return;
             var data = res.data;
             cozyUpdateFavBtns(productId, data.is_favorited);
             cozyUpdateFavBadge(data.count);
@@ -128,7 +130,7 @@
 
     /* Init: mark already-favorited products on page load */
     $(document).ready(function () {
-        if (cozyAjax.favorites && cozyAjax.favorites.length) {
+        if (typeof cozyAjax !== 'undefined' && cozyAjax.favorites && cozyAjax.favorites.length) {
             cozyAjax.favorites.forEach(function (id) {
                 cozyUpdateFavBtns(id, true);
             });
