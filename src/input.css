@@ -124,11 +124,13 @@ input[type="submit"] {
 .woocommerce-message,
 .woocommerce-info {
   border-radius: 16px !important;
-  border-left: none !important;
-  padding: 12px 20px !important;
+  border: none !important;
+  /* padding-left: 3rem leaves room for WC's ::before icon (position:absolute; left:1em) */
+  padding: 0.875rem 1.25rem 0.875rem 3rem !important;
   font-size: 0.875rem !important;
   margin-bottom: 1.5rem !important;
   list-style: none !important;
+  position: relative !important;
 }
 .woocommerce-error   { background: #FEF2F2 !important; color: #b91c1c !important; }
 .woocommerce-message { background: #EAF6F3 !important; color: #4A3F35 !important; }
