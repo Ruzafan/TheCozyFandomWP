@@ -273,8 +273,6 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
             <?php woocommerce_product_loop_end(); ?>
 
             <?php do_action( 'woocommerce_after_shop_loop' ); ?>
-
-            <?php woocommerce_pagination(); ?>
         <?php else : ?>
             <?php do_action( 'woocommerce_no_products_found' ); ?>
         <?php endif; ?>

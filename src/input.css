@@ -1068,13 +1068,12 @@ body.single-product {
 
 /* ─── Cart & Checkout pages ──────────────────────────────────── */
 
-/* Cart page title */
+/* Cart / Checkout page titles — hidden per design */
 .woocommerce-cart h1.entry-title,
-.woocommerce-cart .wp-block-post-title {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 1.75rem !important;
-  font-weight: 700 !important;
-  color: #4A3F35 !important;
+.woocommerce-cart .wp-block-post-title,
+.woocommerce-checkout h1.entry-title,
+.woocommerce-checkout .wp-block-post-title {
+  display: none !important;
 }
 
 /* WooCommerce Block product grid — used on empty cart "New in store" section
@@ -1411,12 +1410,7 @@ ul.wc-block-grid {
 
 /* ─── Checkout (WC Checkout Block) ───────────────────────────── */
 
-/* Page title */
-.woocommerce-checkout h1.entry-title,
-.woocommerce-checkout .wp-block-post-title {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  color: #4A3F35 !important;
-}
+/* (checkout page title already hidden above) */
 
 /* Each step card (contact info, billing address, shipping, payment) */
 .wc-block-components-checkout-step {
@@ -1487,6 +1481,18 @@ ul.wc-block-grid {
   padding: 0.875rem 1rem !important;
   margin-bottom: 0.5rem !important;
   background: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+.wc-block-components-radio-control__input {
+  flex-shrink: 0 !important;
+  position: relative !important;
+  margin: 0 !important;
+}
+.wc-block-components-radio-control__label {
+  flex: 1 !important;
+  min-width: 0 !important;
 }
 .wc-block-components-radio-control__option:has(.wc-block-components-radio-control__input:checked) {
   border-color: #F2E6D5 !important;
@@ -2184,3 +2190,90 @@ ul.wc-block-grid {
     }
 }
 .ast-stock-detail{display: none;}
+
+/* ─── My Account — Addresses page ──────────────────────────── */
+.cozy-account-content .woocommerce-Addresses {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 1.5rem !important;
+  float: none !important;
+}
+@media (max-width: 640px) {
+  .cozy-account-content .woocommerce-Addresses { grid-template-columns: 1fr !important; }
+}
+.cozy-account-content .woocommerce-Address,
+.cozy-account-content .u-column1,
+.cozy-account-content .u-column2 {
+  float: none !important;
+  width: auto !important;
+  background: #FAF6EE !important;
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 20px !important;
+  padding: 1.5rem !important;
+}
+.cozy-account-content .woocommerce-Address-title {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-bottom: 0.875rem !important;
+  margin-bottom: 1rem !important;
+  border-bottom: 1px solid #F5EDE0 !important;
+}
+.cozy-account-content .woocommerce-Address-title h2,
+.cozy-account-content .woocommerce-Address-title h3 {
+  font-size: 0.9375rem !important;
+  font-weight: 700 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  color: #3A3128 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+.cozy-account-content .woocommerce-Address-title a.edit {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: #88C4B5 !important;
+  text-decoration: none !important;
+  border: none !important;
+}
+.cozy-account-content .woocommerce-Address-title a.edit:hover {
+  color: #72b0a2 !important;
+}
+.cozy-account-content address {
+  font-style: normal !important;
+  font-size: 0.8125rem !important;
+  color: rgba(58,49,40,0.7) !important;
+  line-height: 1.75 !important;
+}
+/* "Aún no has configurado..." notice inside address card */
+.cozy-account-content .woocommerce-Address p {
+  font-size: 0.8125rem !important;
+  color: rgba(58,49,40,0.6) !important;
+  font-style: italic !important;
+  margin: 0 !important;
+}
+
+/* ─── My Account — Account Details form ────────────────────── */
+/* Remove the default fieldset border; replace with a soft top divider */
+.cozy-account-content fieldset {
+  border: none !important;
+  border-top: 1px solid #F5EDE0 !important;
+  padding: 1.5rem 0 0 !important;
+  margin: 1.5rem 0 0 !important;
+}
+.cozy-account-content fieldset legend {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  padding: 0 0.75rem 0 0 !important;
+  float: none !important;
+}
+/* Description text (em) under fields — force sans-serif */
+.cozy-account-content em,
+.cozy-account-content .description {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.75rem !important;
+  color: rgba(58,49,40,0.6) !important;
+  line-height: 1.5 !important;
+}
