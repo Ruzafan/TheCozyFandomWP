@@ -522,16 +522,41 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
 /* ─── My Account menu tweaks ────────────────────────────────── */
 add_filter( 'woocommerce_account_menu_items', function ( $items ) {
     unset( $items['downloads'] );
-
-    // Add "Cerrar cuenta" just before logout
-    $logout = $items['customer-logout'] ?? null;
-    unset( $items['customer-logout'] );
-    $items['delete-account'] = 'Cerrar cuenta';
-    if ( $logout ) {
-        $items['customer-logout'] = $logout;
-    }
-
     return $items;
+} );
+
+/* ─── Edit Account: hide currency plugin field + add Cerrar cuenta ─ */
+add_action( 'woocommerce_edit_account_form_end', function () {
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('p.form-row, .woocommerce-form-row, .form-row').forEach(function (row) {
+            var lbl = row.querySelector('label');
+            if (lbl && /currency/i.test(lbl.textContent || lbl.innerText || '')) {
+                row.remove();
+            }
+        });
+        document.querySelectorAll('[class*="currency"],[id*="currency"]').forEach(function (el) {
+            var row = el.closest('p.form-row, .woocommerce-form-row, .form-row');
+            if (row) { row.remove(); } else { el.remove(); }
+        });
+    });
+    </script>
+    <?php
+} );
+
+add_action( 'woocommerce_after_edit_account_form', function () {
+    ?>
+    <div style="margin-top:2rem;padding-top:1.25rem;border-top:1px solid #fecaca;">
+        <p style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(74,63,53,.4);margin:0 0 .6rem;">Zona de peligro</p>
+        <a href="<?php echo esc_url( wc_get_account_endpoint_url( 'delete-account' ) ); ?>"
+           style="display:inline-flex;align-items:center;gap:.5rem;font-size:0.75rem;font-weight:600;color:#f87171;text-decoration:none;">
+            <i class="fa-solid fa-user-xmark" aria-hidden="true"></i>
+            Cerrar y eliminar mi cuenta
+        </a>
+        <p style="font-size:0.7rem;color:rgba(74,63,53,.4);margin:.4rem 0 0;">Te pediremos confirmación antes de borrar nada.</p>
+    </div>
+    <?php
 } );
 
 /* ─── Delete Account endpoint ────────────────────────────────── */

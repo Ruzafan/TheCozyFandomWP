@@ -16,7 +16,6 @@ $cozy_nav_icons = [
     'edit-address'    => 'fa-location-dot',
     'edit-account'    => 'fa-user-pen',
     'payment-methods' => 'fa-credit-card',
-    'delete-account'  => 'fa-user-xmark',
     'customer-logout' => 'fa-right-from-bracket',
 ];
 
@@ -30,12 +29,11 @@ do_action( 'woocommerce_before_account_navigation' );
             $is_active  = in_array( 'is-active', $classes, true );
             $icon       = isset( $cozy_nav_icons[ $endpoint ] ) ? $cozy_nav_icons[ $endpoint ] : 'fa-circle-dot';
             $is_logout  = $endpoint === 'customer-logout';
-            $is_delete  = $endpoint === 'delete-account';
         ?>
         <li class="<?php echo $is_logout ? 'ml-auto' : ''; ?> m-0 p-0">
             <a href="<?php echo esc_url( wc_get_account_endpoint_url( $endpoint ) ); ?>"
                class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all no-underline
-                      <?php if ( $is_logout || $is_delete ) : ?>
+                      <?php if ( $is_logout ) : ?>
                           bg-white border border-cozy-sand text-cozy-coffee/60 hover:border-red-200 hover:text-red-400 hover:bg-red-50
                       <?php elseif ( $is_active ) : ?>
                           bg-cozy-mint text-cozy-coffee shadow-md
