@@ -31,48 +31,6 @@ do_action( 'woocommerce_before_account_dashboard' );
 ?>
 
 <!-- ============================================================ -->
-<!-- STATS ROW                                                      -->
-<!-- ============================================================ -->
-<div class="cozy-stats-grid mb-10">
-
-    <!-- Orders count -->
-    <div class="bg-cozy-cream rounded-[24px] p-5 border border-cozy-sand flex items-center gap-4">
-        <div class="w-11 h-11 shrink-0 rounded-2xl bg-cozy-mintLight flex items-center justify-center text-cozy-mint">
-            <i class="fa-solid fa-box" aria-hidden="true"></i>
-        </div>
-        <div>
-            <span class="block text-2xl font-serif font-bold text-cozy-coffee"><?php echo esc_html( $order_count ); ?></span>
-            <span class="text-xs text-cozy-coffee/60 uppercase tracking-wider font-medium">
-                <?php echo _n( 'Pedido', 'Pedidos', $order_count, 'woocommerce' ); ?>
-            </span>
-        </div>
-    </div>
-
-    <!-- Total spent -->
-    <div class="bg-cozy-cream rounded-[24px] p-5 border border-cozy-sand flex items-center gap-4">
-        <div class="w-11 h-11 shrink-0 rounded-2xl bg-cozy-mintLight flex items-center justify-center text-cozy-mint">
-            <i class="fa-solid fa-euro-sign" aria-hidden="true"></i>
-        </div>
-        <div>
-            <span class="block text-2xl font-serif font-bold text-cozy-coffee"><?php echo wp_kses_post( $total_spent ); ?></span>
-            <span class="text-xs text-cozy-coffee/60 uppercase tracking-wider font-medium">Total gastado</span>
-        </div>
-    </div>
-
-    <!-- Email -->
-    <div class="bg-cozy-cream rounded-[24px] p-5 border border-cozy-sand flex items-center gap-4 overflow-hidden">
-        <div class="w-11 h-11 shrink-0 rounded-2xl bg-cozy-mintLight flex items-center justify-center text-cozy-mint">
-            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-        </div>
-        <div class="min-w-0">
-            <span class="block text-xs font-serif font-bold text-cozy-coffee truncate"><?php echo esc_html( $current_user->user_email ); ?></span>
-            <span class="text-xs text-cozy-coffee/60 uppercase tracking-wider font-medium">Tu email</span>
-        </div>
-    </div>
-
-</div>
-
-<!-- ============================================================ -->
 <!-- RECENT ORDERS                                                  -->
 <!-- ============================================================ -->
 <div class="mb-10">
@@ -162,12 +120,12 @@ do_action( 'woocommerce_before_account_dashboard' );
                 'title' => 'Mis Datos',
                 'desc'  => 'Actualiza tu información personal.',
             ],
-            [
+           /* [
                 'url'   => wc_get_account_endpoint_url( 'downloads' ),
                 'icon'  => 'fa-download',
                 'title' => 'Descargas',
                 'desc'  => 'Accede a tus productos digitales.',
-            ],
+            ],*/
         ];
         foreach ( $quick_links as $ql ) : ?>
         <a href="<?php echo esc_url( $ql['url'] ); ?>"

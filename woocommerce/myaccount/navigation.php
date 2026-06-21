@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 $cozy_nav_icons = [
     'dashboard'       => 'fa-house',
     'orders'          => 'fa-box',
-    'downloads'       => 'fa-download',
+    //'downloads'       => 'fa-download',
     'edit-address'    => 'fa-location-dot',
     'edit-account'    => 'fa-user-pen',
     'payment-methods' => 'fa-credit-card',

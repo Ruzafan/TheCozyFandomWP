@@ -2333,3 +2333,16 @@ ul.wc-block-grid {
 .woocommerce-info::before{
     color: #3a3128;
 }
+.wp-block-woocommerce-cart .wc-block-components-radio-control__input:checked, 
+.wp-block-woocommerce-cart .wc-block-components-radio-control__input:focus,
+.wp-block-woocommerce-checkout .wc-block-components-radio-control__input:checked, 
+.wp-block-woocommerce-checkout .wc-block-components-radio-control__input:focus,
+.wc-block-components-radio-control .wc-block-components-radio-control__input{
+  left: 0;
+  top: 9px;
+}
+
+.wp-block-woocommerce-checkout .wc-block-components-shipping-rates-control__package .wc-block-components-radio-control .wc-block-components-radio-control__input{
+  top: 0;
+  left: 0;
+}
