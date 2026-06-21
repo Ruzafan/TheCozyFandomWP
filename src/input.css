@@ -2346,3 +2346,26 @@ ul.wc-block-grid {
   top: 0;
   left: 0;
 }
+.wp-block-woocommerce-cart-order-summary-totals-block{
+  border-top: 0 !important;
+}
+.wc-block-components-address-form__address_2-toggle{
+  padding: 16px 12px !important;
+}
+
+.wc-blocks-components-select .wc-blocks-components-select__select{
+  border: 1px solid #f5ede0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  color: #4a3f35 !important;
+  font-size: .875rem !important;
+  font-weight: 500 !important;
+}
+
+.wc-block-components-radio-control-accordion-option.wc-block-components-radio-control-accordion-option--checked-option-highlighted,
+.wc-block-components-radio-control-accordion-option.wc-block-components-radio-control-accordion-option,
+.wc-blocks-components-select,
+.wc-blocks-components-select__select{
+  box-shadow: none !important;
+}
+    
