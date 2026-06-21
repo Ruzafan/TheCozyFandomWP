@@ -26,6 +26,7 @@ $cozy_cats = [
         'title'       => 'Escoge tu Casa',
         'licencia'    => 'harry-potter',
         'icon'        => 'fa-hat-wizard',
+        'image'       => get_stylesheet_directory_uri() . '/assets/images/harry-potter.png',
         'description' => 'Gryffindor, Slytherin, Hufflepuff o Ravenclaw. Llena tu rincón de magia con la colección de Harry Potter.',
         'link_text'   => 'Entrar al castillo',
         'card_bg'     => 'bg-cozy-sand',
@@ -37,6 +38,7 @@ $cozy_cats = [
         'title'       => 'La Magia de Disney',
         'licencia'    => 'disney',
         'icon'        => 'fa-star',
+        'image'       => get_stylesheet_directory_uri() . '/assets/images/disney.png',
         'description' => 'Princesas, clásicos y villanos de ensueño. Objetos coleccionables y detalles mágicos para los fans de siempre.',
         'link_text'   => 'Explorar Disney',
         'card_bg'     => 'bg-white',
@@ -244,7 +246,7 @@ $cozy_cats = [
                  alt="" aria-hidden="true" loading="lazy"
                  class="absolute -bottom-3 -right-3 w-44 h-44 object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500 z-0">
             <?php endif; ?>
-            <div class="relative z-10">
+            <div class="relative z-10 <?php echo ! empty( $cat['image'] ) ? 'max-w-[55%]' : ''; ?>">
                 <div class="w-12 h-12 rounded-2xl <?php echo esc_attr( $cat['icon_bg'] ); ?> flex items-center justify-center <?php echo esc_attr( $cat['icon_color'] ); ?> text-lg mb-6">
                     <i class="fa-solid <?php echo esc_attr( $cat['icon'] ); ?>" aria-hidden="true"></i>
                 </div>
