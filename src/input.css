@@ -1367,6 +1367,7 @@ ul.wc-block-grid {
 /* Totals rows */
 .wc-block-components-totals-item {
   padding: 0.625rem 0 !important;
+  border-top: none !important;
   border-bottom: 1px solid #F5EDE0 !important;
   font-size: 0.875rem !important;
 }

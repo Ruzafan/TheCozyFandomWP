@@ -519,3 +519,11 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
     <?php
 }
 
+/* ─── Rename flat-rate shipping label ───────────────────────── */
+add_filter( 'woocommerce_shipping_rate_label', function ( $label, $method ) {
+    if ( $method->get_method_id() === 'flat_rate' ) {
+        $label = 'Gastos de envío';
+    }
+    return $label;
+}, 10, 2 );
+
