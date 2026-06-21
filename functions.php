@@ -519,10 +519,41 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
     <?php
 }
 
-/* ─── Remove Downloads from my-account menu ─────────────────── */
+/* ─── My Account menu tweaks ────────────────────────────────── */
 add_filter( 'woocommerce_account_menu_items', function ( $items ) {
     unset( $items['downloads'] );
+
+    // Add "Cerrar cuenta" just before logout
+    $logout = $items['customer-logout'] ?? null;
+    unset( $items['customer-logout'] );
+    $items['delete-account'] = 'Cerrar cuenta';
+    if ( $logout ) {
+        $items['customer-logout'] = $logout;
+    }
+
     return $items;
+} );
+
+/* ─── Delete Account endpoint ────────────────────────────────── */
+add_action( 'init', function () {
+    add_rewrite_endpoint( 'delete-account', EP_ROOT | EP_PAGES );
+} );
+
+add_action( 'woocommerce_account_delete-account_endpoint', function () {
+    if (
+        isset( $_POST['cozy_delete_account'], $_POST['_wpnonce'] )
+        && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'cozy_delete_account' )
+    ) {
+        $user_id = get_current_user_id();
+        if ( $user_id && ! user_can( $user_id, 'manage_options' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/user.php';
+            wp_delete_user( $user_id );
+            wp_logout();
+            wp_safe_redirect( add_query_arg( 'cuenta_eliminada', '1', home_url( '/' ) ) );
+            exit;
+        }
+    }
+    wc_get_template( 'myaccount/delete-account.php' );
 } );
 
 /* ─── Rename flat-rate shipping label ───────────────────────── */
