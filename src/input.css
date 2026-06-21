@@ -734,6 +734,25 @@ input[type="submit"] {
   background: #88c4b5 !important;
   border-color: #88c4b5 !important;
 }
+/* Replace WooCommerce's text arrows (→ ←) with FA chevrons, centered */
+.woocommerce-pagination .page-numbers .next,
+.woocommerce-pagination .page-numbers .prev {
+  font-size: 0 !important;
+}
+.woocommerce-pagination .page-numbers .next::after {
+  content: "\f054";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 0.6rem !important;
+  color: #4A3F35;
+}
+.woocommerce-pagination .page-numbers .prev::before {
+  content: "\f053";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 0.6rem !important;
+  color: #4A3F35;
+}
 
 /* ─── Single product page ────────────────────────────────────── */
 
