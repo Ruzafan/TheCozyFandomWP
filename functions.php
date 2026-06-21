@@ -214,8 +214,12 @@ function cozy_newsletter_subscribe() {
         wp_send_json_error( [ 'message' => 'Por favor introduce un email válido.' ] );
     }
 
-    // Check theme option first, fall back to Mailchimp for WooCommerce plugin option
+    // Check theme option → MC4WP plugin → Mailchimp for WooCommerce plugin
     $api_key = get_option( 'cozy_mailchimp_api_key', '' );
+    if ( ! $api_key ) {
+        $mc4wp   = get_option( 'mc4wp', [] );
+        $api_key = $mc4wp['api_key'] ?? '';
+    }
     if ( ! $api_key ) {
         $mc_options = get_option( 'mailchimp-woocommerce', [] );
         $api_key    = $mc_options['api_key'] ?? '';
