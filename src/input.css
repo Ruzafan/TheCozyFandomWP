@@ -705,15 +705,15 @@ input[type="submit"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.75rem;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 24%;
   font-size: 0.8rem;
   font-weight: 700;
   text-decoration: none;
   border: 1px solid #F5EDE0;
   color: #4A3F35;
-  background: #fff;
+  background: #eee6d9;
   transition: all 0.15s;
 }
 #cozy-blog .page-numbers a:hover,
@@ -727,6 +727,12 @@ input[type="submit"] {
   background: #88C4B5;
   border-color: #88C4B5;
   color: #4A3F35;
+}
+.woocommerce nav.woocommerce-pagination ul li a:focus,
+.woocommerce nav.woocommerce-pagination ul li a:hover,
+.woocommerce nav.woocommerce-pagination ul li span.current {
+  background: #88c4b5 !important;
+  border-color: #88c4b5 !important;
 }
 
 /* ─── Single product page ────────────────────────────────────── */
