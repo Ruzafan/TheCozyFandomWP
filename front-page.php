@@ -245,7 +245,7 @@ $cozy_cats = [
             <img src="<?php echo esc_url( $cat['image'] ); ?>"
                  alt="" aria-hidden="true" loading="lazy"
                  class="absolute object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500 z-0"
-                 style="width:140px;height:140px;bottom:-8px;right:-8px;">
+                 style="width:200px;height:200px;bottom:-8px;right:-8px;">
             <?php endif; ?>
             <div class="relative z-10" <?php echo ! empty( $cat['image'] ) ? 'style="max-width:52%"' : ''; ?>>
                 <div class="w-12 h-12 rounded-2xl <?php echo esc_attr( $cat['icon_bg'] ); ?> flex items-center justify-center <?php echo esc_attr( $cat['icon_color'] ); ?> text-lg mb-6">
