@@ -242,9 +242,9 @@ $cozy_cats = [
             <?php if ( ! empty( $cat['image'] ) ) : ?>
             <img src="<?php echo esc_url( $cat['image'] ); ?>"
                  alt="" aria-hidden="true" loading="lazy"
-                 class="absolute -bottom-3 -right-3 w-44 h-44 object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500">
+                 class="absolute -bottom-3 -right-3 w-44 h-44 object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500 z-0">
             <?php endif; ?>
-            <div>
+            <div class="relative z-10">
                 <div class="w-12 h-12 rounded-2xl <?php echo esc_attr( $cat['icon_bg'] ); ?> flex items-center justify-center <?php echo esc_attr( $cat['icon_color'] ); ?> text-lg mb-6">
                     <i class="fa-solid <?php echo esc_attr( $cat['icon'] ); ?>" aria-hidden="true"></i>
                 </div>
