@@ -14,6 +14,7 @@ $cozy_cats = [
         'title'       => 'El Rincón de Snoopy',
         'licencia'    => 'snoopy',
         'icon'        => 'fa-paw',
+        'image'       => get_stylesheet_directory_uri() . '/assets/images/snoopy-heart.png',
         'description' => 'El beagle más adorable del mundo en tazas, figuras, papelería y mucho más. Todo con ese toque cozy que enamora.',
         'link_text'   => 'Ver colección Snoopy',
         'card_bg'     => 'bg-white',
@@ -235,13 +236,20 @@ $cozy_cats = [
         $cat_url = add_query_arg( 'licencia', $cat['licencia'], $_shop_base );
     ?>
         <div class="group <?php echo esc_attr( $cat['card_bg'] ); ?> rounded-[32px] p-8 border border-cozy-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+            <?php if ( empty( $cat['image'] ) ) : ?>
             <div class="absolute -right-8 -bottom-8 w-32 h-32 <?php echo esc_attr( $cat['ring_color'] ); ?> rounded-full group-hover:scale-150 transition-transform duration-500" aria-hidden="true"></div>
+            <?php endif; ?>
+            <?php if ( ! empty( $cat['image'] ) ) : ?>
+            <img src="<?php echo esc_url( $cat['image'] ); ?>"
+                 alt="" aria-hidden="true" loading="lazy"
+                 class="absolute -bottom-3 -right-3 w-44 h-44 object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500">
+            <?php endif; ?>
             <div>
                 <div class="w-12 h-12 rounded-2xl <?php echo esc_attr( $cat['icon_bg'] ); ?> flex items-center justify-center <?php echo esc_attr( $cat['icon_color'] ); ?> text-lg mb-6">
                     <i class="fa-solid <?php echo esc_attr( $cat['icon'] ); ?>" aria-hidden="true"></i>
                 </div>
                 <h3 class="font-serif text-2xl font-bold text-cozy-coffee mb-2"><?php echo esc_html( $cat['title'] ); ?></h3>
-                <p class="text-xs text-cozy-coffee/70 leading-relaxed max-w-[200px]"><?php echo esc_html( $cat['description'] ); ?></p>
+                <p class="text-xs text-cozy-coffee/70 leading-relaxed <?php echo ! empty( $cat['image'] ) ? 'max-w-[160px]' : 'max-w-[200px]'; ?>"><?php echo esc_html( $cat['description'] ); ?></p>
             </div>
             <div class="pt-6 z-10">
                 <a href="<?php echo esc_url( $cat_url ); ?>" class="inline-flex items-center gap-2 text-xs font-bold text-cozy-coffee hover:text-cozy-mint transition-colors">
