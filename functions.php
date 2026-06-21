@@ -187,6 +187,22 @@ add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_scripts', 20 );
 /* ------------------------------------------------------------------ */
 /*  NEWSLETTER — Mailchimp API subscription                            */
 /* ------------------------------------------------------------------ */
+
+// Settings field in WP Admin > Ajustes > Generales
+add_action( 'admin_init', function () {
+    register_setting( 'general', 'cozy_mailchimp_api_key', 'sanitize_text_field' );
+    add_settings_field(
+        'cozy_mailchimp_api_key',
+        'Mailchimp API Key (Newsletter)',
+        function () {
+            $val = get_option( 'cozy_mailchimp_api_key', '' );
+            echo '<input type="text" name="cozy_mailchimp_api_key" value="' . esc_attr( $val ) . '" class="regular-text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us14">';
+            echo '<p class="description">Clave de API de Mailchimp. Encuéntrala en <a href="https://admin.mailchimp.com/account/api/" target="_blank">admin.mailchimp.com/account/api</a></p>';
+        },
+        'general'
+    );
+} );
+
 add_action( 'wp_ajax_cozy_newsletter_subscribe',        'cozy_newsletter_subscribe' );
 add_action( 'wp_ajax_nopriv_cozy_newsletter_subscribe', 'cozy_newsletter_subscribe' );
 
@@ -198,9 +214,12 @@ function cozy_newsletter_subscribe() {
         wp_send_json_error( [ 'message' => 'Por favor introduce un email válido.' ] );
     }
 
-    // Mailchimp for WooCommerce stores the API key in this option
-    $mc_options = get_option( 'mailchimp-woocommerce', [] );
-    $api_key    = $mc_options['api_key'] ?? '';
+    // Check theme option first, fall back to Mailchimp for WooCommerce plugin option
+    $api_key = get_option( 'cozy_mailchimp_api_key', '' );
+    if ( ! $api_key ) {
+        $mc_options = get_option( 'mailchimp-woocommerce', [] );
+        $api_key    = $mc_options['api_key'] ?? '';
+    }
 
     if ( ! $api_key ) {
         wp_send_json_error( [ 'message' => 'Newsletter no configurada.' ] );
