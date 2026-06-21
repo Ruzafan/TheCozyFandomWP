@@ -519,6 +519,12 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
     <?php
 }
 
+/* ─── Remove Downloads from my-account menu ─────────────────── */
+add_filter( 'woocommerce_account_menu_items', function ( $items ) {
+    unset( $items['downloads'] );
+    return $items;
+} );
+
 /* ─── Rename flat-rate shipping label ───────────────────────── */
 add_filter( 'woocommerce_shipping_rate_label', function ( $label, $method ) {
     if ( $method->get_method_id() === 'flat_rate' ) {
