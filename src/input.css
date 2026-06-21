@@ -2221,23 +2221,21 @@ ul.wc-block-grid {
 
 /* ─── My Account — Addresses page ──────────────────────────── */
 .cozy-account-content .woocommerce-Addresses {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 1.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.25rem !important;
   float: none !important;
-}
-@media (max-width: 640px) {
-  .cozy-account-content .woocommerce-Addresses { grid-template-columns: 1fr !important; }
 }
 .cozy-account-content .woocommerce-Address,
 .cozy-account-content .u-column1,
 .cozy-account-content .u-column2 {
   float: none !important;
   width: auto !important;
-  background: #FAF6EE !important;
-  border: 1px solid #F5EDE0 !important;
-  border-radius: 20px !important;
-  padding: 1.5rem !important;
+  background: #ffffff !important;
+  border: 1px solid #EEE4D8 !important;
+  border-radius: 28px !important;
+  padding: 1.75rem 2rem !important;
+  box-shadow: 0 2px 14px rgba(58,49,40,0.06) !important;
 }
 .cozy-account-content .woocommerce-Address-title {
   display: flex !important;
@@ -2258,14 +2256,19 @@ ul.wc-block-grid {
   border: none !important;
 }
 .cozy-account-content .woocommerce-Address-title a.edit {
-  font-size: 0.75rem !important;
-  font-weight: 600 !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
   color: #88C4B5 !important;
   text-decoration: none !important;
-  border: none !important;
+  border: 1px solid rgba(136,196,181,0.4) !important;
+  border-radius: 20px !important;
+  padding: 0.25rem 0.85rem !important;
+  background: rgba(136,196,181,0.08) !important;
+  transition: background 0.2s, color 0.2s !important;
 }
 .cozy-account-content .woocommerce-Address-title a.edit:hover {
-  color: #72b0a2 !important;
+  background: #88C4B5 !important;
+  color: #fff !important;
 }
 .cozy-account-content address {
   font-style: normal !important;
@@ -2324,4 +2327,8 @@ ul.wc-block-grid {
 .cozy-announcement-bar strong {
   font-weight: 800;
   color: #88C4B5;
+}
+.woocommerce-message::before, 
+.woocommerce-info::before{
+    color: #3a3128;
 }
