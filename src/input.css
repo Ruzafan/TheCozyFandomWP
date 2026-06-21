@@ -335,7 +335,7 @@ input[type="submit"] {
 /* ─── Shop filters sidebar ──────────────────────────────────── */
 .cozy-shop-filters {
   position: sticky;
-  top: 7.5rem;
+  top: 9rem; /* masthead (95px) + nav row (44px) + spacing */
 }
 
 /* Mobile: filters become a slide-in drawer from the left */
@@ -1350,7 +1350,7 @@ ul.wc-block-grid {
 /* Sticky sidebar on desktop */
 .wc-block-components-sidebar {
   position: sticky !important;
-  top: 7.5rem !important;
+  top: 9rem !important;
 }
 
 /* Order summary / totals block */
@@ -1772,7 +1772,7 @@ ul.wc-block-grid {
 @media (min-width: 768px) {
   .cozy-hdr-nav-row {
     position: sticky;
-    top: 64px;
+    top: 95px; /* logo row (64px) + announcement bar (~31px) */
     z-index: 998;
   }
 }
