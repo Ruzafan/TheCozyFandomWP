@@ -8,36 +8,36 @@ get_header();
 <div id="cozy-front-page">
 <?php
 
-/* Category card config (icon & copy are static; URL resolves to real WC category) */
+/* License collection cards — URL filters shop by product_licencia slug */
 $cozy_cats = [
     [
-        'title'       => 'Escritorio y Organización',
-        'slug'        => 'escritorio-organizacion',
-        'icon'        => 'fa-pen-nib',
-        'description' => 'Papelería premium, cuadernos de tela, bolígrafos cuquis y planificadores zen de tus fandoms favoritos.',
-        'link_text'   => 'Explorar papelería',
+        'title'       => 'El Rincón de Snoopy',
+        'licencia'    => 'snoopy',
+        'icon'        => 'fa-paw',
+        'description' => 'El beagle más adorable del mundo en tazas, figuras, papelería y mucho más. Todo con ese toque cozy que enamora.',
+        'link_text'   => 'Ver colección Snoopy',
         'card_bg'     => 'bg-white',
         'icon_bg'     => 'bg-cozy-mintLight',
         'icon_color'  => 'text-cozy-mint',
         'ring_color'  => 'bg-cozy-mint/10',
     ],
     [
-        'title'       => 'Rincón del Coleccionista',
-        'slug'        => 'coleccionista',
-        'icon'        => 'fa-cube',
-        'description' => 'Figuras de importación, miniaturas de dioramas, Blind Boxes de ensueño y cajas sorpresa de anime.',
-        'link_text'   => 'Ver figuras adorables',
+        'title'       => 'Escoge tu Casa',
+        'licencia'    => 'harry-potter',
+        'icon'        => 'fa-hat-wizard',
+        'description' => 'Gryffindor, Slytherin, Hufflepuff o Ravenclaw. Llena tu rincón de magia con la colección de Harry Potter.',
+        'link_text'   => 'Entrar al castillo',
         'card_bg'     => 'bg-cozy-sand',
         'icon_bg'     => 'bg-white',
         'icon_color'  => 'text-cozy-accent',
         'ring_color'  => 'bg-cozy-accent/10',
     ],
     [
-        'title'       => 'Hogar y Confort',
-        'slug'        => 'hogar-confort',
-        'icon'        => 'fa-mug-saucer',
-        'description' => 'Tazas de cerámica premium, botellas de acero frío, toallas para picnic aesthetic y cojines blanditos.',
-        'link_text'   => 'Descubrir hogar',
+        'title'       => 'La Magia de Disney',
+        'licencia'    => 'disney',
+        'icon'        => 'fa-star',
+        'description' => 'Princesas, clásicos y villanos de ensueño. Objetos coleccionables y detalles mágicos para los fans de siempre.',
+        'link_text'   => 'Explorar Disney',
         'card_bg'     => 'bg-white',
         'icon_bg'     => 'bg-cozy-mintLight',
         'icon_color'  => 'text-cozy-mint',
@@ -223,15 +223,16 @@ $cozy_cats = [
 <section id="categorias" class="py-16 px-6 md:px-12 max-w-7xl mx-auto rounded-[32px]">
 
     <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Colecciones Seleccionadas</span>
-        <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Tu rincón, tus reglas</h2>
-        <p class="text-sm text-cozy-coffee/70 mt-3">Encuentra los tesoros ideales divididos en tres universos que encajan perfectamente con tu decoración.</p>
+        <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">Universos Favoritos</span>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Elige tu fandom</h2>
+        <p class="text-sm text-cozy-coffee/70 mt-3">Sumérgete en el universo que más te llama. Colecciones pensadas para los fans de verdad.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    <?php foreach ( $cozy_cats as $cat ) :
-        $term    = get_term_by( 'slug', $cat['slug'], 'product_cat' );
-        $cat_url = $term ? get_term_link( $term ) : esc_url( get_permalink( wc_get_page_id( 'shop' ) ) );
+    <?php
+    $_shop_base = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
+    foreach ( $cozy_cats as $cat ) :
+        $cat_url = add_query_arg( 'licencia', $cat['licencia'], $_shop_base );
     ?>
         <div class="group <?php echo esc_attr( $cat['card_bg'] ); ?> rounded-[32px] p-8 border border-cozy-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
             <div class="absolute -right-8 -bottom-8 w-32 h-32 <?php echo esc_attr( $cat['ring_color'] ); ?> rounded-full group-hover:scale-150 transition-transform duration-500" aria-hidden="true"></div>
