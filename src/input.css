@@ -2369,3 +2369,7 @@ ul.wc-block-grid {
   box-shadow: none !important;
 }
     
+.wp-block-woocommerce-cart .wc-block-components-text-input.is-active label, 
+.wp-block-woocommerce-checkout .wc-block-components-text-input.is-active label{
+  top: 3px !important;
+}
