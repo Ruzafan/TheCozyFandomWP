@@ -52,69 +52,39 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  HERO SECTION                                                 -->
 <!-- ============================================================ -->
-<section id="home" class="relative py-12 px-6 md:px-12 overflow-hidden">
+<?php $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos'; ?>
+<section id="home" class="relative overflow-hidden bg-cozy-cream" style="min-height:520px;">
 
-    <!-- Background decorative blobs -->
-    <div class="absolute top-10 right-10 w-96 h-96 bg-cozy-mint/10 rounded-full blur-3xl -z-10" aria-hidden="true"></div>
-    <div class="absolute bottom-10 left-10 w-72 h-72 bg-cozy-accent/5 rounded-full blur-3xl -z-10" aria-hidden="true"></div>
+    <!-- Background banner image -->
+    <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.png' ); ?>"
+         alt="" aria-hidden="true" loading="eager"
+         class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <!-- Content: glass card aligned left -->
+    <div class="relative z-10 flex items-center min-h-[520px] px-6 md:px-12 py-14 max-w-7xl mx-auto">
+        <div class="bg-white/85 backdrop-blur-md rounded-[28px] p-8 md:p-10 max-w-[480px] shadow-sm">
 
-        <!-- Left: Copy -->
-        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20">
+            <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-5">
                 🌿 Concepto Cozy Geek Boutique
             </div>
-            <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight text-cozy-coffee">
-                Tu rincón friki <br class="hidden md:inline">
+
+            <h1 class="font-serif text-4xl md:text-5xl font-semibold leading-tight text-cozy-coffee m-0 p-0 border-0">
+                Tu rincón friki <br>
                 <span class="italic text-cozy-mint font-normal">más acogedor</span>.
             </h1>
-            <p class="text-base md:text-lg text-cozy-coffee/80 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
+
+            <p class="text-sm md:text-base text-cozy-coffee/80 leading-relaxed mt-4 mb-6 max-w-sm">
                 Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado. Merchandising oficial seleccionado con un toque cálido y sofisticado.
             </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-                <?php
-                $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos';
-                ?>
-                <a href="<?php echo esc_url( $shop_url ); ?>" class="w-full sm:w-auto text-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                    Explorar la Tienda <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
-                </a>
-            </div>
-        </div>
 
-        <!-- Right: Product showcase widget -->
-        <div class="lg:col-span-5 relative">
-            <div class="bg-white rounded-[32px] p-6 shadow-xl border border-cozy-sand relative overflow-hidden max-w-md mx-auto hover:rotate-1 transition-transform duration-300">
-                <div class="bg-cozy-sand/40 rounded-2xl h-64 flex items-center justify-center mb-6 relative group overflow-hidden">
-                    <svg class="w-48 h-48 text-cozy-coffee/80" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                        <path d="M65 60 H35 C32 60 30 58 30 55 V40 C30 37 32 35 35 35 H65 C68 35 70 37 70 40 V55 C70 58 68 60 65 60 Z" fill="#F5EDE0"/>
-                        <path d="M70 42 H74 C76 42 78 44 78 46 V50 C78 52 76 54 74 54 H70"/>
-                        <path d="M45 28 Q47 24 45 20 M50 28 Q52 24 50 20 M55 28 Q57 24 55 20" stroke-linecap="round" stroke-dasharray="2"/>
-                        <rect x="25" y="66" width="50" height="12" rx="2" fill="#FAF6EE"/>
-                        <line x1="25" y1="70" x2="75" y2="70"/><line x1="25" y1="74" x2="75" y2="74"/>
-                        <path d="M30 63 V69 M38 63 V69 M46 63 V69 M54 63 V69 M62 63 V69 M70 63 V69" stroke="#88C4B5" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M15 60 Q15 45 22 48 Q25 43 28 52 Q22 55 15 60 Z" fill="#88C4B5" opacity="0.8"/>
-                        <rect x="16" y="60" width="10" height="12" rx="2" fill="#D4A373"/>
-                    </svg>
-                    <span class="absolute bottom-4 left-4 bg-white/90 text-[10px] font-bold tracking-wider px-3 py-1 rounded-full text-cozy-coffee">ESTILO DE VIDA COZY</span>
-                </div>
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs text-cozy-mint font-semibold uppercase tracking-wider">Línea Escritorio</span>
-                    <div class="flex text-amber-400 text-xs" aria-label="5 estrellas">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                    </div>
-                </div>
-                <h3 class="font-serif text-lg font-bold text-cozy-coffee">Pack Escritorio Mágico</h3>
-                <p class="text-xs text-cozy-coffee/60 mt-1 mb-4">La conjunción perfecta de tranquilidad para tu rincón de trabajo.</p>
-                <div class="flex items-center justify-between pt-2 border-t border-cozy-sand">
-                    <a href="<?php echo esc_url( $shop_url ); ?>" class="bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-basket-shopping"></i> Ver tienda
-                    </a>
-                </div>
-            </div>
-        </div>
+            <a href="<?php echo esc_url( $shop_url ); ?>"
+               class="inline-flex items-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                Explorar la Tienda <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+            </a>
 
+        </div>
     </div>
+
 </section>
 
 <!-- ============================================================ -->
