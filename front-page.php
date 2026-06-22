@@ -60,10 +60,11 @@ $cozy_cats = [
          alt="" aria-hidden="true" loading="eager"
          class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
-    <!-- Copy: glass card, grows to fill available height -->
-    <div class="relative z-10 flex-1 flex items-center px-6 md:px-16 py-10">
+    <!-- Copy: glass card aligned within max-w-7xl -->
+    <div class="relative z-10 flex-1 flex items-center py-10">
+        <div class="w-full max-w-7xl mx-auto px-6 md:px-16">
         <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm"
-             style="background:rgba(255,255,255,0.83); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
+             style="background:rgba(255,255,255,0.46); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
             <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-5">
                 🌿 Concepto Cozy Geek Boutique
@@ -84,13 +85,14 @@ $cozy_cats = [
             </a>
 
         </div>
+        </div>
     </div>
 
-    <!-- Trust badges: always at bottom, inside the image, translucent -->
-    <div class="relative z-10"
-         style="background:rgba(255,255,255,0.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid rgba(255,255,255,0.45);">
-        <div class="max-w-7xl mx-auto px-6 md:px-16 py-5">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+    <!-- Trust badges: max-w-7xl container with rounded corners and glass effect -->
+    <div class="relative z-10 px-6 md:px-16 pb-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 rounded-[24px] px-6 md:px-10 py-5"
+                 style="background:rgba(255,255,255,0.46); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
 
                 <div class="flex items-center gap-3">
                     <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
@@ -136,12 +138,15 @@ $cozy_cats = [
         </div>
     </div>
 
+    <!-- Spacer so image shows below the badges strip -->
+    <div style="height:40px;"></div>
+
 </section>
 
 <!-- ============================================================ -->
 <!--  NEW PRODUCTS SECTION                                         -->
 <!-- ============================================================ -->
-<section id="nuevos" class="bg-cozy-sand/50 py-16 px-6 md:px-12 relative rounded-[32px]">
+<section id="nuevos" class="bg-cozy-sand/50 py-16 px-6 md:px-12 relative rounded-[32px]" style="margin-top:20px;">
     <div class="max-w-7xl mx-auto">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
