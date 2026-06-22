@@ -146,7 +146,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  NEW PRODUCTS SECTION                                         -->
 <!-- ============================================================ -->
-<section id="nuevos" class="bg-cozy-sand/50 py-16 px-6 md:px-12 relative rounded-[32px]" style="margin-top:20px;">
+<section id="nuevos" class="bg-cozy-sand/50 py-16 px-6 md:px-12 relative rounded-[32px]" style="max-width: 80rem !important;margin: 20px auto 0;">
     <div class="max-w-7xl mx-auto">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
@@ -243,7 +243,7 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  TOP SELLS SECTION (products tagged "top-sell")               -->
 <!-- ============================================================ -->
-<section id="top-ventas" class="bg-cozy-sand/50 py-16 px-6 md:px-12 relative rounded-[32px]">
+<section id="top-ventas" class="bg-cozy-sand/50 py-16 px-6 md:px-12 relative rounded-[32px]" style="max-width: 80rem !important;margin: 20px auto 0;">
     <div class="max-w-7xl mx-auto">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
