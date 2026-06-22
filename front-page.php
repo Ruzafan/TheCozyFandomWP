@@ -64,7 +64,7 @@ $cozy_cats = [
     <div class="relative z-10 flex-1 flex items-center py-10">
         <div class="w-full max-w-7xl mx-auto px-6 md:px-16">
         <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm"
-             style="background:rgba(255,255,255,0.46); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
+             style="background:rgba(255,255,255,0.76); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
             <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-5">
                 🌿 Concepto Cozy Geek Boutique
@@ -92,7 +92,7 @@ $cozy_cats = [
     <div class="relative z-10 px-6 md:px-16 pb-10">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 rounded-[24px] px-6 md:px-10 py-5"
-                 style="background:rgba(255,255,255,0.46); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
+                 style="background:rgba(255,255,255,0.76); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
 
                 <div class="flex items-center gap-3">
                     <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
