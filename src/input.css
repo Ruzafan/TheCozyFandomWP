@@ -118,7 +118,6 @@ input[type="submit"] {
 #primary { margin: 1em 0; }
 #page .site-content {
   margin: 0 20px;
-  max-width: 80rem !important;
   margin-left: auto !important;
   margin-right: auto !important;
   width: 100%;
