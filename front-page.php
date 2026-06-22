@@ -50,19 +50,20 @@ $cozy_cats = [
 ?>
 
 <!-- ============================================================ -->
-<!--  HERO SECTION                                                 -->
+<!--  HERO SECTION + TRUST BADGES                                  -->
 <!-- ============================================================ -->
 <?php $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos'; ?>
-<section id="home" class="relative overflow-hidden bg-cozy-cream" style="min-height:520px;">
+<section id="home" class="relative bg-cozy-cream" style="min-height:580px; overflow:hidden;">
 
     <!-- Background banner image -->
     <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpg' ); ?>"
          alt="" aria-hidden="true" loading="eager"
          class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
-    <!-- Content: glass card aligned left -->
-    <div class="relative z-10 flex items-center min-h-[520px] px-6 md:px-12 py-14 max-w-7xl mx-auto">
-        <div class="bg-white/85 backdrop-blur-md rounded-[28px] p-8 md:p-10 max-w-[480px] shadow-sm">
+    <!-- Copy: glass card left-aligned -->
+    <div class="relative z-10 px-6 md:px-16 pt-12 pb-32 max-w-7xl mx-auto">
+        <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm"
+             style="background:rgba(255,255,255,0.83); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
             <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-5">
                 🌿 Concepto Cozy Geek Boutique
@@ -85,57 +86,56 @@ $cozy_cats = [
         </div>
     </div>
 
-</section>
+    <!-- Trust badges: bottom strip overlaid on banner -->
+    <div class="absolute bottom-0 left-0 right-0 z-10"
+         style="background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid rgba(255,255,255,0.5);">
+        <div class="max-w-7xl mx-auto px-6 md:px-16 py-5">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
 
-<!-- ============================================================ -->
-<!--  TRUST BADGES                                                 -->
-<!-- ============================================================ -->
-<section id="garantias" class="bg-white border-t border-b border-cozy-cream rounded-[32px] mb-10">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-cozy-coffee font-bold m-0 text-sm">Empaquetado Aesthetic</p>
+                        <p class="text-cozy-coffee/70 m-0 text-xs">Unboxings que enamoran</p>
+                    </div>
+                </div>
 
-            <div class="flex items-center gap-4">
-                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <div class="flex items-center gap-3">
+                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-cozy-coffee font-bold m-0 text-sm">Envíos Rápidos</p>
+                        <p class="text-cozy-coffee/70 m-0 text-xs">24/48h en Península</p>
+                    </div>
                 </div>
-                <div>
-                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Empaquetado Aesthetic</h4>
-                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Unboxings que enamoran</p>
+
+                <div class="flex items-center gap-3">
+                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-cozy-coffee font-bold m-0 text-sm">Pagos 100% Seguros</p>
+                        <p class="text-cozy-coffee/70 m-0 text-xs">Tarjeta, Google Pay, Apple Pay</p>
+                    </div>
                 </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-cozy-coffee font-bold m-0 text-sm">Atención Cercana</p>
+                        <p class="text-cozy-coffee/70 m-0 text-xs">Te ayudamos por WhatsApp</p>
+                    </div>
+                </div>
+
             </div>
-
-            <div class="flex items-center gap-4">
-                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                </div>
-                <div>
-                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Envíos Rápidos</h4>
-                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">24/48h en Península</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-                <div>
-                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Pagos 100% Seguros</h4>
-                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Tarjeta, Google Pay, Apple Pay o Amazon Pay</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <div class="shrink-0 w-12 h-12 rounded-[14px] bg-cozy-mintLight flex items-center justify-center">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <div>
-                    <h4 class="text-cozy-coffee font-bold m-0" style="font-size:15px">Atención Cercana</h4>
-                    <p class="text-cozy-coffee/70 m-0" style="font-size:13px">Te ayudamos por WhatsApp</p>
-                </div>
-            </div>
-
         </div>
     </div>
+
 </section>
 
 <!-- ============================================================ -->
