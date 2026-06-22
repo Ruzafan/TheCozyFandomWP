@@ -156,6 +156,7 @@ input[type="submit"] {
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.8125rem;
+  border: none !important;
 }
 .cozy-account-content table th {
   background: #FAF6EE !important;
@@ -179,6 +180,35 @@ input[type="submit"] {
   vertical-align: middle !important;
 }
 .cozy-account-content table tr:last-child td { border-bottom: none !important; }
+/* Last tbody row: no bottom border so it doesn't double up with tfoot top */
+.cozy-account-content table.woocommerce-table tbody tr:last-child td { border-bottom: none !important; }
+
+/* ── Totals block (tfoot) rendered as one unified rounded card ── */
+.cozy-account-content .woocommerce-table tfoot tr th,
+.cozy-account-content .woocommerce-table tfoot tr td {
+  background: #FAF6EE !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  padding: 10px 16px !important;
+  color: #4A3F35 !important;
+  font-weight: 600 !important;
+}
+.cozy-account-content .woocommerce-table tfoot tr th:first-child,
+.cozy-account-content .woocommerce-table tfoot tr td:first-child { border-left: 1px solid #EEE4D8 !important; }
+.cozy-account-content .woocommerce-table tfoot tr th:last-child,
+.cozy-account-content .woocommerce-table tfoot tr td:last-child  { border-right: 1px solid #EEE4D8 !important; }
+.cozy-account-content .woocommerce-table tfoot tr:first-child th,
+.cozy-account-content .woocommerce-table tfoot tr:first-child td { border-top: 1px solid #EEE4D8 !important; padding-top: 16px !important; }
+.cozy-account-content .woocommerce-table tfoot tr:last-child th,
+.cozy-account-content .woocommerce-table tfoot tr:last-child td  { border-bottom: 1px solid #EEE4D8 !important; padding-bottom: 16px !important; }
+.cozy-account-content .woocommerce-table tfoot tr:first-child th:first-child,
+.cozy-account-content .woocommerce-table tfoot tr:first-child td:first-child { border-top-left-radius: 16px !important; }
+.cozy-account-content .woocommerce-table tfoot tr:first-child th:last-child,
+.cozy-account-content .woocommerce-table tfoot tr:first-child td:last-child  { border-top-right-radius: 16px !important; }
+.cozy-account-content .woocommerce-table tfoot tr:last-child th:first-child,
+.cozy-account-content .woocommerce-table tfoot tr:last-child td:first-child  { border-bottom-left-radius: 16px !important; }
+.cozy-account-content .woocommerce-table tfoot tr:last-child th:last-child,
+.cozy-account-content .woocommerce-table tfoot tr:last-child td:last-child   { border-bottom-right-radius: 16px !important; }
 
 .cozy-account-content .woocommerce-button,
 .cozy-account-content .button,
@@ -1836,6 +1866,9 @@ ul.wc-block-grid {
   background: rgba(136,196,181,0.12);
   color: #3A3128;
 }
+.woocommerce-js table.shop_table, .woocommerce-page table.shop_table{
+  border: none !important;
+}
 .cozy-hdr-nav .cozy-nav-link.cozy-nav-link--active,
 .cozy-hdr-nav .current-menu-item .cozy-nav-link {
   color: #3A3128;
@@ -2303,20 +2336,18 @@ ul.wc-block-grid {
   font-size: 0.8125rem !important;
   color: #C47C5A !important;
   line-height: 1.75 !important;
-  border: 1px solid #EEE4D8 !important;
-  border-radius: 16px !important;
-  padding: 1rem 1.25rem !important;
+  border: none !important;
+  padding: 0.5rem 0 0 !important;
   margin: 0 !important;
 }
-/* "Aún no has configurado..." notice — same card treatment */
+/* "Aún no has configurado..." notice */
 .cozy-account-content .woocommerce-Address p {
   font-size: 0.8125rem !important;
   color: rgba(58,49,40,0.55) !important;
   font-style: normal !important;
   margin: 0 !important;
-  border: 1px solid #EEE4D8 !important;
-  border-radius: 16px !important;
-  padding: 1rem 1.25rem !important;
+  border: none !important;
+  padding: 0.5rem 0 0 !important;
 }
 
 /* ─── My Account — Account Details form ────────────────────── */
@@ -2363,9 +2394,254 @@ ul.wc-block-grid {
   font-weight: 800;
   color: #88C4B5;
 }
-.woocommerce-message::before, 
+.woocommerce-message::before,
 .woocommerce-info::before{
     color: #3a3128;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Order Pay & Order Received pages — shared table styling
+   ═══════════════════════════════════════════════════════════════ */
+
+body.woocommerce-order-pay table.shop_table,
+body.woocommerce-order-received table.shop_table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  font-size: 0.8125rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  border: none !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Header row */
+body.woocommerce-order-pay table.shop_table thead th,
+body.woocommerce-order-received table.shop_table thead th {
+  background: #FAF6EE !important;
+  color: #4A3F35 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.6875rem !important;
+  padding: 10px 16px !important;
+  border: none !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+body.woocommerce-order-pay table.shop_table thead th:first-child,
+body.woocommerce-order-received table.shop_table thead th:first-child { border-radius: 16px 0 0 16px !important; }
+body.woocommerce-order-pay table.shop_table thead th:last-child,
+body.woocommerce-order-received table.shop_table thead th:last-child  { border-radius: 0 16px 16px 0 !important; }
+
+/* Body rows */
+body.woocommerce-order-pay table.shop_table tbody td,
+body.woocommerce-order-received table.shop_table tbody td {
+  padding: 12px 16px !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #F5EDE0 !important;
+  color: #4A3F35 !important;
+  vertical-align: middle !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+body.woocommerce-order-pay table.shop_table tbody tr:last-child td,
+body.woocommerce-order-received table.shop_table tbody tr:last-child td { border-bottom: none !important; }
+
+/* Tfoot — unified rounded block */
+body.woocommerce-order-pay table.shop_table tfoot tr th,
+body.woocommerce-order-pay table.shop_table tfoot tr td,
+body.woocommerce-order-received table.shop_table tfoot tr th,
+body.woocommerce-order-received table.shop_table tfoot tr td {
+  background: #FAF6EE !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  padding: 10px 16px !important;
+  color: #4A3F35 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600 !important;
+}
+body.woocommerce-order-pay table.shop_table tfoot tr th:first-child,
+body.woocommerce-order-pay table.shop_table tfoot tr td:first-child,
+body.woocommerce-order-received table.shop_table tfoot tr th:first-child,
+body.woocommerce-order-received table.shop_table tfoot tr td:first-child { border-left: 1px solid #EEE4D8 !important; }
+body.woocommerce-order-pay table.shop_table tfoot tr th:last-child,
+body.woocommerce-order-pay table.shop_table tfoot tr td:last-child,
+body.woocommerce-order-received table.shop_table tfoot tr th:last-child,
+body.woocommerce-order-received table.shop_table tfoot tr td:last-child { border-right: 1px solid #EEE4D8 !important; }
+body.woocommerce-order-pay table.shop_table tfoot tr:first-child th,
+body.woocommerce-order-pay table.shop_table tfoot tr:first-child td,
+body.woocommerce-order-received table.shop_table tfoot tr:first-child th,
+body.woocommerce-order-received table.shop_table tfoot tr:first-child td { border-top: 1px solid #EEE4D8 !important; padding-top: 16px !important; }
+body.woocommerce-order-pay table.shop_table tfoot tr:last-child th,
+body.woocommerce-order-pay table.shop_table tfoot tr:last-child td,
+body.woocommerce-order-received table.shop_table tfoot tr:last-child th,
+body.woocommerce-order-received table.shop_table tfoot tr:last-child td { border-bottom: 1px solid #EEE4D8 !important; padding-bottom: 16px !important; }
+/* Rounded corners */
+body.woocommerce-order-pay table.shop_table tfoot tr:first-child th:first-child,
+body.woocommerce-order-pay table.shop_table tfoot tr:first-child td:first-child,
+body.woocommerce-order-received table.shop_table tfoot tr:first-child th:first-child,
+body.woocommerce-order-received table.shop_table tfoot tr:first-child td:first-child { border-top-left-radius: 16px !important; }
+body.woocommerce-order-pay table.shop_table tfoot tr:first-child th:last-child,
+body.woocommerce-order-pay table.shop_table tfoot tr:first-child td:last-child,
+body.woocommerce-order-received table.shop_table tfoot tr:first-child th:last-child,
+body.woocommerce-order-received table.shop_table tfoot tr:first-child td:last-child { border-top-right-radius: 16px !important; }
+body.woocommerce-order-pay table.shop_table tfoot tr:last-child th:first-child,
+body.woocommerce-order-pay table.shop_table tfoot tr:last-child td:first-child,
+body.woocommerce-order-received table.shop_table tfoot tr:last-child th:first-child,
+body.woocommerce-order-received table.shop_table tfoot tr:last-child td:first-child { border-bottom-left-radius: 16px !important; }
+body.woocommerce-order-pay table.shop_table tfoot tr:last-child th:last-child,
+body.woocommerce-order-pay table.shop_table tfoot tr:last-child td:last-child,
+body.woocommerce-order-received table.shop_table tfoot tr:last-child th:last-child,
+body.woocommerce-order-received table.shop_table tfoot tr:last-child td:last-child { border-bottom-right-radius: 16px !important; }
+
+/* ─── Order Received — overview bar ─────────────────────────── */
+body.woocommerce-order-received .woocommerce-order-overview {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 0 2rem !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0 !important;
+  background: #FAF6EE !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  border: 1px solid #EEE4D8 !important;
+}
+body.woocommerce-order-received .woocommerce-order-overview li {
+  flex: 1 1 auto !important;
+  padding: 14px 20px !important;
+  border-right: 1px solid #EEE4D8 !important;
+  border-bottom: none !important;
+  margin: 0 !important;
+  font-size: 0.75rem !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  color: #4A3F35 !important;
+}
+body.woocommerce-order-received .woocommerce-order-overview li:last-child { border-right: none !important; }
+body.woocommerce-order-received .woocommerce-order-overview li strong {
+  display: block !important;
+  font-size: 0.6125rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: rgba(74,63,53,0.55) !important;
+  margin-bottom: 3px !important;
+  font-weight: 700 !important;
+}
+
+/* ─── Order Received — details section wrapper ───────────────── */
+body.woocommerce-order-received .woocommerce-order-details {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+body.woocommerce-order-received .woocommerce-order-details__title {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-bottom: 1rem !important;
+}
+
+/* ─── Order Received — customer addresses ────────────────────── */
+body.woocommerce-order-received .woocommerce-customer-details {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 1rem !important;
+  margin-top: 2rem !important;
+}
+body.woocommerce-order-received .woocommerce-column {
+  background: #FAF6EE !important;
+  border-radius: 16px !important;
+  padding: 1.25rem 1.5rem !important;
+  border: none !important;
+}
+body.woocommerce-order-received .woocommerce-column__title {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin: 0 0 0.75rem !important;
+}
+body.woocommerce-order-received .woocommerce-customer-details address {
+  border: none !important;
+  background: transparent !important;
+  font-style: normal !important;
+  font-size: 0.8125rem !important;
+  color: #C47C5A !important;
+  line-height: 1.75 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+body.woocommerce-order-received .woocommerce-customer-details p {
+  font-size: 0.8125rem !important;
+  color: rgba(58,49,40,0.55) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  margin: 0 !important;
+}
+
+/* ─── Order Pay — payment section ───────────────────────────── */
+body.woocommerce-order-pay #payment {
+  background: #fff !important;
+  border-radius: 16px !important;
+  border: 1px solid #F5EDE0 !important;
+  overflow: hidden !important;
+  margin-top: 1.5rem !important;
+}
+body.woocommerce-order-pay #payment .payment_methods {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+body.woocommerce-order-pay #payment .wc_payment_method {
+  border-bottom: 1px solid #F5EDE0 !important;
+}
+body.woocommerce-order-pay #payment .wc_payment_method:last-child { border-bottom: none !important; }
+body.woocommerce-order-pay #payment .wc_payment_method > label {
+  display: flex !important;
+  align-items: center !important;
+  padding: 1rem 1.25rem !important;
+  cursor: pointer !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: #4A3F35 !important;
+  gap: 0.5rem !important;
+}
+body.woocommerce-order-pay #payment .payment_box {
+  background: #FAF6EE !important;
+  padding: 1rem 1.25rem !important;
+  border-top: 1px solid #F5EDE0 !important;
+  font-size: 0.8125rem !important;
+  color: rgba(74,63,53,0.7) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+body.woocommerce-order-pay #payment .form-row.place-order {
+  padding: 1.25rem !important;
+  background: #fff !important;
+  border-top: 1px solid #F5EDE0 !important;
+  margin: 0 !important;
+}
+body.woocommerce-order-pay #payment #place_order {
+  width: 100% !important;
+  background: #88C4B5 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 14px 24px !important;
+  font-size: 0.9375rem !important;
+  font-weight: 700 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+  display: block !important;
+}
+body.woocommerce-order-pay #payment #place_order:hover { background: #72b0a2 !important; }
+body.woocommerce-order-pay .woocommerce-privacy-policy-text {
+  font-size: 0.75rem !important;
+  color: rgba(74,63,53,0.6) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  margin-bottom: 1rem !important;
 }
 .wp-block-woocommerce-cart .wc-block-components-radio-control__input:checked, 
 .wp-block-woocommerce-cart .wc-block-components-radio-control__input:focus,
