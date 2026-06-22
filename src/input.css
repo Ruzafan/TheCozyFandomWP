@@ -2227,6 +2227,7 @@ ul.wc-block-grid {
   gap: 1.25rem !important;
   float: none !important;
 }
+/* Outer card */
 .cozy-account-content .woocommerce-Address,
 .cozy-account-content .u-column1,
 .cozy-account-content .u-column2 {
@@ -2234,17 +2235,23 @@ ul.wc-block-grid {
   width: auto !important;
   background: #ffffff !important;
   border: 1px solid #EEE4D8 !important;
-  border-radius: 28px !important;
-  padding: 1.75rem 2rem !important;
+  border-radius: 24px !important;
+  padding: 1rem !important;
   box-shadow: 0 2px 14px rgba(58,49,40,0.06) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.625rem !important;
 }
+/* Inner header card (title + edit button) */
 .cozy-account-content .woocommerce-Address-title {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding-bottom: 0.875rem !important;
-  margin-bottom: 1rem !important;
-  border-bottom: 1px solid #F5EDE0 !important;
+  padding: 0.875rem 1.25rem !important;
+  margin: 0 !important;
+  border: 1px solid #EEE4D8 !important;
+  border-radius: 18px !important;
+  background: #FAFAF8 !important;
 }
 .cozy-account-content .woocommerce-Address-title h2,
 .cozy-account-content .woocommerce-Address-title h3 {
@@ -2266,23 +2273,32 @@ ul.wc-block-grid {
   padding: 0.25rem 0.85rem !important;
   background: rgba(136,196,181,0.08) !important;
   transition: background 0.2s, color 0.2s !important;
+  white-space: nowrap !important;
 }
 .cozy-account-content .woocommerce-Address-title a.edit:hover {
   background: #88C4B5 !important;
   color: #fff !important;
 }
+/* Inner content card (address lines) */
 .cozy-account-content address {
   font-style: normal !important;
   font-size: 0.8125rem !important;
-  color: rgba(58,49,40,0.7) !important;
+  color: #C47C5A !important;
   line-height: 1.75 !important;
+  border: 1px solid #EEE4D8 !important;
+  border-radius: 16px !important;
+  padding: 1rem 1.25rem !important;
+  margin: 0 !important;
 }
-/* "Aún no has configurado..." notice inside address card */
+/* "Aún no has configurado..." notice — same card treatment */
 .cozy-account-content .woocommerce-Address p {
   font-size: 0.8125rem !important;
-  color: rgba(58,49,40,0.6) !important;
-  font-style: italic !important;
+  color: rgba(58,49,40,0.55) !important;
+  font-style: normal !important;
   margin: 0 !important;
+  border: 1px solid #EEE4D8 !important;
+  border-radius: 16px !important;
+  padding: 1rem 1.25rem !important;
 }
 
 /* ─── My Account — Account Details form ────────────────────── */
