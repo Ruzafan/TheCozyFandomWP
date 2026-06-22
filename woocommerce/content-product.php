@@ -58,11 +58,17 @@ if ( empty( $product ) || ! $product->is_visible() ) {
             <span class="text-sm font-bold text-cozy-coffee shrink-0">
                 <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </span>
-            <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
-               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60'; ?> px-2 sm:px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
-                <i class="fa-solid fa-eye text-[9px]" aria-hidden="true"></i>
-                <span class="hidden sm:inline">Ver producto</span>
-                <span class="sm:hidden">Ver</span>
+            <?php $is_ajax = $product->is_type( 'simple' ) && $product->is_in_stock() && $product->is_purchasable(); ?>
+            <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
+               <?php if ( $is_ajax ) : ?>
+               data-product_id="<?php echo absint( $product->get_id() ); ?>"
+               data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
+               data-quantity="1"
+               <?php endif; ?>
+               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> px-2 sm:px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
+                <i class="fa-solid <?php echo $is_ajax ? 'fa-basket-shopping' : ( $product->is_in_stock() ? 'fa-eye' : 'fa-ban' ); ?> text-[9px]" aria-hidden="true"></i>
+                <span class="hidden sm:inline"><?php echo $is_ajax ? 'Añadir al carrito' : ( $product->is_in_stock() ? 'Ver opciones' : 'Sin stock' ); ?></span>
+                <span class="sm:hidden"><?php echo $is_ajax ? '+' : ( $product->is_in_stock() ? 'Ver' : '—' ); ?></span>
             </a>
         </div>
 
