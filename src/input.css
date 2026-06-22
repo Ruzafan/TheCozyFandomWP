@@ -1827,6 +1827,10 @@ ul.wc-block-grid {
   text-decoration: none;
   white-space: nowrap;
   transition: background 0.15s, color 0.15s;
+  box-shadow: none;
+}
+.cozy-hdr-actions-icons button{
+  box-shadow: none;
 }
 .cozy-hdr-nav .cozy-nav-link:hover {
   background: rgba(136,196,181,0.12);
