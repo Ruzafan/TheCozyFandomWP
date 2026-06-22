@@ -53,15 +53,15 @@ $cozy_cats = [
 <!--  HERO SECTION + TRUST BADGES                                  -->
 <!-- ============================================================ -->
 <?php $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos'; ?>
-<section id="home" class="relative bg-cozy-cream" style="min-height:580px; overflow:hidden;">
+<section id="home" class="relative flex flex-col bg-cozy-cream" style="min-height:580px; overflow:hidden;">
 
     <!-- Background banner image -->
     <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpg' ); ?>"
          alt="" aria-hidden="true" loading="eager"
          class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
-    <!-- Copy: glass card left-aligned -->
-    <div class="relative z-10 px-6 md:px-16 pt-12 pb-32 max-w-7xl mx-auto">
+    <!-- Copy: glass card, grows to fill available height -->
+    <div class="relative z-10 flex-1 flex items-center px-6 md:px-16 py-10">
         <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm"
              style="background:rgba(255,255,255,0.83); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
@@ -86,9 +86,9 @@ $cozy_cats = [
         </div>
     </div>
 
-    <!-- Trust badges: bottom strip overlaid on banner -->
-    <div class="absolute bottom-0 left-0 right-0 z-10"
-         style="background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid rgba(255,255,255,0.5);">
+    <!-- Trust badges: always at bottom, inside the image, translucent -->
+    <div class="relative z-10"
+         style="background:rgba(255,255,255,0.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid rgba(255,255,255,0.45);">
         <div class="max-w-7xl mx-auto px-6 md:px-16 py-5">
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
 
