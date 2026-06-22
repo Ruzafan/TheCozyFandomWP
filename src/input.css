@@ -2,12 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-html { scroll-behavior: smooth; overflow-x: clip; }
+html { scroll-behavior: smooth; }
 
-/* ─── Home hero full-bleed (break out of Astra container) ──── */
-#cozy-front-page #home {
-  width: 100vw !important;
-  margin-left: calc(50% - 50vw) !important;
+/* ─── Home page: expand Astra container to full width ──────── */
+/* This avoids any overflow/scroll hacks that break sticky header */
+body.home #primary,
+body.home .entry-content,
+body.home .ast-container,
+body.home .ast-article-single,
+body.home #page .site-main {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 ::-webkit-scrollbar { width: 8px; }

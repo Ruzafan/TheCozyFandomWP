@@ -91,10 +91,10 @@ $cozy_cats = [
     <!-- Trust badges: max-w-7xl container with rounded corners and glass effect -->
     <div class="relative z-10 px-6 md:px-16 pb-10">
         <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 rounded-[24px] px-6 md:px-10 py-5"
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-[24px] px-6 md:px-10"
                  style="background:rgba(255,255,255,0.76); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 py-4 md:py-5" style="border-bottom:1px solid rgba(180,160,140,0.15);">
                     <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                     </div>
@@ -104,7 +104,7 @@ $cozy_cats = [
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 py-4 md:py-5" style="border-bottom:1px solid rgba(180,160,140,0.15);">
                     <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                     </div>
@@ -114,7 +114,7 @@ $cozy_cats = [
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 py-4 md:py-5" style="border-bottom:1px solid rgba(180,160,140,0.15);">
                     <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     </div>
@@ -124,7 +124,7 @@ $cozy_cats = [
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 py-4 md:py-5">
                     <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     </div>
