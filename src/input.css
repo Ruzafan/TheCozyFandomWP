@@ -170,13 +170,15 @@ input[type="submit"] {
 }
 .cozy-account-content table thead th:first-child {    
   border-radius: 16px 0 0 16px;
-  border: 1px solid #eee4d8 !important;
-  border-right: 0 !important;
+  border-left: 1px solid #eee4d8 !important;
+}
+.cozy-account-content table thead th{
+   border-top: 1px solid #eee4d8 !important;
+   border-bottom: 1px solid #eee4d8 !important;
 }
 .cozy-account-content table thead th:last-child  { 
   border-radius: 0 16px 16px 0 !important;
-  border: 1px solid #eee4d8 !important;
-  border-left: 0 !important; 
+  border-right: 1px solid #eee4d8 !important;
 }
 .cozy-account-content table td {
   padding: 12px 16px !important;
