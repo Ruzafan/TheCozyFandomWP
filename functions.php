@@ -620,3 +620,41 @@ add_filter( 'woocommerce_shipping_rate_label', function ( $label, $method ) {
     return $label;
 }, 10, 2 );
 
+/* ─── Tracking number block on view-order page ──────────────── */
+add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
+    $codigo  = $order->get_meta( 'numero_seguimiento', true );
+    $enlace  = $order->get_meta( 'enlace_seguimiento', true );
+
+    if ( empty( $codigo ) ) {
+        return;
+    }
+
+    $has_link = ! empty( $enlace ) && filter_var( $enlace, FILTER_VALIDATE_URL );
+    ?>
+    <div style="margin-top:1.5rem;background:#FAFAF8;border:1px solid #EEE4D8;border-radius:20px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div style="width:40px;height:40px;background:#D4EDE1;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fa-solid fa-truck" style="color:#3A7D5A;font-size:1rem;" aria-hidden="true"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+            <p style="margin:0 0 .2rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(74,63,53,.45);">Número de seguimiento</p>
+            <?php if ( $has_link ) : ?>
+            <a href="<?php echo esc_url( $enlace ); ?>" target="_blank" rel="noopener noreferrer"
+               style="font-size:.95rem;font-weight:700;color:#3A7D5A;text-decoration:none;word-break:break-all;display:inline-flex;align-items:center;gap:.4rem;">
+                <?php echo esc_html( $codigo ); ?>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.65rem;opacity:.7;" aria-hidden="true"></i>
+            </a>
+            <?php else : ?>
+            <span style="font-size:.95rem;font-weight:700;color:#3A4A3A;word-break:break-all;"><?php echo esc_html( $codigo ); ?></span>
+            <?php endif; ?>
+        </div>
+        <?php if ( $has_link ) : ?>
+        <a href="<?php echo esc_url( $enlace ); ?>" target="_blank" rel="noopener noreferrer"
+           style="flex-shrink:0;background:#3A7D5A;color:#fff;font-size:.75rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            Rastrear paquete
+        </a>
+        <?php endif; ?>
+    </div>
+    <?php
+} );
+
