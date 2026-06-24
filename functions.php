@@ -649,7 +649,7 @@ add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
         </div>
         <?php if ( $has_link ) : ?>
         <a href="<?php echo esc_url( $enlace ); ?>" target="_blank" rel="noopener noreferrer"
-           style="flex-shrink:0;background:#3A7D5A;color:#fff;font-size:.75rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
+           style="flex-shrink:0;background:#88c4b5;color:#3a3128;font-size:.75rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
             <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
             Rastrear paquete
         </a>

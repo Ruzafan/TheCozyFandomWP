@@ -128,6 +128,21 @@ input[type="submit"] {
 .woocommerce-account .ast-archive-description {
   display: none !important;
 }
+
+/* Global text color for all my-account content */
+.cozy-my-account,
+.cozy-account-content,
+.cozy-account-content p,
+.cozy-account-content h1,
+.cozy-account-content h2,
+.cozy-account-content h3,
+.cozy-account-content h4,
+.cozy-account-content span,
+.cozy-account-content li,
+.cozy-account-content address,
+.cozy-account-content label {
+  color: #3a3128 !important;
+}
 .cozy-my-account,
 .cozy-login-page {
   display: block !important;
