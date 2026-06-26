@@ -3,6 +3,8 @@
  * Cozy Fandom Child Theme — functions & definitions
  */
 
+require_once get_stylesheet_directory() . '/inc/cozy-icons.php';
+
 /* ------------------------------------------------------------------ */
 /*  THEME SETUP                                                         */
 /* ------------------------------------------------------------------ */
@@ -121,18 +123,8 @@ add_filter( 'pre_option_comment_registration', '__return_one' ); // WP: login re
 /*  STYLES                                                              */
 /* ------------------------------------------------------------------ */
 function cozy_fandom_enqueue_styles() {
-    wp_enqueue_style(
-        'cozy-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap',
-        [],
-        null
-    );
-    wp_enqueue_style(
-        'cozy-fontawesome',
-        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-        [],
-        '6.4.0'
-    );
+    /* Google Fonts removed — now self-hosted via @font-face in input.css */
+    /* Font Awesome removed — replaced by inline SVGs (inc/cozy-icons.php) */
 
     wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
 
@@ -159,7 +151,7 @@ function cozy_fandom_enqueue_scripts() {
     wp_enqueue_script(
         'cozy-main',
         get_stylesheet_directory_uri() . '/assets/js/cozy-main.js',
-        [ 'jquery' ],
+        [],
         filemtime( get_stylesheet_directory() . '/assets/js/cozy-main.js' ),
         true
     );
@@ -188,8 +180,9 @@ add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_scripts', 20 );
 /*  NEWSLETTER — Mailchimp API subscription                            */
 /* ------------------------------------------------------------------ */
 
-// Settings field in WP Admin > Ajustes > Generales
+// Settings fields in WP Admin > Ajustes > Generales
 add_action( 'admin_init', function () {
+    // Mailchimp API Key
     register_setting( 'general', 'cozy_mailchimp_api_key', 'sanitize_text_field' );
     add_settings_field(
         'cozy_mailchimp_api_key',
@@ -198,6 +191,58 @@ add_action( 'admin_init', function () {
             $val = get_option( 'cozy_mailchimp_api_key', '' );
             echo '<input type="text" name="cozy_mailchimp_api_key" value="' . esc_attr( $val ) . '" class="regular-text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us14">';
             echo '<p class="description">Clave de API de Mailchimp. Encuéntrala en <a href="https://admin.mailchimp.com/account/api/" target="_blank">admin.mailchimp.com/account/api</a></p>';
+        },
+        'general'
+    );
+
+    // Mailchimp List ID
+    register_setting( 'general', 'cozy_mailchimp_list_id', 'sanitize_text_field' );
+    add_settings_field(
+        'cozy_mailchimp_list_id',
+        'Mailchimp List ID (Newsletter)',
+        function () {
+            $val = get_option( 'cozy_mailchimp_list_id', '' );
+            echo '<input type="text" name="cozy_mailchimp_list_id" value="' . esc_attr( $val ) . '" class="regular-text" placeholder="667877ef18">';
+            echo '<p class="description">ID de la lista (Audience ID) de Mailchimp.</p>';
+        },
+        'general'
+    );
+
+    // WhatsApp Number
+    register_setting( 'general', 'cozy_whatsapp_number', 'sanitize_text_field' );
+    add_settings_field(
+        'cozy_whatsapp_number',
+        'WhatsApp Number',
+        function () {
+            $val = get_option( 'cozy_whatsapp_number', '' );
+            echo '<input type="text" name="cozy_whatsapp_number" value="' . esc_attr( $val ) . '" class="regular-text" placeholder="34612345678">';
+            echo '<p class="description">Número de WhatsApp (con código de país, sin +, sin espacios ni guiones). Si se deja vacío, el botón flotante no se mostrará.</p>';
+        },
+        'general'
+    );
+
+    // Instagram URL
+    register_setting( 'general', 'cozy_instagram_url', 'esc_url_raw' );
+    add_settings_field(
+        'cozy_instagram_url',
+        'Instagram URL',
+        function () {
+            $val = get_option( 'cozy_instagram_url', '' );
+            echo '<input type="url" name="cozy_instagram_url" value="' . esc_url( $val ) . '" class="regular-text" placeholder="https://instagram.com/tu_perfil">';
+            echo '<p class="description">Enlace al perfil de Instagram.</p>';
+        },
+        'general'
+    );
+
+    // TikTok URL
+    register_setting( 'general', 'cozy_tiktok_url', 'esc_url_raw' );
+    add_settings_field(
+        'cozy_tiktok_url',
+        'TikTok URL',
+        function () {
+            $val = get_option( 'cozy_tiktok_url', '' );
+            echo '<input type="url" name="cozy_tiktok_url" value="' . esc_url( $val ) . '" class="regular-text" placeholder="https://tiktok.com/@tu_perfil">';
+            echo '<p class="description">Enlace al perfil de TikTok.</p>';
         },
         'general'
     );
@@ -231,7 +276,7 @@ function cozy_newsletter_subscribe() {
 
     // Data center is the suffix after the last dash (e.g. "us14")
     $dc      = substr( $api_key, strrpos( $api_key, '-' ) + 1 );
-    $list_id = '667877ef18';
+    $list_id = get_option( 'cozy_mailchimp_list_id', '667877ef18' );
     $url     = "https://{$dc}.api.mailchimp.com/3.0/lists/{$list_id}/members/" . md5( strtolower( $email ) );
 
     $response = wp_remote_request( $url, [
@@ -365,7 +410,7 @@ function cozy_render_mini_cart() {
     <div id="cart-items" class="p-6 overflow-y-auto flex-grow space-y-4">
     <?php if ( WC()->cart->is_empty() ) : ?>
         <div class="text-center py-12 space-y-4">
-            <i class="fa-solid fa-box-open text-cozy-coffee/20 text-5xl block"></i>
+            <?php echo cozy_icon( 'box-open', '48', 'text-cozy-coffee/20 block' ); ?>
             <p class="text-sm text-cozy-coffee/60">Aún no hay tesoros en tu carrito.</p>
             <button onclick="closeCart()" class="text-xs font-bold text-cozy-mint hover:underline">¡Empezar a explorar!</button>
         </div>
@@ -387,7 +432,7 @@ function cozy_render_mini_cart() {
             <a href="<?php echo esc_url( $remove_url ); ?>"
                class="shrink-0 text-cozy-coffee/40 hover:text-red-400 transition-colors ml-2"
                title="Eliminar">
-                <i class="fa-solid fa-xmark text-sm"></i>
+                <?php echo cozy_icon( 'xmark', '14' ); ?>
             </a>
         </div>
         <?php endforeach; ?>
@@ -412,9 +457,8 @@ function cozy_fandom_render_footer() {
     $blog_page_id = get_option( 'page_for_posts' );
     $blog_url     = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/blog/' );
 
-    /* Swap these for the real profile URLs once they're live */
-    $instagram_url = '#';
-    $tiktok_url     = '#';
+    $instagram_url = get_option( 'cozy_instagram_url', '' );
+    $tiktok_url    = get_option( 'cozy_tiktok_url', '' );
     ?>
     <footer class="cozy-footer bg-cozy-coffee text-white/70 pt-14 pb-6 px-6 md:px-12 relative overflow-hidden">
         <div class="absolute top-0 left-1/4 w-72 h-72 bg-cozy-mint/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
@@ -429,18 +473,24 @@ function cozy_fandom_render_footer() {
                     <p class="text-xs text-white/60 leading-relaxed max-w-xs">
                         Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado.
                     </p>
+                    <?php if ( ( ! empty( $instagram_url ) && $instagram_url !== '#' ) || ( ! empty( $tiktok_url ) && $tiktok_url !== '#' ) ) : ?>
                     <div class="flex items-center gap-3 pt-1">
+                        <?php if ( ! empty( $instagram_url ) && $instagram_url !== '#' ) : ?>
                         <a href="<?php echo esc_url( $instagram_url ); ?>" target="_blank" rel="noopener noreferrer"
                            aria-label="Instagram"
                            class="w-10 h-10 rounded-full bg-white/10 hover:bg-cozy-mint flex items-center justify-center text-white hover:text-cozy-coffee transition-colors">
-                            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                            <?php echo cozy_icon( 'instagram', '16' ); ?>
                         </a>
+                        <?php endif; ?>
+                        <?php if ( ! empty( $tiktok_url ) && $tiktok_url !== '#' ) : ?>
                         <a href="<?php echo esc_url( $tiktok_url ); ?>" target="_blank" rel="noopener noreferrer"
                            aria-label="TikTok"
                            class="w-10 h-10 rounded-full bg-white/10 hover:bg-cozy-mint flex items-center justify-center text-white hover:text-cozy-coffee transition-colors">
-                            <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+                            <?php echo cozy_icon( 'tiktok', '16' ); ?>
                         </a>
+                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Tienda -->
@@ -478,7 +528,7 @@ function cozy_fandom_render_footer() {
             </div>
 
             <div class="pt-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-white/40">
-                <span>&copy; <?php echo esc_html( date( 'Y' ) ); ?> The Cozy Fandom. Todos los derechos reservados.</span>
+                <span>&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> The Cozy Fandom. Todos los derechos reservados.</span>
                 <span>Hecho con 🌿 para fans cozy</span>
             </div>
 
@@ -542,7 +592,7 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
                data-quantity="1"
                <?php endif; ?>
                class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 min-w-0 overflow-hidden no-underline">
-                <i class="fa-solid <?php echo $is_ajax ? 'fa-basket-shopping' : ( $product->is_in_stock() ? 'fa-eye' : 'fa-ban' ); ?> shrink-0" aria-hidden="true"></i>
+                <?php echo cozy_icon( $is_ajax ? 'basket-shopping' : ( $product->is_in_stock() ? 'eye' : 'ban' ), '14', 'shrink-0' ); ?>
                 <span class="truncate"><?php echo $is_ajax ? 'Añadir al carrito' : ( $product->is_in_stock() ? 'Ver opciones' : 'Sin stock' ); ?></span>
             </a>
         </div>
@@ -582,7 +632,7 @@ add_action( 'woocommerce_after_edit_account_form', function () {
         <p style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(74,63,53,.4);margin:0 0 .6rem;">Zona de peligro</p>
         <a href="<?php echo esc_url( wc_get_account_endpoint_url( 'delete-account' ) ); ?>"
            style="display:inline-flex;align-items:center;gap:.5rem;font-size:0.75rem;font-weight:600;color:#f87171;text-decoration:none;">
-            <i class="fa-solid fa-user-xmark" aria-hidden="true"></i>
+            <?php echo cozy_icon( 'user-xmark', '14' ); ?>
             Cerrar y eliminar mi cuenta
         </a>
         <p style="font-size:0.7rem;color:rgba(74,63,53,.4);margin:.4rem 0 0;">Te pediremos confirmación antes de borrar nada.</p>
@@ -602,11 +652,19 @@ add_action( 'woocommerce_account_delete-account_endpoint', function () {
     ) {
         $user_id = get_current_user_id();
         if ( $user_id && ! user_can( $user_id, 'manage_options' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/user.php';
-            wp_delete_user( $user_id );
-            wp_logout();
-            wp_safe_redirect( add_query_arg( 'cuenta_eliminada', '1', home_url( '/' ) ) );
-            exit;
+            $password = isset( $_POST['cozy_confirm_password'] ) ? sanitize_text_field( wp_unslash( $_POST['cozy_confirm_password'] ) ) : '';
+            $user     = get_userdata( $user_id );
+
+            if ( $user && wp_check_password( $password, $user->user_pass, $user->ID ) ) {
+                require_once ABSPATH . 'wp-admin/includes/user.php';
+                wp_delete_user( $user_id );
+                wp_logout();
+                wp_safe_redirect( add_query_arg( 'cuenta_eliminada', '1', home_url( '/' ) ) );
+                exit;
+            } else {
+                wp_safe_redirect( add_query_arg( 'error', 'password', wc_get_account_endpoint_url( 'delete-account' ) ) );
+                exit;
+            }
         }
     }
     wc_get_template( 'myaccount/delete-account.php' );
@@ -633,7 +691,7 @@ add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
     ?>
     <div style="margin-top:1.5rem;background:#FAFAF8;border:1px solid #EEE4D8;border-radius:20px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
         <div style="width:40px;height:40px;background:#D4EDE1;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="fa-solid fa-truck" style="color:#3A7D5A;font-size:1rem;" aria-hidden="true"></i>
+            <?php echo cozy_icon( 'truck', '16', 'text-[#3A7D5A]' ); ?>
         </div>
         <div style="flex:1;min-width:0;">
             <p style="margin:0 0 .2rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(74,63,53,.45);">Número de seguimiento</p>
@@ -641,7 +699,7 @@ add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
             <a href="<?php echo esc_url( $enlace ); ?>" target="_blank" rel="noopener noreferrer"
                style="font-size:.95rem;font-weight:700;color:#3A7D5A;text-decoration:none;word-break:break-all;display:inline-flex;align-items:center;gap:.4rem;">
                 <?php echo esc_html( $codigo ); ?>
-                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.65rem;opacity:.7;" aria-hidden="true"></i>
+                <?php echo cozy_icon( 'arrow-up-right-from-square', '10', 'opacity-70' ); ?>
             </a>
             <?php else : ?>
             <span style="font-size:.95rem;font-weight:700;color:#3A4A3A;word-break:break-all;"><?php echo esc_html( $codigo ); ?></span>
@@ -650,7 +708,7 @@ add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
         <?php if ( $has_link ) : ?>
         <a href="<?php echo esc_url( $enlace ); ?>" target="_blank" rel="noopener noreferrer"
            style="flex-shrink:0;background:#88c4b5;color:#3a3128;font-size:.75rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
-            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <?php echo cozy_icon( 'magnifying-glass', '14' ); ?>
             Rastrear paquete
         </a>
         <?php endif; ?>

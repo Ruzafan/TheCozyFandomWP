@@ -1,3 +1,66 @@
+/* Plus Jakarta Sans - 400 (normal) */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/PlusJakartaSans-Regular.woff2') format('woff2');
+}
+
+/* Plus Jakarta Sans - 500 (normal) */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/PlusJakartaSans-Medium.woff2') format('woff2');
+}
+
+/* Plus Jakarta Sans - 600 (normal) */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/PlusJakartaSans-SemiBold.woff2') format('woff2');
+}
+
+/* Plus Jakarta Sans - 700 (normal) */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/PlusJakartaSans-Bold.woff2') format('woff2');
+}
+
+/* Playfair Display - 400 (normal) */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+}
+
+/* Playfair Display - 600 (normal) */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/PlayfairDisplay-SemiBold.woff2') format('woff2');
+}
+
+/* Playfair Display - 400 (italic) */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/PlayfairDisplay-Italic.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

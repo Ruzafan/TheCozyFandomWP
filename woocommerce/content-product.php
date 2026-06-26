@@ -66,7 +66,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
                data-quantity="1"
                <?php endif; ?>
                class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> px-2 sm:px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
-                <i class="fa-solid <?php echo $is_ajax ? 'fa-basket-shopping' : ( $product->is_in_stock() ? 'fa-eye' : 'fa-ban' ); ?> text-[9px]" aria-hidden="true"></i>
+                <?php echo cozy_icon( $is_ajax ? 'basket-shopping' : ( $product->is_in_stock() ? 'eye' : 'ban' ), '12' ); ?>
                 <span class="hidden sm:inline"><?php echo $is_ajax ? 'Añadir al carrito' : ( $product->is_in_stock() ? 'Ver opciones' : 'Sin stock' ); ?></span>
                 <span class="sm:hidden"><?php echo $is_ajax ? '+' : ( $product->is_in_stock() ? 'Ver' : '—' ); ?></span>
             </a>

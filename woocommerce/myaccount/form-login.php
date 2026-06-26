@@ -34,7 +34,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 
             <div class="flex items-center gap-3 mb-8">
                 <div class="w-10 h-10 shrink-0 rounded-2xl bg-cozy-mintLight flex items-center justify-center text-cozy-mint">
-                    <i class="fa-solid fa-key" aria-hidden="true"></i>
+                    <?php echo cozy_icon( 'key', '16' ); ?>
                 </div>
                 <h2 class="font-serif text-xl font-bold text-cozy-coffee">Iniciar sesión</h2>
             </div>
@@ -91,7 +91,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 
                 <button type="submit" name="login" value="<?php esc_attr_e( 'Log in', 'woocommerce' ); ?>"
                     class="w-full bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 text-sm">
-                    Entrar a mi cuenta <i class="fa-solid fa-arrow-right ml-2 text-xs" aria-hidden="true"></i>
+                    Entrar a mi cuenta <?php echo cozy_icon( 'arrow-right', '12' ); ?>
                 </button>
 
                 <?php do_action( 'woocommerce_login_form_end' ); ?>
@@ -111,7 +111,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 
             <div class="flex items-center gap-3 mb-8">
                 <div class="w-10 h-10 shrink-0 rounded-2xl bg-white flex items-center justify-center text-cozy-accent">
-                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                    <?php echo cozy_icon( 'user-plus', '16' ); ?>
                 </div>
                 <h2 class="font-serif text-xl font-bold text-cozy-coffee">Crear cuenta</h2>
             </div>
@@ -168,7 +168,7 @@ do_action( 'woocommerce_before_customer_login_form' );
                 </div>
                 <?php else : ?>
                 <p class="flex items-start gap-2 text-xs text-cozy-coffee/70 bg-cozy-mintLight rounded-2xl px-4 py-3 border border-cozy-mint/20">
-                    <i class="fa-solid fa-circle-info text-cozy-mint mt-0.5 shrink-0" aria-hidden="true"></i>
+                    <?php echo cozy_icon( 'circle-info', '14', 'text-cozy-mint mt-0.5 shrink-0' ); ?>
                     Se generará una contraseña automáticamente y se enviará a tu email.
                 </p>
                 <?php endif; ?>
@@ -185,7 +185,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 
                 <button type="submit" name="register" value="<?php esc_attr_e( 'Register', 'woocommerce' ); ?>"
                     class="w-full bg-cozy-coffee hover:bg-cozy-coffee/90 text-white font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 text-sm">
-                    Unirme al Fandom <i class="fa-solid fa-heart ml-2 text-xs" aria-hidden="true"></i>
+                    Unirme al Fandom <?php echo cozy_icon( 'heart', '12' ); ?>
                 </button>
 
                 <?php do_action( 'woocommerce_register_form_end' ); ?>
@@ -199,7 +199,7 @@ do_action( 'woocommerce_before_customer_login_form' );
         <div class="bg-cozy-sand/50 rounded-[32px] p-8 border border-cozy-sand flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[360px]">
             <div class="absolute -right-8 -bottom-8 w-36 h-36 bg-cozy-mint/10 rounded-full pointer-events-none" aria-hidden="true"></div>
             <div class="w-20 h-20 rounded-[24px] bg-cozy-mintLight flex items-center justify-center text-cozy-mint text-3xl mb-6">
-                <i class="fa-solid fa-mug-saucer" aria-hidden="true"></i>
+                <?php echo cozy_icon( 'mug-saucer', '32' ); ?>
             </div>
             <h3 class="font-serif text-xl font-bold text-cozy-coffee mb-3">Tu rincón favorito</h3>
             <p class="text-sm text-cozy-coffee/70 leading-relaxed max-w-xs">
@@ -207,7 +207,7 @@ do_action( 'woocommerce_before_customer_login_form' );
             </p>
             <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
                class="mt-6 inline-flex items-center gap-2 bg-white border border-cozy-sand hover:bg-cozy-mintLight hover:border-cozy-mint text-cozy-coffee font-semibold px-6 py-3 rounded-2xl text-sm transition-all">
-                <i class="fa-solid fa-basket-shopping text-cozy-mint" aria-hidden="true"></i> Explorar la tienda
+                <?php echo cozy_icon( 'basket-shopping', '14', 'text-cozy-mint' ); ?> Explorar la tienda
             </a>
         </div>
 

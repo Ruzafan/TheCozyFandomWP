@@ -1,6 +1,6 @@
 /* ─── Global UI functions ──────────────────────────────────────────
-   Defined outside the jQuery IIFE so inline onclick handlers can always
-   reach them, even if jQuery is not yet available or fails to load.
+   Defined outside any IIFE so inline onclick handlers can always
+   reach them, even before DOMContentLoaded fires.
 ─────────────────────────────────────────────────────────────────── */
 
 /* ---------- CART DRAWER ---------- */
@@ -123,24 +123,24 @@ window.toggleFavorite = function (productId) {
         return;
     }
 
-    if (typeof jQuery === 'undefined') return;
+    var body = new FormData();
+    body.append('action', 'cozy_toggle_favorite');
+    body.append('nonce', cozyAjax.favNonce);
+    body.append('product_id', productId);
 
-    jQuery.post(cozyAjax.url, {
-        action:     'cozy_toggle_favorite',
-        nonce:      cozyAjax.favNonce,
-        product_id: productId
-    })
-    .done(function (res) {
-        if (!res || !res.success) return;
-        var data = res.data;
-        cozyUpdateFavBtns(productId, data.is_favorited);
-        cozyUpdateFavBadge(data.count);
-        if (data.is_favorited && data.item_html) {
-            cozyAddFavItem(data.item_html);
-        } else {
-            cozyRemoveFavItem(productId);
-        }
-    });
+    fetch(cozyAjax.url, { method: 'POST', body: body, credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+            if (!res || !res.success) return;
+            var data = res.data;
+            cozyUpdateFavBtns(productId, data.is_favorited);
+            cozyUpdateFavBadge(data.count);
+            if (data.is_favorited && data.item_html) {
+                cozyAddFavItem(data.item_html);
+            } else {
+                cozyRemoveFavItem(productId);
+            }
+        });
 };
 
 /* ─── Global keyboard / click handlers ─────────────────────────── */
@@ -172,7 +172,7 @@ document.addEventListener('keydown', function (e) {
     }, { passive: true });
 })();
 
-/* ─── Favorites helpers (pure DOM, no jQuery needed) ────────────── */
+/* ─── Favorites helpers (pure DOM) ──────────────────────────────── */
 function cozyUpdateFavBtns(productId, isFav) {
     document.querySelectorAll('.cozy-fav-btn[data-product-id="' + productId + '"]').forEach(function (btn) {
         btn.classList.toggle('is-favorited', isFav);
@@ -206,25 +206,28 @@ function cozyRemoveFavItem(productId) {
     }
 }
 
-/* ─── jQuery-dependent code ─────────────────────────────────────── */
-(function ($) {
+/* ─── WooCommerce event listeners (vanilla JS, no jQuery) ───────── */
+(function () {
     'use strict';
 
-    /* Open cart drawer after AJAX add-to-cart */
-    $(document.body).on('added_to_cart', function () {
-        window.openCart();
-    });
-
-    /* Sync badge visibility after WC fragment refresh */
-    $(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function () {
-        var badge = document.getElementById('cart-badge');
-        if (!badge) return;
-        var count = parseInt(badge.textContent.trim(), 10) || 0;
-        badge.classList.toggle('hidden', count === 0);
-    });
+    /* Open cart drawer after AJAX add-to-cart.
+       WooCommerce triggers 'added_to_cart' as a jQuery event on document.body.
+       Since WC itself loads jQuery, we can listen for it via the jQuery bridge
+       if jQuery is available, or fall back to a MutationObserver on cart-badge. */
+    if (typeof jQuery !== 'undefined') {
+        jQuery(document.body).on('added_to_cart', function () {
+            window.openCart();
+        });
+        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function () {
+            var badge = document.getElementById('cart-badge');
+            if (!badge) return;
+            var count = parseInt(badge.textContent.trim(), 10) || 0;
+            badge.classList.toggle('hidden', count === 0);
+        });
+    }
 
     /* Mark already-favorited products on page load */
-    $(document).ready(function () {
+    document.addEventListener('DOMContentLoaded', function () {
         if (typeof cozyAjax !== 'undefined' && cozyAjax.favorites && cozyAjax.favorites.length) {
             cozyAjax.favorites.forEach(function (id) {
                 cozyUpdateFavBtns(id, true);
@@ -245,24 +248,26 @@ function cozyRemoveFavItem(productId) {
         var originalText = btn ? btn.textContent : '';
         if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
 
-        $.post(cozyAjax.url, {
-            action: 'cozy_newsletter_subscribe',
-            nonce:  cozyAjax.nonce,
-            email:  input.value.trim()
-        })
-        .done(function (res) {
-            if (res.success) {
-                if (form)    form.classList.add('hidden');
-                if (success) success.classList.remove('hidden');
-            } else {
+        var body = new FormData();
+        body.append('action', 'cozy_newsletter_subscribe');
+        body.append('nonce', cozyAjax.nonce);
+        body.append('email', input.value.trim());
+
+        fetch(cozyAjax.url, { method: 'POST', body: body, credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res.success) {
+                    if (form)    form.classList.add('hidden');
+                    if (success) success.classList.remove('hidden');
+                } else {
+                    if (btn) { btn.disabled = false; btn.textContent = originalText; }
+                    alert(res.data && res.data.message ? res.data.message : 'Ha ocurrido un error. Inténtalo de nuevo.');
+                }
+            })
+            .catch(function () {
                 if (btn) { btn.disabled = false; btn.textContent = originalText; }
-                alert(res.data && res.data.message ? res.data.message : 'Ha ocurrido un error. Inténtalo de nuevo.');
-            }
-        })
-        .fail(function () {
-            if (btn) { btn.disabled = false; btn.textContent = originalText; }
-            alert('Error de conexión. Inténtalo de nuevo.');
-        });
+                alert('Error de conexión. Inténtalo de nuevo.');
+            });
     };
 
-})(jQuery);
+})();

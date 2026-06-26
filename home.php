@@ -53,7 +53,7 @@ get_header();
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          loading="lazy">
                     <?php else : ?>
-                    <i class="fa-solid fa-pen-nib text-cozy-coffee/20 text-4xl" aria-hidden="true"></i>
+                    <?php echo cozy_icon( 'pen-nib', '40', 'text-cozy-coffee/20' ); ?>
                     <?php endif; ?>
                 </div>
             </a>
@@ -90,7 +90,7 @@ get_header();
                 <!-- Read more -->
                 <a href="<?php the_permalink(); ?>"
                    class="inline-flex items-center gap-2 text-xs font-bold text-cozy-mint hover:gap-3 transition-all no-underline mt-auto pt-3 border-t border-cozy-sand">
-                    Leer artículo <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                    Leer artículo <?php echo cozy_icon( 'arrow-right', '10' ); ?>
                 </a>
 
             </div>
@@ -103,8 +103,8 @@ get_header();
     <div class="mt-14 flex justify-center">
         <?php
         echo paginate_links( [
-            'prev_text' => '<i class="fa-solid fa-chevron-left text-xs"></i> Anterior',
-            'next_text' => 'Siguiente <i class="fa-solid fa-chevron-right text-xs"></i>',
+            'prev_text' => cozy_icon( 'chevron-left', '12' ) . ' Anterior',
+            'next_text' => 'Siguiente ' . cozy_icon( 'chevron-right', '12' ),
             'type'      => 'list',
         ] );
         ?>
@@ -114,12 +114,12 @@ get_header();
 <?php else : ?>
 
     <div class="text-center py-24">
-        <i class="fa-solid fa-pen-nib text-cozy-coffee/20 text-6xl block mb-6" aria-hidden="true"></i>
+        <?php echo cozy_icon( 'pen-nib', '60', 'text-cozy-coffee/20 block mb-6' ); ?>
         <p class="text-cozy-coffee/60 font-medium">Aún no hay artículos publicados.</p>
         <?php if ( current_user_can( 'publish_posts' ) ) : ?>
         <a href="<?php echo esc_url( admin_url( 'post-new.php' ) ); ?>"
            class="inline-block mt-6 bg-cozy-mint text-cozy-coffee px-6 py-3 rounded-xl text-sm font-bold hover:bg-cozy-mintDark transition-colors">
-            <i class="fa-solid fa-plus mr-2"></i> Escribir primer artículo
+            <?php echo cozy_icon( 'plus', '14' ); ?> Escribir primer artículo
         </a>
         <?php endif; ?>
     </div>

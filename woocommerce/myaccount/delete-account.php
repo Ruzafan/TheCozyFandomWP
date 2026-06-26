@@ -12,7 +12,7 @@ $current_user = wp_get_current_user();
 
     <div class="flex items-center gap-3 mb-6">
         <div class="w-11 h-11 rounded-2xl bg-red-50 flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-triangle-exclamation text-red-400" aria-hidden="true"></i>
+            <?php echo cozy_icon( 'triangle-exclamation', '16', 'text-red-400' ); ?>
         </div>
         <div>
             <h2 class="font-serif text-xl font-bold text-cozy-coffee m-0 p-0 border-0">Cerrar cuenta</h2>
@@ -30,11 +30,27 @@ $current_user = wp_get_current_user();
         <p class="m-0 text-xs text-red-500">Los pedidos ya realizados se conservan por obligación legal (período fiscal), pero quedarán anonimizados.</p>
     </div>
 
+    <?php if ( isset( $_GET['error'] ) && $_GET['error'] === 'password' ) : ?>
+        <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 text-sm text-red-800 font-medium">
+            La contraseña introducida es incorrecta. Por favor, inténtalo de nuevo.
+        </div>
+    <?php endif; ?>
+
     <form method="POST">
         <?php wp_nonce_field( 'cozy_delete_account' ); ?>
+        
+        <div class="mb-6">
+            <label for="cozy_confirm_password" class="block text-xs font-bold uppercase tracking-wider text-cozy-coffee/60 mb-2">
+                Confirma tu contraseña actual
+            </label>
+            <input type="password" name="cozy_confirm_password" id="cozy_confirm_password" required
+                   class="w-full px-4 py-3 rounded-2xl border border-red-100 focus:outline-none focus:border-red-300 focus:ring-1 focus:ring-red-300 bg-white text-sm text-cozy-coffee transition-all shadow-inner"
+                   placeholder="Introduce tu contraseña para confirmar">
+        </div>
+
         <button type="submit" name="cozy_delete_account" value="1"
-                class="w-full py-3 rounded-2xl bg-red-500 hover:bg-red-600 text-white font-bold text-sm transition-colors cursor-pointer border-0">
-            <i class="fa-solid fa-user-xmark mr-2" aria-hidden="true"></i>
+                class="w-full py-3 rounded-2xl bg-red-500 hover:bg-red-600 text-white font-bold text-sm transition-colors cursor-pointer border-0 shadow-sm">
+            <?php echo cozy_icon( 'user-xmark', '14' ); ?>
             Sí, eliminar mi cuenta permanentemente
         </button>
     </form>

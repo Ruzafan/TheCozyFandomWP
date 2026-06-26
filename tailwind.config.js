@@ -5,6 +5,8 @@ module.exports = {
     './template-parts/**/*.php',
     './woocommerce/**/*.php',
     './inc/**/*.php',
+    './legal-pages/**/*.html',
+    './assets/js/**/*.js',
   ],
   safelist: [
     'hidden', 'translate-x-full',

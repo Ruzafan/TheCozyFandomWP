@@ -25,7 +25,7 @@ get_header( 'shop' );
             ?>
             <div class="bg-white rounded-[20px] border border-cozy-sand p-6 shadow-sm">
                 <h2 class="font-serif font-bold text-cozy-coffee text-base mb-4 flex items-center gap-2">
-                    <i class="fa-solid <?php echo esc_attr( $icon_class ); ?> text-cozy-mint text-sm" aria-hidden="true"></i>
+                    <?php echo cozy_icon( $icon_class, '14', 'text-cozy-mint' ); ?>
                     <?php echo esc_html( $title ); ?>
                 </h2>
                 <ul class="space-y-2">
@@ -50,7 +50,7 @@ get_header( 'shop' );
         $blog_page_id = get_option( 'page_for_posts' );
         $blog_url     = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/blog/' );
 
-        cozy_sitemap_section( 'Páginas principales', 'fa-house', [
+        cozy_sitemap_section( 'Páginas principales', 'house', [
             'Inicio'    => home_url( '/' ),
             'Boutique'  => $shop_url,
             'Blog'      => $blog_url,
@@ -93,7 +93,7 @@ get_header( 'shop' );
                     }
                 }
             }
-            cozy_sitemap_section( 'Categorías', 'fa-tag', $cat_links );
+            cozy_sitemap_section( 'Categorías', 'tag', $cat_links );
         }
 
         /* ---- Legal & info ---- */
@@ -102,7 +102,7 @@ get_header( 'shop' );
             return $page ? get_permalink( $page ) : '#';
         }
 
-        cozy_sitemap_section( 'Información', 'fa-circle-info', [
+        cozy_sitemap_section( 'Información', 'circle-info', [
             'Envíos y devoluciones' => cozy_sitemap_legal_link( 'envios-y-devoluciones' ),
             'Política de privacidad' => cozy_sitemap_legal_link( 'politica-de-privacidad' ),
             'Términos y condiciones' => cozy_sitemap_legal_link( 'terminos-y-condiciones' ),
@@ -121,7 +121,7 @@ get_header( 'shop' );
             foreach ( $blog_posts as $bp ) {
                 $post_links[ $bp->post_title ] = get_permalink( $bp );
             }
-            cozy_sitemap_section( 'Últimas entradas del blog', 'fa-pen-nib', $post_links );
+            cozy_sitemap_section( 'Últimas entradas del blog', 'pen-nib', $post_links );
         }
         ?>
 

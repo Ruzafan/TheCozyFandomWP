@@ -29,7 +29,7 @@ $shop_url     = get_permalink( wc_get_page_id( 'shop' ) );
 
         <div class="flex items-center gap-4">
             <div class="w-14 h-14 shrink-0 rounded-[16px] bg-cozy-mintLight flex items-center justify-center text-cozy-mint text-2xl border border-cozy-mint/20 shadow-sm">
-                <i class="fa-solid fa-user" aria-hidden="true"></i>
+                <?php echo cozy_icon( 'user', '24' ); ?>
             </div>
             <div>
                 <div class="inline-flex items-center gap-1.5 bg-cozy-mintLight text-cozy-mint text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-1">
@@ -43,7 +43,7 @@ $shop_url     = get_permalink( wc_get_page_id( 'shop' ) );
 
         <a href="<?php echo esc_url( $shop_url ); ?>"
            class="self-start sm:self-auto flex items-center gap-2 bg-white border border-cozy-sand hover:bg-cozy-mintLight hover:border-cozy-mint text-cozy-coffee px-5 py-2.5 rounded-2xl text-xs font-bold transition-all no-underline shadow-sm">
-            <i class="fa-solid fa-basket-shopping text-cozy-mint" aria-hidden="true"></i>
+            <?php echo cozy_icon( 'basket-shopping', '14', 'text-cozy-mint' ); ?>
             Seguir comprando
         </a>
 

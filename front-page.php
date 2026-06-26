@@ -13,7 +13,7 @@ $cozy_cats = [
     [
         'title'       => 'El Rincón de Snoopy',
         'licencia'    => 'snoopy',
-        'icon'        => 'fa-paw',
+        'icon'        => cozy_icon( 'paw', '18' ),
         'image'       => get_stylesheet_directory_uri() . '/assets/images/snoopy-heart.png',
         'description' => 'El beagle más adorable del mundo en tazas, figuras, papelería y mucho más. Todo con ese toque cozy que enamora.',
         'link_text'   => 'Ver colección Snoopy',
@@ -25,7 +25,7 @@ $cozy_cats = [
     [
         'title'       => 'Escoge tu Casa',
         'licencia'    => 'harry-potter',
-        'icon'        => 'fa-hat-wizard',
+        'icon'        => cozy_icon( 'hat-wizard', '18' ),
         'image'       => get_stylesheet_directory_uri() . '/assets/images/harry-potter.png',
         'description' => 'Gryffindor, Slytherin, Hufflepuff o Ravenclaw. Llena tu rincón de magia con la colección de Harry Potter.',
         'link_text'   => 'Entrar al castillo',
@@ -37,7 +37,7 @@ $cozy_cats = [
     [
         'title'       => 'La Magia de Disney',
         'licencia'    => 'disney',
-        'icon'        => 'fa-star',
+        'icon'        => cozy_icon( 'star', '18' ),
         'image'       => get_stylesheet_directory_uri() . '/assets/images/disney.png',
         'description' => 'Princesas, clásicos y villanos de ensueño. Objetos coleccionables y detalles mágicos para los fans de siempre.',
         'link_text'   => 'Explorar Disney',
@@ -81,7 +81,7 @@ $cozy_cats = [
 
             <a href="<?php echo esc_url( $shop_url ); ?>"
                class="inline-flex items-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                Explorar la Tienda <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                Explorar la Tienda <?php echo cozy_icon( 'arrow-right', '12' ); ?>
             </a>
 
         </div>
@@ -94,45 +94,16 @@ $cozy_cats = [
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-[24px] px-6 md:px-10"
                  style="background:rgba(255,255,255,0.76); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
 
-                <div class="flex items-center gap-3 py-4 md:py-5" style="border-bottom:1px solid rgba(180,160,140,0.15);">
-                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-cozy-coffee font-bold m-0 text-sm">Empaquetado Aesthetic</p>
-                        <p class="text-cozy-coffee/70 m-0 text-xs">Unboxings que enamoran</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 py-4 md:py-5" style="border-bottom:1px solid rgba(180,160,140,0.15);">
-                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-cozy-coffee font-bold m-0 text-sm">Envíos Rápidos</p>
-                        <p class="text-cozy-coffee/70 m-0 text-xs">24/48h en Península</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 py-4 md:py-5" style="border-bottom:1px solid rgba(180,160,140,0.15);">
-                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-cozy-coffee font-bold m-0 text-sm">Pagos 100% Seguros</p>
-                        <p class="text-cozy-coffee/70 m-0 text-xs">Tarjeta, Google Pay, Apple Pay</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 py-4 md:py-5">
-                    <div class="shrink-0 w-10 h-10 rounded-[12px] bg-cozy-mintLight flex items-center justify-center">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-cozy-coffee font-bold m-0 text-sm">Atención Cercana</p>
-                        <p class="text-cozy-coffee/70 m-0 text-xs">Te ayudamos por WhatsApp</p>
-                    </div>
-                </div>
+                <?php
+                get_template_part( 'template-parts/trust-badges', null, [
+                    'icon_bg_class'   => 'bg-cozy-mintLight',
+                    'text_size_title' => 'text-sm',
+                    'text_size_desc'  => 'text-xs',
+                    'text_desc_muted' => 'text-cozy-coffee/70',
+                    'item_class'      => 'py-4 md:py-5',
+                    'has_border'      => true,
+                ] );
+                ?>
 
             </div>
         </div>
@@ -180,7 +151,7 @@ $cozy_cats = [
             }
         else : ?>
             <div class="col-span-4 text-center py-16">
-                <i class="fa-solid fa-store text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
+                <?php echo cozy_icon( 'store', '48', 'text-cozy-coffee/20 block mb-4' ); ?>
                 <p class="text-cozy-coffee/60 text-sm">Cargando productos... Asegúrate de que WooCommerce está activo y tienes productos publicados.</p>
                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
                 <a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=product' ) ); ?>"
@@ -224,14 +195,14 @@ $cozy_cats = [
             <?php endif; ?>
             <div class="relative z-10" <?php echo ! empty( $cat['image'] ) ? 'style="max-width:52%"' : ''; ?>>
                 <div class="w-12 h-12 rounded-2xl <?php echo esc_attr( $cat['icon_bg'] ); ?> flex items-center justify-center <?php echo esc_attr( $cat['icon_color'] ); ?> text-lg mb-6">
-                    <i class="fa-solid <?php echo esc_attr( $cat['icon'] ); ?>" aria-hidden="true"></i>
+                    <?php echo $cat['icon']; // Already escaped SVG markup ?>
                 </div>
                 <h3 class="font-serif text-2xl font-bold text-cozy-coffee mb-2"><?php echo esc_html( $cat['title'] ); ?></h3>
                 <p class="text-xs text-cozy-coffee/70 leading-relaxed <?php echo ! empty( $cat['image'] ) ? 'max-w-[160px]' : 'max-w-[200px]'; ?>"><?php echo esc_html( $cat['description'] ); ?></p>
             </div>
             <div class="pt-6 z-10">
                 <a href="<?php echo esc_url( $cat_url ); ?>" class="inline-flex items-center gap-2 text-xs font-bold text-cozy-coffee hover:text-cozy-mint transition-colors">
-                    <?php echo esc_html( $cat['link_text'] ); ?> <i class="fa-solid fa-arrow-right-long group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
+                    <?php echo esc_html( $cat['link_text'] ); ?> <?php echo cozy_icon( 'arrow-right-long', '12', 'group-hover:translate-x-1 transition-transform' ); ?>
                 </a>
             </div>
         </div>
@@ -279,7 +250,7 @@ $cozy_cats = [
             }
         else : ?>
             <div class="col-span-4 text-center py-16">
-                <i class="fa-solid fa-fire text-cozy-coffee/20 text-5xl block mb-4" aria-hidden="true"></i>
+                <?php echo cozy_icon( 'fire', '48', 'text-cozy-coffee/20 block mb-4' ); ?>
                 <p class="text-cozy-coffee/60 text-sm">Aún no hay productos marcados como "Top Venta".</p>
                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
                 <p class="text-cozy-coffee/50 text-xs mt-2">Añade la etiqueta <code>top-sell</code> a tus productos más vendidos desde Productos → Editar producto → Etiquetas del producto.</p>
