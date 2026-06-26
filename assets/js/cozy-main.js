@@ -502,7 +502,8 @@ function cozyRemoveFavItem(productId) {
         var link = e.target.closest('a');
         if (isShopLink(link)) {
             e.preventDefault();
-            window.cozyLoadShopUrl(link.href, true);
+            var shouldScroll = !!link.closest('.woocommerce-pagination');
+            window.cozyLoadShopUrl(link.href, shouldScroll);
         }
     });
 
@@ -528,7 +529,7 @@ function cozyRemoveFavItem(productId) {
             });
             
             urlObj.searchParams.delete('paged');
-            window.cozyLoadShopUrl(urlObj.toString(), true);
+            window.cozyLoadShopUrl(urlObj.toString(), false);
         }
     }, true);
 
@@ -552,7 +553,7 @@ function cozyRemoveFavItem(productId) {
             });
             
             urlObj.searchParams.delete('paged');
-            window.cozyLoadShopUrl(urlObj.toString(), true);
+            window.cozyLoadShopUrl(urlObj.toString(), false);
         }
     }, true);
 
