@@ -94,24 +94,27 @@ window.cozyCatToggle = function (btn) {
     btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 };
 
-/* ---------- SHOP FILTER DRAWER (mobile) ---------- */
-window.openFilters = function () {
+/* ---------- SHOP FILTER DROPDOWN ---------- */
+window.openFilters = function (e) {
+    if (e && e.preventDefault) e.preventDefault();
     var sidebar   = document.getElementById('cozy-shop-filters');
-    var overlay   = document.getElementById('cozy-filter-overlay');
     var toggleBtn = document.querySelector('[aria-controls="cozy-shop-filters"]');
-    if (sidebar)   sidebar.classList.add('is-open');
-    if (overlay)   overlay.classList.remove('hidden');
-    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
+    if (!sidebar) return;
+    
+    var isHidden = sidebar.classList.contains('hidden');
+    if (isHidden) {
+        sidebar.classList.remove('hidden');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+    } else {
+        sidebar.classList.add('hidden');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+    }
 };
 window.closeFilters = function () {
     var sidebar   = document.getElementById('cozy-shop-filters');
-    var overlay   = document.getElementById('cozy-filter-overlay');
     var toggleBtn = document.querySelector('[aria-controls="cozy-shop-filters"]');
-    if (sidebar)   sidebar.classList.remove('is-open');
-    if (overlay)   overlay.classList.add('hidden');
+    if (sidebar) sidebar.classList.add('hidden');
     if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
 };
 
 /* ---------- TOGGLE FAVORITE ---------- */
@@ -385,6 +388,181 @@ function cozyRemoveFavItem(productId) {
             }
         });
     }
+
+    /* ---------- AJAX SHOP FILTERS & PAGINATION ---------- */
+    function isShopLink(link) {
+        if (!link) return false;
+        // Intercept links in filters widget, pagination, category carousel
+        if (link.closest('#cozy-shop-filters') || 
+            link.closest('.woocommerce-pagination') || 
+            link.closest('.cozy-cat-carousel') ||
+            link.classList.contains('cozy-cat-card')) {
+            return true;
+        }
+        // Intercept "Limpiar filtros" link in sort bar
+        if (link.closest('.cozy-sort-bar') && link.getAttribute('href') && (link.textContent.indexOf('Limpiar') > -1 || link.href.indexOf('filter') > -1 || link.href.indexOf('shop') > -1)) {
+            return true;
+        }
+        return false;
+    }
+
+    function serializeFormToUrl(form, urlObj) {
+        var inputs = form.querySelectorAll('input, select, textarea');
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            if (input.name && !input.disabled) {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    if (input.checked) {
+                        urlObj.searchParams.set(input.name, input.value);
+                    }
+                } else if (input.type === 'submit' || input.type === 'button') {
+                    // Skip buttons
+                } else {
+                    urlObj.searchParams.set(input.name, input.value);
+                }
+            }
+        }
+    }
+
+    window.cozyLoadShopUrl = function (url, scroll, push) {
+        if (push === undefined) push = true;
+        var container = document.getElementById('cozy-products-container');
+        var filtersPanel = document.getElementById('cozy-shop-filters');
+        var sortBar = document.querySelector('.cozy-sort-bar');
+        
+        if (container) {
+            container.classList.add('cozy-loading');
+        }
+        
+        fetch(url)
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(function (html) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                
+                // Swap products container content
+                var newContainer = doc.getElementById('cozy-products-container');
+                if (newContainer && container) {
+                    container.innerHTML = newContainer.innerHTML;
+                }
+                
+                // Swap filters content
+                var newFilters = doc.getElementById('cozy-shop-filters');
+                if (newFilters && filtersPanel) {
+                    var wasHidden = filtersPanel.classList.contains('hidden');
+                    filtersPanel.innerHTML = newFilters.innerHTML;
+                    if (wasHidden) {
+                        filtersPanel.classList.add('hidden');
+                    } else {
+                        filtersPanel.classList.remove('hidden');
+                    }
+                }
+                
+                // Swap sort bar content
+                var newSortBar = doc.querySelector('.cozy-sort-bar');
+                if (newSortBar && sortBar) {
+                    sortBar.innerHTML = newSortBar.innerHTML;
+                }
+                
+                // Update page URL if requested
+                if (push) {
+                    window.history.pushState(null, '', url);
+                }
+                
+                // Re-initialize WooCommerce price slider
+                if (typeof jQuery !== 'undefined') {
+                    jQuery(document.body).trigger('init_price_filter');
+                }
+                
+                // Scroll to container top if needed
+                if (scroll && container) {
+                    var yOffset = -100;
+                    var y = container.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+            })
+            .catch(function (error) {
+                console.error('AJAX load failed, redirecting:', error);
+                window.location.href = url;
+            })
+            .finally(function () {
+                if (container) {
+                    container.classList.remove('cozy-loading');
+                }
+            });
+    };
+
+    // Click handler for AJAX links
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest('a');
+        if (isShopLink(link)) {
+            e.preventDefault();
+            window.cozyLoadShopUrl(link.href, true);
+        }
+    });
+
+    // Intercept change event on orderby select
+    document.addEventListener('change', function (e) {
+        var orderSelect = e.target.closest('.woocommerce-ordering select.orderby');
+        if (orderSelect) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var form = orderSelect.closest('form');
+            var actionUrl = form.getAttribute('action') || window.location.href.split('?')[0];
+            var urlObj = new URL(actionUrl, window.location.origin);
+            
+            serializeFormToUrl(form, urlObj);
+            
+            // Preserve other active params from current URL
+            var currentParams = new URLSearchParams(window.location.search);
+            currentParams.forEach(function (value, key) {
+                if (!urlObj.searchParams.has(key)) {
+                    urlObj.searchParams.set(key, value);
+                }
+            });
+            
+            urlObj.searchParams.delete('paged');
+            window.cozyLoadShopUrl(urlObj.toString(), true);
+        }
+    }, true);
+
+    // Intercept submit event on forms inside filters panel
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (form.closest('#cozy-shop-filters') || form.classList.contains('woocommerce-ordering')) {
+            e.preventDefault();
+            
+            var actionUrl = form.getAttribute('action') || window.location.href.split('?')[0];
+            var urlObj = new URL(actionUrl, window.location.origin);
+            
+            serializeFormToUrl(form, urlObj);
+            
+            // Preserve other active params from current URL
+            var currentParams = new URLSearchParams(window.location.search);
+            currentParams.forEach(function (value, key) {
+                if (!urlObj.searchParams.has(key)) {
+                    urlObj.searchParams.set(key, value);
+                }
+            });
+            
+            urlObj.searchParams.delete('paged');
+            window.cozyLoadShopUrl(urlObj.toString(), true);
+        }
+    }, true);
+
+    // Popstate handling for browser back/forward buttons
+    window.addEventListener('popstate', function () {
+        var container = document.getElementById('cozy-products-container');
+        if (container) {
+            window.cozyLoadShopUrl(window.location.href, false, false);
+        }
+    });
 
 })();
 
