@@ -464,32 +464,23 @@ input[type="submit"] {
   box-shadow: 0 0 0 3px rgba(136, 196, 181, 0.2);
 }
 
-/* ─── Shop filters sidebar ──────────────────────────────────── */
+/* ─── Shop filters sidebar (persistent slide-out drawer) ────── */
 .cozy-shop-filters {
-  position: sticky;
-  top: 9rem; /* masthead (95px) + nav row (44px) + spacing */
+  position: fixed !important;
+  top: 0;
+  left: -320px;
+  width: min(300px, 90vw);
+  height: 100%;
+  overflow-y: auto;
+  background: #fff;
+  z-index: 1100;
+  transition: left 0.3s ease;
+  padding: 1.25rem !important;
+  box-shadow: 4px 0 24px rgba(58,49,40,0.12);
+  border-radius: 0 20px 20px 0;
 }
-
-/* Mobile: filters become a slide-in drawer from the left */
-@media (max-width: 1023px) {
-  /* Turn the grid wrapper into a plain block so the fixed aside takes no space */
-  .cozy-shop-layout { display: block; }
-
-  .cozy-shop-filters {
-    position: fixed !important;
-    top: 0;
-    left: -320px;
-    width: min(300px, 90vw);
-    height: 100%;
-    overflow-y: auto;
-    background: #fff;
-    z-index: 1100;
-    transition: left 0.3s ease;
-    padding: 1.25rem !important;
-    box-shadow: 4px 0 24px rgba(58,49,40,0.12);
-    border-radius: 0 20px 20px 0;
-  }
-  .cozy-shop-filters.is-open { left: 0; }
+.cozy-shop-filters.is-open {
+  left: 0;
 }
 
 /* Mobile filter toggle button */
@@ -795,14 +786,14 @@ input[type="submit"] {
 @media (min-width: 640px) {
   .woocommerce ul.products,
   .woocommerce-page ul.products {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 1.5rem !important;
   }
 }
 @media (min-width: 1024px) {
   .woocommerce ul.products,
   .woocommerce-page ul.products {
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(4, 1fr) !important;
   }
 }
 .woocommerce ul.products li.product,

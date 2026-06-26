@@ -50,26 +50,11 @@ if ( ! $_cozy_has_filters ) {
 $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
 ?>
 
-<!-- Mobile filter bar (hidden on lg+) -->
-<div class="cozy-filter-mobile-bar">
-    <button onclick="openFilters()" aria-controls="cozy-shop-filters" aria-expanded="false"
-            class="cozy-filter-mobile-btn<?php echo $_cozy_has_filters ? ' cozy-filter-mobile-btn--active' : ''; ?>">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-        Filtros<?php if ( $_cozy_has_filters ) : ?><span class="cozy-filter-mobile-dot" aria-hidden="true"></span><?php endif; ?>
-    </button>
-    <?php if ( $_cozy_has_filters ) : ?>
-    <a href="<?php echo esc_url( $_cozy_clear_url ); ?>"
-       class="text-sm font-semibold text-cozy-mint hover:text-cozy-mintDark transition-colors">
-        Limpiar
-    </a>
-    <?php endif; ?>
-</div>
-
 <!-- Overlay backdrop for filter drawer -->
 <div id="cozy-filter-overlay" onclick="closeFilters()"
      class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1099] backdrop-blur-sm" aria-hidden="true"></div>
 
-<div class="cozy-shop-layout px-3 py-4 sm:p-6 md:p-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
+<div class="cozy-shop-layout px-3 py-4 sm:p-6 md:p-8">
 
     <!-- ==================================================== -->
     <!-- FILTERS SIDEBAR – sticky on desktop, drawer on mobile-->
@@ -260,8 +245,23 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
     <div>
         <?php if ( woocommerce_product_loop() ) : ?>
             <div class="cozy-sort-bar flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                <?php woocommerce_result_count(); ?>
-                <?php woocommerce_catalog_ordering(); ?>
+                <div class="flex items-center gap-3">
+                    <?php woocommerce_result_count(); ?>
+                    <?php if ( $_cozy_has_filters ) : ?>
+                    <a href="<?php echo esc_url( $_cozy_clear_url ); ?>"
+                       class="text-xs font-bold text-cozy-mint hover:text-cozy-mintDark transition-colors no-underline">
+                        Limpiar filtros
+                    </a>
+                    <?php endif; ?>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openFilters()" aria-controls="cozy-shop-filters" aria-expanded="false"
+                            class="cozy-filter-btn py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                        Filtrar <?php if ( $_cozy_has_filters ) : ?><span class="w-1.5 h-1.5 rounded-full bg-cozy-mint inline-block"></span><?php endif; ?>
+                    </button>
+                    <?php woocommerce_catalog_ordering(); ?>
+                </div>
             </div>
 
             <?php woocommerce_product_loop_start(); ?>
