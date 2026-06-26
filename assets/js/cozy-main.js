@@ -451,6 +451,21 @@ function cozyRemoveFavItem(productId) {
                     container.innerHTML = newContainer.innerHTML;
                 }
                 
+                // Swap hero banner content
+                var hero = document.getElementById('cozy-shop-hero');
+                var newHero = doc.getElementById('cozy-shop-hero');
+                if (newHero && hero) {
+                    hero.innerHTML = newHero.innerHTML;
+                    hero.className = newHero.className;
+                }
+
+                // Swap category carousel content
+                var carousel = document.getElementById('cozy-cat-carousel');
+                var newCarousel = doc.getElementById('cozy-cat-carousel');
+                if (newCarousel && carousel) {
+                    carousel.innerHTML = newCarousel.innerHTML;
+                }
+
                 // Swap filters content
                 var newFilters = doc.getElementById('cozy-shop-filters');
                 if (newFilters && filtersPanel) {
