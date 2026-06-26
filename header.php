@@ -54,16 +54,20 @@
             </a>
 
             <!-- Search -->
-            <form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" class="cozy-hdr-search">
-                <input type="search" name="s"
-                       value="<?php echo esc_attr( get_search_query() ); ?>"
-                       placeholder="<?php esc_attr_e( 'Buscar productos...', 'woocommerce' ); ?>"
-                       class="cozy-hdr-search__input">
-                <input type="hidden" name="post_type" value="product">
-                <button type="submit" class="cozy-hdr-search__btn" aria-label="<?php esc_attr_e( 'Buscar', 'woocommerce' ); ?>">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                </button>
-            </form>
+            <div class="cozy-hdr-search-wrap relative flex-1 min-w-0">
+                <form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" class="cozy-hdr-search">
+                    <input type="search" name="s"
+                           value="<?php echo esc_attr( get_search_query() ); ?>"
+                           placeholder="<?php esc_attr_e( 'Buscar productos...', 'woocommerce' ); ?>"
+                           class="cozy-hdr-search__input"
+                           autocomplete="off">
+                    <input type="hidden" name="post_type" value="product">
+                    <button type="submit" class="cozy-hdr-search__btn" aria-label="<?php esc_attr_e( 'Buscar', 'woocommerce' ); ?>">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    </button>
+                </form>
+                <div id="cozy-search-suggestions" class="cozy-search-suggestions hidden"></div>
+            </div>
 
             <!-- Icons -->
             <div class="cozy-hdr-actions">

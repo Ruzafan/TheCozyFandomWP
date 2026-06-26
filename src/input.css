@@ -1821,9 +1821,96 @@ ul.wc-block-grid {
   white-space: nowrap;
 }
 
-.cozy-hdr-search {
+.cozy-hdr-search-wrap {
+  position: relative;
   flex: 1;
   min-width: 0;
+}
+.cozy-search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px solid #F2E6D5;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(58, 49, 40, 0.08);
+  z-index: 1000;
+  max-height: 380px;
+  overflow-y: auto;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.cozy-search-suggestions::-webkit-scrollbar {
+  width: 6px;
+}
+.cozy-search-suggestions::-webkit-scrollbar-thumb {
+  background: #88C4B5;
+  border-radius: 99px;
+}
+.cozy-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #FAF6EE;
+  text-decoration: none !important;
+  color: #3A3128 !important;
+  transition: background 0.15s ease;
+}
+.cozy-suggestion-item:last-child {
+  border-bottom: none;
+}
+.cozy-suggestion-item:hover,
+.cozy-suggestion-item.is-selected {
+  background: #EAF6F3;
+}
+.cozy-suggestion-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #FCF9F5;
+  border: 1px solid #F2E6D5;
+  flex-shrink: 0;
+}
+.cozy-suggestion-info {
+  flex: 1;
+  min-width: 0;
+}
+.cozy-suggestion-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cozy-suggestion-price {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #88C4B5;
+}
+.cozy-suggestion-price ins {
+  text-decoration: none;
+}
+.cozy-suggestion-price del {
+  font-size: 0.65rem;
+  color: rgba(58, 49, 40, 0.4);
+  margin-right: 4px;
+}
+.cozy-suggestion-empty,
+.cozy-suggestion-loading {
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: rgba(58, 49, 40, 0.6);
+}
+
+.cozy-hdr-search {
+  width: 100%;
   display: flex;
   align-items: center;
   background: #fff;
@@ -1832,6 +1919,7 @@ ul.wc-block-grid {
   overflow: hidden;
   transition: border-color 0.2s;
 }
+
 .cozy-hdr-search:focus-within { border-color: #88C4B5; }
 .cozy-hdr-search__input {
   flex: 1;
@@ -2081,7 +2169,7 @@ ul.wc-block-grid {
   }
   .cozy-hdr-logo   { order: 1; }
   .cozy-hdr-actions { order: 2; margin-left: auto; }
-  .cozy-hdr-search  {
+  .cozy-hdr-search-wrap {
     order: 3;
     flex: 0 0 100% !important;
     margin-bottom: 0.25rem !important;

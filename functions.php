@@ -716,3 +716,43 @@ add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
     <?php
 } );
 
+
+/* ─── AJAX Product Search Suggestions ────────────────────────── */
+add_action( 'wp_ajax_cozy_ajax_search',        'cozy_ajax_search' );
+add_action( 'wp_ajax_nopriv_cozy_ajax_search', 'cozy_ajax_search' );
+
+function cozy_ajax_search() {
+    $term = isset( $_GET['term'] ) ? sanitize_text_field( wp_unslash( $_GET['term'] ) ) : '';
+    if ( strlen( $term ) < 2 ) {
+        wp_send_json_success( [] );
+        exit;
+    }
+
+    if ( ! class_exists( 'WooCommerce' ) ) {
+        wp_send_json_success( [] );
+        exit;
+    }
+
+    $products = wc_get_products( [
+        'status'     => 'publish',
+        'limit'      => 6,
+        's'          => $term,
+        'visibility' => 'catalog',
+    ] );
+
+    $suggestions = [];
+    foreach ( $products as $product ) {
+        $suggestions[] = [
+            'id'    => $product->get_id(),
+            'title' => $product->get_name(),
+            'url'   => $product->get_permalink(),
+            'image' => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) ?: wc_placeholder_img_src(),
+            'price' => $product->get_price_html(),
+        ];
+    }
+
+    wp_send_json_success( $suggestions );
+    exit;
+}
+
+

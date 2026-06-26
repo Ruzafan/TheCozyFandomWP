@@ -270,4 +270,121 @@ function cozyRemoveFavItem(productId) {
             });
     };
 
+    /* ---------- LIVE SEARCH SUGGESTIONS ---------- */
+    var searchInput = document.querySelector('.cozy-hdr-search__input');
+    var suggestionsContainer = document.getElementById('cozy-search-suggestions');
+    var searchTimeout = null;
+    var selectedIndex = -1;
+
+    if (searchInput && suggestionsContainer) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            var term = searchInput.value.trim();
+
+            if (term.length < 2) {
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.classList.add('hidden');
+                selectedIndex = -1;
+                return;
+            }
+
+            searchTimeout = setTimeout(function () {
+                suggestionsContainer.innerHTML = '<div class="cozy-suggestion-loading">Buscando productos...</div>';
+                suggestionsContainer.classList.remove('hidden');
+                selectedIndex = -1;
+
+                fetch(cozyAjax.url + '?action=cozy_ajax_search&term=' + encodeURIComponent(term))
+                    .then(function (r) { return r.json(); })
+                    .then(function (res) {
+                        if (res.success && res.data) {
+                            renderSuggestions(res.data);
+                        } else {
+                            renderSuggestions([]);
+                        }
+                    })
+                    .catch(function () {
+                        suggestionsContainer.innerHTML = '<div class="cozy-suggestion-empty">Error de conexión.</div>';
+                    });
+            }, 250);
+        });
+
+        searchInput.addEventListener('keydown', function (e) {
+            var items = suggestionsContainer.querySelectorAll('.cozy-suggestion-item');
+            if (suggestionsContainer.classList.contains('hidden') || !items.length) {
+                return;
+            }
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex++;
+                if (selectedIndex >= items.length) {
+                    selectedIndex = 0;
+                }
+                updateSelection(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex--;
+                if (selectedIndex < 0) {
+                    selectedIndex = items.length - 1;
+                }
+                updateSelection(items);
+            } else if (e.key === 'Enter') {
+                if (selectedIndex >= 0 && selectedIndex < items.length) {
+                    e.preventDefault();
+                    items[selectedIndex].click();
+                }
+            } else if (e.key === 'Escape') {
+                suggestionsContainer.classList.add('hidden');
+                searchInput.blur();
+            }
+        });
+
+        // Close on click outside
+        document.addEventListener('click', function (e) {
+            if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                suggestionsContainer.classList.add('hidden');
+            }
+        });
+
+        // Re-open suggestions if input focused and has text
+        searchInput.addEventListener('focus', function () {
+            var term = searchInput.value.trim();
+            if (term.length >= 2 && suggestionsContainer.children.length > 0) {
+                suggestionsContainer.classList.remove('hidden');
+            }
+        });
+    }
+
+    function renderSuggestions(products) {
+        if (!products || !products.length) {
+            suggestionsContainer.innerHTML = '<div class="cozy-suggestion-empty">No se encontraron productos. 🌿</div>';
+            return;
+        }
+
+        var html = '';
+        products.forEach(function (p) {
+            html += '<a href="' + p.url + '" class="cozy-suggestion-item">' +
+                        '<img src="' + p.image + '" class="cozy-suggestion-thumb" alt="' + p.title + '">' +
+                        '<div class="cozy-suggestion-info">' +
+                            '<h4 class="cozy-suggestion-title">' + p.title + '</h4>' +
+                            '<span class="cozy-suggestion-price">' + p.price + '</span>' +
+                        '</div>' +
+                    '</a>';
+        });
+        suggestionsContainer.innerHTML = html;
+        selectedIndex = -1;
+    }
+
+    function updateSelection(items) {
+        items.forEach(function (item, idx) {
+            if (idx === selectedIndex) {
+                item.classList.add('is-selected');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('is-selected');
+            }
+        });
+    }
+
 })();
+
