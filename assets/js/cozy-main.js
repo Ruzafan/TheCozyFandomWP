@@ -117,6 +117,166 @@ window.closeFilters = function () {
     if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
 };
 
+/* ---------- PRODUCT LIGHTBOX GALLERY ---------- */
+window.openCozyLightbox = function (index) {
+    var gallery = document.querySelector('.cozy-gallery');
+    if (!gallery) return;
+    
+    var images = [];
+    try {
+        images = JSON.parse(gallery.getAttribute('data-images') || '[]');
+    } catch(e) {
+        console.error(e);
+        return;
+    }
+    
+    if (!images.length) return;
+    
+    // Create the lightbox DOM elements if not exists
+    var lightbox = document.getElementById('cozy-lightbox');
+    if (lightbox) {
+        if (lightbox.parentNode) {
+            lightbox.parentNode.removeChild(lightbox);
+        }
+    }
+    
+    lightbox = document.createElement('div');
+    lightbox.id = 'cozy-lightbox';
+    lightbox.className = 'fixed inset-0 z-[2000] bg-cozy-coffee/95 backdrop-blur-md flex flex-col justify-between p-4 transition-opacity duration-300 opacity-0';
+    
+    lightbox.innerHTML = 
+        '<div class="flex items-center justify-between text-white/70 px-4 py-2 relative z-10">' +
+            '<span class="text-xs font-bold font-mono" id="cozy-lightbox-counter">1 / 1</span>' +
+            '<button onclick="closeCozyLightbox()" class="text-white/70 hover:text-white transition-colors p-2 text-2xl border-0 bg-transparent cursor-pointer" aria-label="Cerrar">&times;</button>' +
+        '</div>' +
+        '<div class="flex-grow flex items-center justify-center relative overflow-hidden my-4">' +
+            '<button id="cozy-lightbox-prev" class="absolute left-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all cursor-pointer border-0" aria-label="Anterior">' +
+                '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>' +
+            '</button>' +
+            '<div class="w-full h-full flex items-center justify-center max-w-5xl px-12">' +
+                '<img id="cozy-lightbox-img" class="max-w-full max-h-full object-contain rounded-2xl shadow-2xl transition-all duration-300 opacity-0 transform scale-95" src="" alt="Vista ampliada">' +
+            '</div>' +
+            '<button id="cozy-lightbox-next" class="absolute right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all cursor-pointer border-0" aria-label="Siguiente">' +
+                '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>' +
+            '</button>' +
+        '</div>' +
+        '<div class="h-16 flex items-center justify-center gap-2 overflow-x-auto py-2 px-4 relative z-10" id="cozy-lightbox-thumbs"></div>';
+    
+    document.body.appendChild(lightbox);
+    document.body.style.overflow = 'hidden';
+    
+    // Add opacity transition
+    setTimeout(function() {
+        lightbox.classList.remove('opacity-0');
+    }, 10);
+    
+    var currentIdx = index || 0;
+    
+    function updateLightbox() {
+        var img = document.getElementById('cozy-lightbox-img');
+        var counter = document.getElementById('cozy-lightbox-counter');
+        if (!img || !counter) return;
+        
+        img.classList.add('opacity-0');
+        img.classList.add('scale-95');
+        
+        setTimeout(function() {
+            img.src = images[currentIdx];
+            img.onload = function() {
+                img.classList.remove('opacity-0');
+                img.classList.remove('scale-95');
+            };
+            counter.textContent = (currentIdx + 1) + ' / ' + images.length;
+        }, 150);
+        
+        // Update active thumbnail
+        var lightboxThumbs = document.querySelectorAll('.cozy-lightbox-thumb');
+        lightboxThumbs.forEach(function(t, idx) {
+            if (idx === currentIdx) {
+                t.style.opacity = '1';
+                t.style.borderColor = '#88C4B5';
+            } else {
+                t.style.opacity = '0.5';
+                t.style.borderColor = 'rgba(255,255,255,0.1)';
+            }
+        });
+    }
+    
+    // Generate thumbnails inside the lightbox
+    var thumbsContainer = document.getElementById('cozy-lightbox-thumbs');
+    if (thumbsContainer && images.length > 1) {
+        images.forEach(function(src, idx) {
+            var thumb = document.createElement('button');
+            thumb.className = 'cozy-lightbox-thumb w-10 h-10 rounded-lg overflow-hidden border-2 transition-all p-0 flex-shrink-0 cursor-pointer bg-white';
+            thumb.style.borderStyle = 'solid';
+            thumb.innerHTML = '<img class="w-full h-full object-cover" src="' + src + '">';
+            thumb.onclick = function() {
+                currentIdx = idx;
+                updateLightbox();
+            };
+            thumbsContainer.appendChild(thumb);
+        });
+    }
+    
+    // Event listeners for prev / next
+    var prevBtn = document.getElementById('cozy-lightbox-prev');
+    var nextBtn = document.getElementById('cozy-lightbox-next');
+    
+    if (images.length <= 1) {
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+    } else {
+        if (prevBtn) prevBtn.onclick = function(e) {
+            e.stopPropagation();
+            currentIdx = (currentIdx - 1 + images.length) % images.length;
+            updateLightbox();
+        };
+        if (nextBtn) nextBtn.onclick = function(e) {
+            e.stopPropagation();
+            currentIdx = (currentIdx + 1) % images.length;
+            updateLightbox();
+        };
+    }
+    
+    updateLightbox();
+    
+    // Close on overlay click
+    lightbox.onclick = function(e) {
+        if (e.target.id === 'cozy-lightbox' || e.target.closest('.w-full.h-full.flex.items-center')) {
+            closeCozyLightbox();
+        }
+    };
+    
+    // Keydown listeners for keyboard navigation
+    window.cozyLightboxKeydown = function(e) {
+        if (e.key === 'Escape') {
+            closeCozyLightbox();
+        } else if (e.key === 'ArrowLeft' && images.length > 1) {
+            currentIdx = (currentIdx - 1 + images.length) % images.length;
+            updateLightbox();
+        } else if (e.key === 'ArrowRight' && images.length > 1) {
+            currentIdx = (currentIdx + 1) % images.length;
+            updateLightbox();
+        }
+    };
+    document.addEventListener('keydown', window.cozyLightboxKeydown);
+};
+
+window.closeCozyLightbox = function () {
+    var lightbox = document.getElementById('cozy-lightbox');
+    if (!lightbox) return;
+    
+    lightbox.classList.add('opacity-0');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', window.cozyLightboxKeydown);
+    
+    setTimeout(function() {
+        if (lightbox.parentNode) {
+            lightbox.parentNode.removeChild(lightbox);
+        }
+    }, 300);
+};
+
 /* ---------- TOGGLE FAVORITE ---------- */
 window.toggleFavorite = function (productId) {
     if (typeof cozyAjax === 'undefined') return;

@@ -20,10 +20,17 @@ if ( empty( $all_ids ) ) {
     return;
 }
 
+$lightbox_images = [];
+foreach ( $all_ids as $image_id ) {
+    $full_url = wp_get_attachment_image_url( $image_id, 'full' );
+    if ( $full_url ) {
+        $lightbox_images[] = $full_url;
+    }
+}
 $total = count( $all_ids );
 ?>
 
-<div class="cozy-gallery" data-total="<?php echo absint( $total ); ?>">
+<div class="cozy-gallery" data-total="<?php echo absint( $total ); ?>" data-images="<?php echo esc_attr( json_encode( $lightbox_images ) ); ?>">
 
     <!-- Main image / slider track -->
     <div class="cozy-gallery__main">
@@ -32,7 +39,7 @@ $total = count( $all_ids );
                 $alt = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
                 if ( ! $alt ) $alt = $product->get_name();
             ?>
-            <div class="cozy-gallery__slide" aria-hidden="<?php echo $i > 0 ? 'true' : 'false'; ?>">
+            <div class="cozy-gallery__slide cursor-zoom-in" onclick="openCozyLightbox(<?php echo absint( $i ); ?>)" aria-hidden="<?php echo $i > 0 ? 'true' : 'false'; ?>">
                 <?php echo wp_get_attachment_image( $image_id, 'woocommerce_single', false, [
                     'class'   => 'cozy-gallery__img',
                     'loading' => $i === 0 ? 'eager' : 'lazy',
