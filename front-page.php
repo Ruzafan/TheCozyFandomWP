@@ -183,7 +183,7 @@ $cozy_cats = [
     foreach ( $cozy_cats as $cat ) :
         $cat_url = add_query_arg( 'licencia', $cat['licencia'], $_shop_base );
     ?>
-        <div class="group <?php echo esc_attr( $cat['card_bg'] ); ?> rounded-[32px] p-8 border border-cozy-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+        <a href="<?php echo esc_url( $cat_url ); ?>" class="group <?php echo esc_attr( $cat['card_bg'] ); ?> rounded-[32px] p-8 border border-cozy-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden no-underline">
             <?php if ( empty( $cat['image'] ) ) : ?>
             <div class="absolute -right-8 -bottom-8 w-32 h-32 <?php echo esc_attr( $cat['ring_color'] ); ?> rounded-full group-hover:scale-150 transition-transform duration-500" aria-hidden="true"></div>
             <?php endif; ?>
@@ -201,11 +201,11 @@ $cozy_cats = [
                 <p class="text-xs text-cozy-coffee/70 leading-relaxed <?php echo ! empty( $cat['image'] ) ? 'max-w-[160px]' : 'max-w-[200px]'; ?>"><?php echo esc_html( $cat['description'] ); ?></p>
             </div>
             <div class="pt-6 z-10">
-                <a href="<?php echo esc_url( $cat_url ); ?>" class="inline-flex items-center gap-2 text-xs font-bold text-cozy-coffee hover:text-cozy-mint transition-colors">
+                <span class="inline-flex items-center gap-2 text-xs font-bold text-cozy-coffee group-hover:text-cozy-mint transition-colors">
                     <?php echo esc_html( $cat['link_text'] ); ?> <?php echo cozy_icon( 'arrow-right-long', '12', 'group-hover:translate-x-1 transition-transform' ); ?>
-                </a>
+                </span>
             </div>
-        </div>
+        </a>
     <?php endforeach; ?>
     </div>
 
