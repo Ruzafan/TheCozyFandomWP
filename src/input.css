@@ -469,6 +469,16 @@ input[type="submit"] {
   transition: all 0.3s ease-in-out;
 }
 
+/* Ensure shop filters are always visible on desktop and toggle button is hidden */
+@media (min-width: 1024px) {
+  #cozy-shop-filters.cozy-shop-filters {
+    display: grid !important;
+  }
+  .cozy-filter-btn {
+    display: none !important;
+  }
+}
+
 /* Loading state for AJAX products loading */
 .cozy-loading {
   opacity: 0.5;

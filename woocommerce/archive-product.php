@@ -52,95 +52,6 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
 
 <div class="cozy-shop-layout px-3 py-4 sm:p-6 md:p-8">
 
-    <!-- ==================================================== -->
-    <!-- HERO BANNER                                          -->
-    <!-- ==================================================== -->
-    <?php
-    $hero_title = 'Tu Fandom Favorito, en su versión más Cozy';
-    $hero_desc  = 'Explora nuestra colección de papelería bonita, escritorios temáticos, figuras sorpresa (blindboxes) y merchandising oficial de tus licencias preferidas. Todo seleccionado para llenar tu rincón de calidez.';
-    $hero_badge = '🌿 Geek Boutique Oficial';
-    $hero_emoji = '📚✨';
-    
-    if ( is_product_category() ) {
-        $cat_obj    = get_queried_object();
-        $hero_title = single_term_title( '', false );
-        $hero_desc  = category_description();
-        if ( ! $hero_desc ) {
-            $hero_desc = sprintf( 'Explora todos los productos de la categoría %s en nuestra tienda geek.', $hero_title );
-        }
-        $hero_badge = '📁 Categoría de Tienda';
-        $hero_emoji = '🎁✨';
-    } elseif ( is_search() ) {
-        $hero_title = sprintf( 'Resultados para: "%s"', get_search_query() );
-        $hero_desc  = 'Aquí tienes todos los productos que coinciden con tu búsqueda. ¡Esperamos que encuentres tu próximo favorito!';
-        $hero_badge = '🔍 Buscador Cozy';
-        $hero_emoji = '🔎✨';
-    }
-    ?>
-    <div class="cozy-shop-hero bg-gradient-to-br from-white to-[#F9F5EE] border border-cozy-sand rounded-[32px] p-6 md:p-10 mb-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden" id="cozy-shop-hero">
-        <div class="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-[#EAF6F3] opacity-60 filter blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-16 -bottom-16 w-48 h-48 rounded-full bg-[#F5EDE0] opacity-50 filter blur-3xl pointer-events-none"></div>
-        
-        <div class="space-y-3 max-w-2xl relative z-10 text-center md:text-left">
-            <span class="inline-block text-[10px] uppercase tracking-widest font-bold text-cozy-mint bg-cozy-mintLight px-3 py-1 rounded-full"><?php echo esc_html( $hero_badge ); ?></span>
-            <h1 class="text-2xl md:text-3xl font-serif font-bold text-cozy-coffee leading-tight m-0"><?php echo esc_html( $hero_title ); ?></h1>
-            <p class="text-xs sm:text-sm text-cozy-coffee/70 leading-relaxed m-0">
-                <?php echo wp_kses_post( $hero_desc ); ?>
-            </p>
-        </div>
-        
-        <div class="hidden md:flex items-center justify-center shrink-0 w-24 h-24 bg-white rounded-3xl border border-cozy-sand/50 shadow-inner relative z-10 rotate-3 hover:rotate-0 transition-transform duration-300">
-            <span class="text-3xl"><?php echo esc_html( $hero_emoji ); ?></span>
-        </div>
-    </div>
-
-    <!-- ==================================================== -->
-    <!-- CATEGORY CAROUSEL                                    -->
-    <!-- ==================================================== -->
-    <?php if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) : ?>
-        <div class="relative mb-8">
-            <div class="cozy-cat-carousel" id="cozy-cat-carousel">
-                <?php
-                $shop_url = get_permalink( wc_get_page_id( 'shop' ) );
-                $is_all_active = ! $current_cat && empty( $_GET['cat_filter'] );
-                ?>
-                <a href="<?php echo esc_url( $shop_url ); ?>" 
-                   class="cozy-cat-card<?php echo $is_all_active ? ' cozy-cat-card--active' : ''; ?>">
-                    <div class="cozy-cat-card__body">
-                        <span class="cozy-cat-card__name">✨ Ver Todo</span>
-                        <span class="cozy-cat-card__count">Todos los productos</span>
-                    </div>
-                </a>
-                
-                <?php foreach ( $categories as $cat ) :
-                    $is_active = false;
-                    if ( $current_cat && $current_cat->term_id === $cat->term_id ) {
-                        $is_active = true;
-                    } else {
-                        $raw_cats = sanitize_text_field( wp_unslash( $_GET['cat_filter'] ?? '' ) );
-                        $selected_cats = array_values( array_filter( array_map( 'sanitize_title', explode( ',', $raw_cats ) ) ) );
-                        if ( in_array( $cat->slug, $selected_cats, true ) ) {
-                            $is_active = true;
-                        }
-                    }
-                    
-                    $cat_url = get_term_link( $cat );
-                    if ( is_wp_error( $cat_url ) ) {
-                        continue;
-                    }
-                ?>
-                <a href="<?php echo esc_url( $cat_url ); ?>" 
-                   class="cozy-cat-card<?php echo $is_active ? ' cozy-cat-card--active' : ''; ?>">
-                    <div class="cozy-cat-card__body">
-                        <span class="cozy-cat-card__name">🍃 <?php echo esc_html( $cat->name ); ?></span>
-                        <span class="cozy-cat-card__count"><?php echo esc_html( $cat->count ); ?> productos</span>
-                    </div>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    <?php endif; ?>
-
     <div class="cozy-sort-bar flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div class="flex items-center gap-3">
             <?php woocommerce_result_count(); ?>
@@ -153,7 +64,7 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
         </div>
         <div class="flex items-center gap-3">
             <button onclick="openFilters()" aria-controls="cozy-shop-filters" aria-expanded="false"
-                    class="cozy-filter-btn py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
+                    class="cozy-filter-btn lg:hidden py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
                 Filtrar <?php if ( $_cozy_has_filters ) : ?><span class="w-1.5 h-1.5 rounded-full bg-cozy-mint inline-block"></span><?php endif; ?>
             </button>
@@ -164,7 +75,7 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
     <!-- ==================================================== -->
     <!-- FILTERS DROPDOWN PANEL                               -->
     <!-- ==================================================== -->
-    <aside class="cozy-shop-filters hidden bg-white border border-cozy-sand rounded-[24px] p-6 mb-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="cozy-shop-filters">
+    <aside class="cozy-shop-filters hidden lg:grid bg-white border border-cozy-sand rounded-[24px] p-6 mb-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="cozy-shop-filters">
 
         <?php
         the_widget( 'WC_Widget_Layered_Nav_Filters', [], [
@@ -349,17 +260,6 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
 
 </div>
 <?php wc_reset_loop(); ?>
-
-<script>
-(function () {
-    function cozyScrollCat(dir) {
-        var el = document.getElementById('cozy-cat-carousel');
-        if (el) el.scrollBy({ left: dir * 210, behavior: 'smooth' });
-    }
-    window.cozyScrollCat = cozyScrollCat;
-}());
-</script>
-
 <?php
 do_action( 'woocommerce_after_main_content' );
 do_action( 'woocommerce_sidebar' );
