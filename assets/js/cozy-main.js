@@ -94,27 +94,27 @@ window.cozyCatToggle = function (btn) {
     btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 };
 
-/* ---------- SHOP FILTER DROPDOWN ---------- */
+/* ---------- SHOP FILTER DRAWER ---------- */
 window.openFilters = function (e) {
     if (e && e.preventDefault) e.preventDefault();
     var sidebar   = document.getElementById('cozy-shop-filters');
+    var overlay   = document.getElementById('cozy-filters-overlay');
     var toggleBtn = document.querySelector('[aria-controls="cozy-shop-filters"]');
     if (!sidebar) return;
     
-    var isHidden = sidebar.classList.contains('hidden');
-    if (isHidden) {
-        sidebar.classList.remove('hidden');
-        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
-    } else {
-        sidebar.classList.add('hidden');
-        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
-    }
+    sidebar.classList.remove('-translate-x-full');
+    if (overlay) overlay.classList.remove('hidden');
+    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
 };
 window.closeFilters = function () {
     var sidebar   = document.getElementById('cozy-shop-filters');
+    var overlay   = document.getElementById('cozy-filters-overlay');
     var toggleBtn = document.querySelector('[aria-controls="cozy-shop-filters"]');
-    if (sidebar) sidebar.classList.add('hidden');
+    if (sidebar) sidebar.classList.add('-translate-x-full');
+    if (overlay) overlay.classList.add('hidden');
     if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
 };
 
 /* ---------- PRODUCT LIGHTBOX GALLERY ---------- */

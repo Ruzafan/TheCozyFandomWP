@@ -64,7 +64,7 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
         </div>
         <div class="flex items-center gap-3">
             <button onclick="openFilters()" aria-controls="cozy-shop-filters" aria-expanded="false"
-                    class="cozy-filter-btn lg:hidden py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
+                    class="cozy-filter-btn py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
                 Filtrar <?php if ( $_cozy_has_filters ) : ?><span class="w-1.5 h-1.5 rounded-full bg-cozy-mint inline-block"></span><?php endif; ?>
             </button>
@@ -72,10 +72,27 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
         </div>
     </div>
 
+    <!-- Filter Overlay -->
+    <div id="cozy-filters-overlay"
+         class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm"
+         onclick="closeFilters()" aria-hidden="true"></div>
+
     <!-- ==================================================== -->
-    <!-- FILTERS DROPDOWN PANEL                               -->
+    <!-- FILTERS DRAWER PANEL                                 -->
     <!-- ==================================================== -->
-    <aside class="cozy-shop-filters hidden lg:grid bg-white border border-cozy-sand rounded-[24px] p-6 mb-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="cozy-shop-filters">
+    <aside class="cozy-shop-filters fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-sm bg-white z-[1001] flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full" id="cozy-shop-filters">
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between p-6 border-b border-cozy-sand shrink-0">
+            <h2 class="font-serif text-xl font-bold text-cozy-coffee m-0">Filtros</h2>
+            <button onclick="closeFilters()"
+                    class="w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors border-0 cursor-pointer"
+                    aria-label="Cerrar filtros">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <!-- Scrollable Widgets Container -->
+        <div class="flex-grow overflow-y-auto p-6 space-y-6">
 
         <?php
         the_widget( 'WC_Widget_Layered_Nav_Filters', [], [
@@ -237,6 +254,7 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
             ], $cozy_widget_args );
         }
         ?>
+        </div>
     </aside>
 
     <!-- ==================================================== -->
