@@ -56,7 +56,7 @@ $cozy_cats = [
 <section id="home" class="relative flex flex-col bg-cozy-cream" style="min-height:580px; overflow:hidden;">
 
     <!-- Background banner image -->
-    <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpg' ); ?>"
+    <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.png' ); ?>"
          alt="" aria-hidden="true" loading="eager"
          class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
