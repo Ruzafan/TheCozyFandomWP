@@ -47,7 +47,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
     <!-- Content -->
     <div class="p-2.5 sm:p-4 flex flex-col gap-2 flex-grow">
 
-        <h3 class="font-bold text-[10px] sm:text-[11px] text-cozy-coffee/80 uppercase line-clamp-2 leading-snug flex-grow m-0">
+        <h3 class="font-bold text-[10px] sm:text-[11px] text-cozy-coffee/80 uppercase leading-snug flex-grow m-0">
             <a href="<?php echo esc_url( $product->get_permalink() ); ?>"
                class="hover:text-cozy-mint transition-colors no-underline">
                 <?php echo esc_html( $product->get_name() ); ?>
