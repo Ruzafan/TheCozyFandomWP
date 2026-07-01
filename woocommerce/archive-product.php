@@ -204,8 +204,8 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
 
         the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
 
-        // Licencia filter — custom taxonomy with checkbox-style links
-        $all_licenses = get_terms( [ 'taxonomy' => 'product_licencia', 'hide_empty' => false ] );
+        // Licencia filter — WooCommerce Brands (product_brand taxonomy)
+        $all_licenses = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => false ] );
         if ( ! is_wp_error( $all_licenses ) && ! empty( $all_licenses ) ) :
             $raw_sel      = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
             $selected     = array_filter( array_map( 'sanitize_title', explode( ',', $raw_sel ) ) );

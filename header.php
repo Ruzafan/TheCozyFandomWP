@@ -240,7 +240,7 @@
                 endif;
 
                 // Licencias dropdown
-                $nav_licenses = get_terms( [ 'taxonomy' => 'product_licencia', 'hide_empty' => false ] );
+                $nav_licenses = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => false ] );
                 if ( ! is_wp_error( $nav_licenses ) && ! empty( $nav_licenses ) ) :
                     $raw_lic     = isset( $_GET['licencia'] ) ? sanitize_text_field( wp_unslash( $_GET['licencia'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
                     $active_lics = $raw_lic ? array_filter( array_map( 'sanitize_title', explode( ',', $raw_lic ) ) ) : [];
