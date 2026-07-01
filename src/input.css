@@ -845,24 +845,19 @@ input[type="submit"] {
   background: #88c4b5 !important;
   border-color: #88c4b5 !important;
 }
-/* Replace WooCommerce's text arrows (→ ←) with FA chevrons, centered */
-.woocommerce-pagination .page-numbers .next,
-.woocommerce-pagination .page-numbers .prev {
-  font-size: 0 !important;
+/* Prev/Next: SVG icons via inline HTML in the template override */
+.woocommerce-pagination .page-numbers .prev,
+.woocommerce-pagination .page-numbers .next {
+  width: 2.5em;
+  height: 2.5em;
 }
-.woocommerce-pagination .page-numbers .next::after {
-  content: "\f054";
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  font-size: 0.6rem !important;
-  color: #4A3F35;
-}
-.woocommerce-pagination .page-numbers .prev::before {
-  content: "\f053";
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  font-size: 0.6rem !important;
-  color: #4A3F35;
+/* Dots: no border/background, just text */
+.woocommerce-pagination .page-numbers .dots {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
 }
 
 /* ─── Single product page ────────────────────────────────────── */
