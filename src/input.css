@@ -1123,7 +1123,7 @@ body.single-product {
   display: none !important;
 }
 .woocommerce-js .woocommerce-breadcrumb {
-  margin: 0 30px 1em !important;
+  margin: 1em 30px !important;
 }
 
 /* ─── Tabs (description / reviews) ─────────────────────────── */
