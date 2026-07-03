@@ -43,6 +43,11 @@ add_action( 'wp', function() {
     remove_action( 'woocommerce_single_product_summary', 'astra_woo_single_product_taxonomy', 3 );
 }, 20 );
 
+// Show 24 products per page on the shop/category listing instead of the default 12
+add_filter( 'loop_shop_per_page', function () {
+    return 24;
+}, 20 );
+
 /* ------------------------------------------------------------------ */
 /*  LICENCIA — URL-based shop filtering via WooCommerce Brands (Marca) */
 /* ------------------------------------------------------------------ */
