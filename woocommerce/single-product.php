@@ -27,10 +27,6 @@ while ( have_posts() ) :
 
     <div id="product-<?php the_ID(); ?>" <?php wc_product_class( 'cozy-single-product max-w-6xl mx-auto', $product ); ?>>
 
-        <!-- Decorative blobs -->
-        <div class="absolute top-0 right-0 w-96 h-96 bg-cozy-mint/10 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true"></div>
-        <div class="absolute bottom-20 left-0 w-72 h-72 bg-cozy-accent/5 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true"></div>
-
         <!-- Breadcrumb -->
         <nav class="mb-6 text-xs text-cozy-coffee/50 flex items-center gap-1.5 flex-wrap" aria-label="Ruta de navegación">
             <?php woocommerce_breadcrumb( [
