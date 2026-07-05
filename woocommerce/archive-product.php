@@ -61,19 +61,19 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
     <!-- ==================================================== -->
     <!-- CATEGORY PICKER (shop root, nothing filtered yet)     -->
     <!-- ==================================================== -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <?php foreach ( $categories as $cozy_cat ) :
             $cozy_cat_thumb_id = get_term_meta( $cozy_cat->term_id, 'thumbnail_id', true );
-            $cozy_cat_image    = $cozy_cat_thumb_id ? wp_get_attachment_image_url( $cozy_cat_thumb_id, 'medium' ) : wc_placeholder_img_src( 'medium' );
+            $cozy_cat_image    = $cozy_cat_thumb_id ? wp_get_attachment_image_url( $cozy_cat_thumb_id, 'large' ) : wc_placeholder_img_src( 'large' );
         ?>
         <a href="<?php echo esc_url( get_term_link( $cozy_cat ) ); ?>"
-           class="cozy-cat-card group block bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 no-underline">
-            <div class="bg-cozy-cream h-32 sm:h-40 lg:h-48 overflow-hidden">
+           class="cozy-cat-picker-card group block bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 no-underline">
+            <div class="bg-cozy-cream h-56 sm:h-64 lg:h-72 overflow-hidden">
                 <img src="<?php echo esc_url( $cozy_cat_image ); ?>" alt="<?php echo esc_attr( $cozy_cat->name ); ?>"
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
             </div>
-            <div class="p-3 sm:p-4 text-center">
-                <h3 class="font-serif text-sm sm:text-base font-bold text-cozy-coffee m-0"><?php echo esc_html( $cozy_cat->name ); ?></h3>
+            <div class="p-4 sm:p-5 text-center">
+                <h3 class="font-serif text-lg sm:text-xl font-bold text-cozy-coffee m-0"><?php echo esc_html( $cozy_cat->name ); ?></h3>
             </div>
         </a>
         <?php endforeach; ?>
