@@ -11,12 +11,13 @@ defined( 'ABSPATH' ) || exit;
 
 get_header( 'shop' );
 
-// Pull product categories (exclude WooCommerce's "Uncategorised" default)
+// Pull top-level product categories (exclude WooCommerce's "Uncategorised" default)
 $uncategorised_id = absint( get_option( 'default_product_cat' ) );
 $categories = get_terms( [
     'taxonomy'   => 'product_cat',
     'hide_empty' => true,
     'exclude'    => $uncategorised_id ? [ $uncategorised_id ] : [],
+    'parent'     => 0,
     'orderby'    => 'count',
     'order'      => 'DESC',
 ] );
@@ -48,9 +49,37 @@ if ( ! $_cozy_has_filters ) {
     }
 }
 $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
+
+// Plain shop root with nothing filtered/sorted/searched yet -> show the category picker instead of products.
+$cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters && empty( $_GET['orderby'] ); // phpcs:ignore WordPress.Security.NonceVerification
 ?>
 
 <div class="cozy-shop-layout px-3 py-4 sm:p-6 md:p-8">
+
+<?php if ( $cozy_show_category_grid ) : ?>
+
+    <!-- ==================================================== -->
+    <!-- CATEGORY PICKER (shop root, nothing filtered yet)     -->
+    <!-- ==================================================== -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <?php foreach ( $categories as $cozy_cat ) :
+            $cozy_cat_thumb_id = get_term_meta( $cozy_cat->term_id, 'thumbnail_id', true );
+            $cozy_cat_image    = $cozy_cat_thumb_id ? wp_get_attachment_image_url( $cozy_cat_thumb_id, 'medium' ) : wc_placeholder_img_src( 'medium' );
+        ?>
+        <a href="<?php echo esc_url( get_term_link( $cozy_cat ) ); ?>"
+           class="cozy-cat-card group block bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 no-underline">
+            <div class="bg-cozy-cream h-32 sm:h-40 lg:h-48 overflow-hidden">
+                <img src="<?php echo esc_url( $cozy_cat_image ); ?>" alt="<?php echo esc_attr( $cozy_cat->name ); ?>"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            </div>
+            <div class="p-3 sm:p-4 text-center">
+                <h3 class="font-serif text-sm sm:text-base font-bold text-cozy-coffee m-0"><?php echo esc_html( $cozy_cat->name ); ?></h3>
+            </div>
+        </a>
+        <?php endforeach; ?>
+    </div>
+
+<?php else : ?>
 
     <div class="cozy-sort-bar flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div class="flex items-center gap-3">
@@ -275,6 +304,8 @@ $_cozy_clear_url = get_permalink( wc_get_page_id( 'shop' ) );
             <?php do_action( 'woocommerce_no_products_found' ); ?>
         <?php endif; ?>
     </div>
+
+<?php endif; ?>
 
 </div>
 <?php wc_reset_loop(); ?>
