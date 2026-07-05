@@ -61,7 +61,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
     <!-- ==================================================== -->
     <!-- CATEGORY PICKER (shop root, nothing filtered yet)     -->
     <!-- ==================================================== -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[15px] gap-y-[15px]">
         <?php foreach ( $categories as $cozy_cat ) :
             $cozy_cat_thumb_id = get_term_meta( $cozy_cat->term_id, 'thumbnail_id', true );
             $cozy_cat_image    = $cozy_cat_thumb_id ? wp_get_attachment_image_url( $cozy_cat_thumb_id, 'large' ) : wc_placeholder_img_src( 'large' );
@@ -73,7 +73,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
             </div>
             <div class="p-4 sm:p-5 text-center">
-                <h3 class="font-serif text-lg sm:text-xl font-bold text-cozy-coffee m-0"><?php echo esc_html( $cozy_cat->name ); ?></h3>
+                <h3 class="text-lg sm:text-xl font-bold text-cozy-coffee m-0"><?php echo esc_html( $cozy_cat->name ); ?></h3>
             </div>
         </a>
         <?php endforeach; ?>
