@@ -37,7 +37,7 @@ do_action( 'woocommerce_before_main_content' );
         <?php echo esc_html( $term->name ); ?>
     </h1>
     <?php if ( $term->description ) : ?>
-    <p class="text-sm text-cozy-coffee/70 mt-3 max-w-2xl mx-auto"><?php echo esc_html( $term->description ); ?></p>
+    <div class="text-sm text-cozy-coffee/70 mt-3 max-w-2xl mx-auto"><?php echo wc_format_content( $term->description ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
     <?php endif; ?>
 </div>
 
