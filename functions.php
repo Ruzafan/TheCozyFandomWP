@@ -544,7 +544,9 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
         <div>
             <!-- Product Image -->
             <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
-                <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); // phpcs:ignore ?>
+                <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block w-full h-full no-underline">
+                    <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); // phpcs:ignore ?>
+                </a>
                 <?php if ( $badge_label ) : ?>
                 <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                     <?php echo esc_html( $badge_icon ); ?> <?php echo esc_html( $badge_label ); ?>
