@@ -40,7 +40,7 @@ $cozy_widget_args = [
 ];
 // Detect any active filters for the mobile button indicator
 $_cozy_has_filters = false;
-foreach ( [ 'licencia', 'min_price', 'max_price', 'rating_filter', 'cat_filter' ] as $_fk ) {
+foreach ( [ 'licencia', 'min_price', 'max_price', 'rating_filter' ] as $_fk ) {
     if ( ! empty( $_GET[ $_fk ] ) ) { $_cozy_has_filters = true; break; } // phpcs:ignore WordPress.Security.NonceVerification
 }
 if ( ! $_cozy_has_filters ) {
@@ -102,32 +102,25 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
     </div>
 
     <?php
-    // Subcategory pills — only shown while browsing inside a category
+    // Subcategory pills — shown while browsing a category or one of its subcategories.
+    // Always list the siblings at that level (get_term_link navigates directly,
+    // so this keeps working no matter which level you land on, e.g. via the header menu).
     if ( $current_cat ) :
+        $cozy_pills_parent_id = $current_cat->parent ? $current_cat->parent : $current_cat->term_id;
         $sub_cats = get_terms( [
             'taxonomy'   => 'product_cat',
             'hide_empty' => true,
-            'parent'     => $current_cat->term_id,
+            'parent'     => $cozy_pills_parent_id,
             'orderby'    => 'name',
             'order'      => 'ASC',
         ] );
-        if ( ! is_wp_error( $sub_cats ) && ! empty( $sub_cats ) ) :
-            $raw_cats      = sanitize_text_field( wp_unslash( $_GET['cat_filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
-            $selected_cats = array_values( array_filter( array_map( 'sanitize_title', explode( ',', $raw_cats ) ) ) );
-            $cat_base_url  = remove_query_arg( [ 'cat_filter', 'paged' ] );
-            ?>
+        if ( ! is_wp_error( $sub_cats ) && ! empty( $sub_cats ) ) : ?>
             <div class="flex flex-wrap gap-2 mb-8">
                 <?php foreach ( $sub_cats as $scat ) :
-                    $checked = in_array( $scat->slug, $selected_cats, true );
-                    $new_sel = $checked
-                        ? array_values( array_diff( $selected_cats, [ $scat->slug ] ) )
-                        : array_merge( $selected_cats, [ $scat->slug ] );
-                    $href = $new_sel
-                        ? add_query_arg( 'cat_filter', implode( ',', $new_sel ), $cat_base_url )
-                        : $cat_base_url;
+                    $is_active = $scat->term_id === $current_cat->term_id;
                 ?>
-                <a href="<?php echo esc_url( $href ); ?>"
-                   class="inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-bold no-underline transition-colors <?php echo $checked ? 'bg-cozy-mint border-cozy-mint text-white' : 'bg-white border-cozy-sand text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint'; ?>">
+                <a href="<?php echo esc_url( get_term_link( $scat ) ); ?>"
+                   class="inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-bold no-underline transition-colors <?php echo $is_active ? 'bg-cozy-mint border-cozy-mint text-white' : 'bg-white border-cozy-sand text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint'; ?>">
                     <?php echo esc_html( $scat->name ); ?>
                 </a>
                 <?php endforeach; ?>
