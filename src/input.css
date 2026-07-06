@@ -429,6 +429,21 @@ input[type="submit"] {
   font-weight: 500;
 }
 
+/* ─── Shop/category archive width ───────────────────────────────
+   Astra's .ast-container caps at --ast-container-width (1200px on this
+   site), narrower than the header's 95rem — widen it here so the shop
+   and category archives line up with the header instead of looking
+   inset. Same pattern as the single-product/cart/checkout overrides. */
+.woocommerce-shop .ast-container,
+.tax-product_cat .ast-container {
+  max-width: 95rem !important;
+}
+.woocommerce-shop #primary,
+.tax-product_cat #primary {
+  width: 100% !important;
+  max-width: 95rem !important;
+}
+
 /* ─── Shop sort bar ──────────────────────────────────────────── */
 .cozy-sort-bar .woocommerce-result-count {
   font-size: 0.75rem;
