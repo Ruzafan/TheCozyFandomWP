@@ -544,9 +544,6 @@ input[type="submit"] {
 
 .cozy-filter-widget {
   background: #fff;
-  border: 1px solid #F5EDE0;
-  border-radius: 20px;
-  padding: 1.25rem;
 }
 .cozy-filter-widget__title {
   font-family: 'Playfair Display', Georgia, serif;
