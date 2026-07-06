@@ -793,9 +793,23 @@ input[type="submit"] {
     gap: 1.5rem !important;
   }
 }
+/* Shop/category archive: keep 3 columns through lg since the filters
+   sidebar (lg:w-64) now eats into that width — 4 columns only once
+   there's room again at xl. Other product grids (related, cross-sells,
+   shortcodes) aren't next to the sidebar, so they still go to 4 at lg. */
 @media (min-width: 1024px) {
   .woocommerce ul.products,
   .woocommerce-page ul.products {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .woocommerce-shop ul.products,
+  .tax-product_cat ul.products {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+@media (min-width: 1280px) {
+  .woocommerce-shop ul.products,
+  .tax-product_cat ul.products {
     grid-template-columns: repeat(4, 1fr) !important;
   }
 }

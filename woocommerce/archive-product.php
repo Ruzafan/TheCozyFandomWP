@@ -93,7 +93,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
         </div>
         <div class="flex items-center gap-3">
             <button onclick="openFilters()" aria-controls="cozy-shop-filters" aria-expanded="false"
-                    class="cozy-filter-btn py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
+                    class="cozy-filter-btn lg:hidden py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
                 Filtrar <?php if ( $_cozy_has_filters ) : ?><span class="w-1.5 h-1.5 rounded-full bg-cozy-mint inline-block"></span><?php endif; ?>
             </button>
@@ -128,27 +128,29 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
         <?php endif;
     endif; ?>
 
-    <!-- Filter Overlay -->
+    <!-- Filter Overlay (mobile drawer backdrop) -->
     <div id="cozy-filters-overlay"
-         class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm"
+         class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm lg:hidden"
          onclick="closeFilters()" aria-hidden="true"></div>
 
+    <div class="lg:flex lg:items-start lg:gap-8">
+
     <!-- ==================================================== -->
-    <!-- FILTERS DRAWER PANEL                                 -->
+    <!-- FILTERS PANEL — drawer on mobile, static sidebar on desktop -->
     <!-- ==================================================== -->
-    <aside class="cozy-shop-filters fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-sm bg-white z-[1001] flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full" id="cozy-shop-filters">
+    <aside class="cozy-shop-filters fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-sm bg-white z-[1001] flex flex-col shadow-2xl transition-transform duration-300 -translate-x-full lg:static lg:h-auto lg:w-64 lg:shrink-0 lg:z-auto lg:shadow-none lg:translate-x-0 lg:border lg:border-cozy-sand lg:rounded-2xl" id="cozy-shop-filters">
         <!-- Drawer Header -->
         <div class="flex items-center justify-between p-6 border-b border-cozy-sand shrink-0">
             <h2 class="font-serif text-xl font-bold text-cozy-coffee m-0">Filtros</h2>
             <button onclick="closeFilters()"
-                    class="w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors border-0 cursor-pointer"
+                    class="lg:hidden w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors border-0 cursor-pointer"
                     aria-label="Cerrar filtros">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
         </div>
 
         <!-- Scrollable Widgets Container -->
-        <div class="flex-grow overflow-y-auto p-6 space-y-6">
+        <div class="flex-grow overflow-y-auto p-6 space-y-6 lg:overflow-visible">
 
         <?php
         the_widget( 'WC_Widget_Layered_Nav_Filters', [], [
@@ -216,7 +218,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
     <!-- ==================================================== -->
     <!-- PRODUCT GRID                                           -->
     <!-- ==================================================== -->
-    <div id="cozy-products-container" class="transition-opacity duration-300">
+    <div id="cozy-products-container" class="transition-opacity duration-300 lg:flex-1 lg:min-w-0">
         <?php if ( woocommerce_product_loop() ) : ?>
             <?php woocommerce_product_loop_start(); ?>
 
@@ -230,6 +232,8 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
         <?php else : ?>
             <?php do_action( 'woocommerce_no_products_found' ); ?>
         <?php endif; ?>
+    </div>
+
     </div>
 
 <?php endif; ?>
