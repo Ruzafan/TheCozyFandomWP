@@ -543,7 +543,7 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
     <div class="bg-white rounded-[24px] p-4 border border-cozy-sand shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
         <div>
             <!-- Product Image -->
-            <div class="bg-cozy-cream rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
+            <div class="bg-white rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
                 <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block w-full h-full no-underline">
                     <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); // phpcs:ignore ?>
                 </a>
