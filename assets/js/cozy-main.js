@@ -84,16 +84,6 @@ window.cozyToggleDropdown = function (btn) {
     });
 };
 
-/* ---------- SIDEBAR CATEGORY TOGGLE ---------- */
-window.cozyCatToggle = function (btn) {
-    var item = btn.closest('.cozy-cat-filter-item');
-    if (!item) return;
-    var list   = item.querySelector('.cozy-cat-filter-children');
-    var isOpen = list.classList.toggle('is-open');
-    btn.classList.toggle('is-open', isOpen);
-    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-};
-
 /* ---------- SHOP FILTER DRAWER ---------- */
 window.openFilters = function (e) {
     if (e && e.preventDefault) e.preventDefault();

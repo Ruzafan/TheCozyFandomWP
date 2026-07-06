@@ -71,10 +71,10 @@ add_action( 'pre_get_posts', function ( WP_Query $q ) {
     $q->set( 'tax_query', $tq );
 } );
 
-// Filter shop queries when ?cat_filter=slug1,slug2 is in the URL (multi-select categories)
+// Filter shop/category queries when ?cat_filter=slug1,slug2 is in the URL (multi-select subcategories)
 add_action( 'pre_get_posts', function ( WP_Query $q ) {
     if ( ! $q->is_main_query() || is_admin() ) return;
-    if ( ! is_shop() ) return;
+    if ( ! is_shop() && ! is_product_category() ) return;
 
     $raw   = sanitize_text_field( wp_unslash( $_GET['cat_filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
     $slugs = array_filter( array_map( 'sanitize_title', explode( ',', $raw ) ) );

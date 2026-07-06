@@ -131,105 +131,48 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
             'after_title'   => '</h3>',
         ] );
 
-        // Multi-select category filter
-        $top_cats = get_terms( [
-            'taxonomy'   => 'product_cat',
-            'hide_empty' => true,
-            'exclude'    => $uncategorised_id ? [ $uncategorised_id ] : [],
-            'parent'     => 0,
-            'orderby'    => 'name',
-            'order'      => 'ASC',
-        ] );
-        if ( ! is_wp_error( $top_cats ) && ! empty( $top_cats ) ) :
-            $current_cat_obj = is_product_category() ? get_queried_object() : null;
-            $raw_cats        = sanitize_text_field( wp_unslash( $_GET['cat_filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
-            $selected_cats   = array_values( array_filter( array_map( 'sanitize_title', explode( ',', $raw_cats ) ) ) );
-            // When on a category archive, treat that category as selected
-            if ( $current_cat_obj ) {
-                $selected_cats = array_values( array_unique( array_merge( [ $current_cat_obj->slug ], $selected_cats ) ) );
-            }
-            $cat_base_url = remove_query_arg( [ 'cat_filter', 'paged' ], get_permalink( wc_get_page_id( 'shop' ) ) );
-            ?>
-            <div class="cozy-filter-widget">
-                <h3 class="cozy-filter-widget__title">Categorías</h3>
-                <ul class="cozy-license-list">
-                    <?php foreach ( $top_cats as $tcat ) :
-                        $is_top_checked = in_array( $tcat->slug, $selected_cats, true );
-
-                        $sub_cats = get_terms( [
-                            'taxonomy'   => 'product_cat',
-                            'hide_empty' => true,
-                            'parent'     => $tcat->term_id,
-                            'orderby'    => 'name',
-                            'order'      => 'ASC',
-                        ] );
-                        $has_sub = ! is_wp_error( $sub_cats ) && ! empty( $sub_cats );
-
-                        $any_sub_checked = false;
-                        if ( $has_sub ) {
-                            foreach ( $sub_cats as $sc ) {
-                                if ( in_array( $sc->slug, $selected_cats, true ) ) { $any_sub_checked = true; break; }
-                            }
-                        }
-                        $is_expanded = $is_top_checked || $any_sub_checked;
-
-                        $new_top_sel = $is_top_checked
-                            ? array_values( array_diff( $selected_cats, [ $tcat->slug ] ) )
-                            : array_merge( $selected_cats, [ $tcat->slug ] );
-                        $top_href = $new_top_sel
-                            ? add_query_arg( 'cat_filter', implode( ',', $new_top_sel ), $cat_base_url )
-                            : $cat_base_url;
-                    ?>
-                    <li class="cozy-cat-filter-item<?php echo $has_sub ? ' cozy-cat-filter-item--has-children' : ''; ?>">
-                        <div class="cozy-cat-filter-row">
-                            <a href="<?php echo esc_url( $top_href ); ?>"
-                               class="cozy-license-link flex-1<?php echo $is_top_checked ? ' is-active' : ''; ?>">
+        // Subcategory filter — only shown while browsing inside a category
+        if ( $current_cat ) :
+            $sub_cats = get_terms( [
+                'taxonomy'   => 'product_cat',
+                'hide_empty' => true,
+                'parent'     => $current_cat->term_id,
+                'orderby'    => 'name',
+                'order'      => 'ASC',
+            ] );
+            if ( ! is_wp_error( $sub_cats ) && ! empty( $sub_cats ) ) :
+                $raw_cats      = sanitize_text_field( wp_unslash( $_GET['cat_filter'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+                $selected_cats = array_values( array_filter( array_map( 'sanitize_title', explode( ',', $raw_cats ) ) ) );
+                $cat_base_url  = remove_query_arg( [ 'cat_filter', 'paged' ] );
+                ?>
+                <div class="cozy-filter-widget">
+                    <h3 class="cozy-filter-widget__title">Subcategorías</h3>
+                    <ul class="cozy-license-list">
+                        <?php foreach ( $sub_cats as $scat ) :
+                            $checked = in_array( $scat->slug, $selected_cats, true );
+                            $new_sel = $checked
+                                ? array_values( array_diff( $selected_cats, [ $scat->slug ] ) )
+                                : array_merge( $selected_cats, [ $scat->slug ] );
+                            $href = $new_sel
+                                ? add_query_arg( 'cat_filter', implode( ',', $new_sel ), $cat_base_url )
+                                : $cat_base_url;
+                        ?>
+                        <li>
+                            <a href="<?php echo esc_url( $href ); ?>"
+                               class="cozy-license-link<?php echo $checked ? ' is-active' : ''; ?>">
                                 <span class="cozy-license-box" aria-hidden="true">
-                                    <?php if ( $is_top_checked ) : ?>
+                                    <?php if ( $checked ) : ?>
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
                                     <?php endif; ?>
                                 </span>
-                                <span class="cozy-license-name"><?php echo esc_html( $tcat->name ); ?></span>
+                                <span class="cozy-license-name"><?php echo esc_html( $scat->name ); ?></span>
                             </a>
-                            <?php if ( $has_sub ) : ?>
-                            <button class="cozy-cat-filter-toggle<?php echo $is_expanded ? ' is-open' : ''; ?>"
-                                    aria-expanded="<?php echo $is_expanded ? 'true' : 'false'; ?>"
-                                    aria-label="Expandir <?php echo esc_attr( $tcat->name ); ?>"
-                                    onclick="cozyCatToggle(this)">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                            </button>
-                            <?php endif; ?>
-                        </div>
-                        <?php if ( $has_sub ) : ?>
-                        <ul class="cozy-cat-filter-children<?php echo $is_expanded ? ' is-open' : ''; ?>">
-                            <?php foreach ( $sub_cats as $scat ) :
-                                $is_scat_checked = in_array( $scat->slug, $selected_cats, true );
-                                $new_scat_sel    = $is_scat_checked
-                                    ? array_values( array_diff( $selected_cats, [ $scat->slug ] ) )
-                                    : array_merge( $selected_cats, [ $scat->slug ] );
-                                $scat_href = $new_scat_sel
-                                    ? add_query_arg( 'cat_filter', implode( ',', $new_scat_sel ), $cat_base_url )
-                                    : $cat_base_url;
-                            ?>
-                            <li>
-                                <a href="<?php echo esc_url( $scat_href ); ?>"
-                                   class="cozy-license-link<?php echo $is_scat_checked ? ' is-active' : ''; ?>" style="padding-left:1.25rem">
-                                    <span class="cozy-license-box" aria-hidden="true">
-                                        <?php if ( $is_scat_checked ) : ?>
-                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
-                                        <?php endif; ?>
-                                    </span>
-                                    <span class="cozy-license-name"><?php echo esc_html( $scat->name ); ?></span>
-                                </a>
-                            </li>
-                            <?php endforeach; ?>
-                        </ul>
-                        <?php endif; ?>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif;
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif;
+        endif;
 
         the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
 
