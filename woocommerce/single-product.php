@@ -105,6 +105,13 @@ while ( have_posts() ) :
             </div>
         </div>
 
+        <!-- Return policy reassurance -->
+        <p class="text-[11px] text-cozy-coffee/50 text-center mb-8 -mt-4">
+            <a href="<?php echo esc_url( cozy_fandom_legal_link( 'envios-y-devoluciones' ) ); ?>"
+               class="underline hover:text-cozy-mint transition-colors">Devoluciones en 14 días</a>
+            &nbsp;·&nbsp; Envíos seguros &nbsp;·&nbsp; Pago 100% encriptado
+        </p>
+
         <!-- ============================================================ -->
         <!-- TABS (description, reviews) + RELATED                         -->
         <!-- ============================================================ -->

@@ -81,7 +81,7 @@ $cozy_cats = [
 
             <a href="<?php echo esc_url( $shop_url ); ?>"
                class="inline-flex items-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                Explorar la Tienda <?php echo cozy_icon( 'arrow-right', '12' ); ?>
+                Ver la Colección <?php echo cozy_icon( 'arrow-right', '12' ); ?>
             </a>
 
         </div>
@@ -214,19 +214,19 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  TOP SELLS SECTION (products tagged "top-sell")               -->
 <!-- ============================================================ -->
-<section id="top-ventas" class="bg-cozy-sand/50 py-16 px-6 md:px-12 relative rounded-[32px]" style="max-width: 80rem !important;margin: 20px auto 0;">
+<section id="top-ventas" class="bg-cozy-coffee py-16 px-6 md:px-12 relative rounded-[32px]" style="max-width: 80rem !important;margin: 20px auto 0;">
     <div class="max-w-7xl mx-auto">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
                 <span class="text-xs font-bold text-cozy-accent uppercase tracking-widest block mb-2">Los Más Buscados</span>
-                <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Top ventas de la comunidad</h2>
-                <p class="text-sm text-cozy-coffee/70 mt-2">Los favoritos indiscutibles de nuestros fans cozy.</p>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-white">Top ventas de la comunidad</h2>
+                <p class="text-sm text-white/60 mt-2">Los favoritos indiscutibles de nuestros fans cozy.</p>
             </div>
             <?php if ( class_exists( 'WooCommerce' ) ) : ?>
             <div class="mt-4 md:mt-0">
                 <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
-                   class="bg-white hover:bg-cozy-mintLight text-cozy-coffee px-5 py-2 rounded-full text-xs font-medium border border-cozy-sand transition-colors">
+                   class="bg-transparent hover:bg-white/10 text-white px-5 py-2 rounded-full text-xs font-medium border border-white/30 transition-colors">
                     Ver todos los productos →
                 </a>
             </div>
@@ -245,15 +245,17 @@ $cozy_cats = [
         ] ) : [];
 
         if ( $top_products ) :
+            $rank = 0;
             foreach ( $top_products as $product ) {
-                cozy_fandom_home_product_card( $product, 'Top Venta', '🔥' );
+                $rank++;
+                cozy_fandom_home_product_card( $product, '', '', $rank );
             }
         else : ?>
             <div class="col-span-4 text-center py-16">
-                <?php echo cozy_icon( 'fire', '48', 'text-cozy-coffee/20 block mb-4' ); ?>
-                <p class="text-cozy-coffee/60 text-sm">Aún no hay productos marcados como "Top Venta".</p>
+                <?php echo cozy_icon( 'fire', '48', 'text-white/20 block mb-4' ); ?>
+                <p class="text-white/60 text-sm">Aún no hay productos marcados como "Top Venta".</p>
                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
-                <p class="text-cozy-coffee/50 text-xs mt-2">Añade la etiqueta <code>top-sell</code> a tus productos más vendidos desde Productos → Editar producto → Etiquetas del producto.</p>
+                <p class="text-white/40 text-xs mt-2">Añade la etiqueta <code>top-sell</code> a tus productos más vendidos desde Productos → Editar producto → Etiquetas del producto.</p>
                 <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>"
                    class="inline-block mt-4 bg-cozy-mint text-cozy-coffee px-6 py-2 rounded-xl text-sm font-bold">
                     Gestionar productos
@@ -309,7 +311,7 @@ $cozy_cats = [
 
             <!-- Success state -->
             <div id="newsletter-success" class="hidden text-center py-2">
-                <span class="text-cozy-mint font-bold text-sm">🌿 ¡Bienvenida al club! Revisa tu bandeja de entrada.</span>
+                <span class="text-cozy-mint font-bold text-sm">🌿 ¡Bienvenida al club! Te enviamos el código de descuento a tu correo en unos minutos.</span>
             </div>
 
             <!-- Micro-text -->

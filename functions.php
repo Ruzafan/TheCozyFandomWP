@@ -511,7 +511,7 @@ add_action( 'wp_footer', 'cozy_fandom_render_footer' );
 /* ------------------------------------------------------------------ */
 /*  HOME PRODUCT CARD (shared by "Nuevos" and "Top ventas" sections)   */
 /* ------------------------------------------------------------------ */
-function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon = '' ) {
+function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon = '', $rank = 0 ) {
     $cat_ids  = $product->get_category_ids();
     $cat_name = '';
     if ( ! empty( $cat_ids ) ) {
@@ -528,13 +528,17 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
                 <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block w-full h-full no-underline">
                     <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); // phpcs:ignore ?>
                 </a>
-                <?php if ( $badge_label ) : ?>
+                <?php if ( $rank > 0 ) : ?>
+                <div class="absolute top-3 left-3 w-8 h-8 bg-cozy-coffee rounded-[10px] flex items-center justify-center z-10 shadow-md">
+                    <span class="font-sans text-xs font-bold text-white/80 leading-none"><?php echo absint( $rank ); ?></span>
+                </div>
+                <?php elseif ( $badge_label ) : ?>
                 <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                     <?php echo esc_html( $badge_icon ); ?> <?php echo esc_html( $badge_label ); ?>
                 </span>
                 <?php endif; ?>
                 <button onclick="toggleFavorite(<?php echo absint( $product->get_id() ); ?>)"
-                        class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
+                        class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
                         data-product-id="<?php echo absint( $product->get_id() ); ?>"
                         aria-label="Guardar en favoritos">
                     <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>

@@ -73,7 +73,8 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
             </div>
             <div class="p-4 sm:p-5 text-center">
-                <h3 class="text-lg sm:text-lg font-bold text-cozy-coffee m-0"><?php echo esc_html( $cozy_cat->name ); ?></h3>
+                <h3 class="text-lg font-bold text-cozy-coffee m-0 mb-1"><?php echo esc_html( $cozy_cat->name ); ?></h3>
+                <span class="text-xs text-cozy-coffee/50"><?php echo absint( $cozy_cat->count ); ?> producto<?php echo $cozy_cat->count !== 1 ? 's' : ''; ?></span>
             </div>
         </a>
         <?php endforeach; ?>
