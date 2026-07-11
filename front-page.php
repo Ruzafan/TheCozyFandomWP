@@ -58,7 +58,7 @@ $cozy_cats = [
     <!-- Background banner image -->
     <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
          alt="" aria-hidden="true" loading="eager"
-         class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
+         class="absolute inset-0 w-full h-full object-contain object-center pointer-events-none select-none">
 
     <!-- Copy: glass card aligned within max-w-7xl -->
     <div class="relative z-10 flex-1 flex items-center py-10">
