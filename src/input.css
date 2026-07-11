@@ -87,8 +87,9 @@ body.home #page .site-main {
 ::-webkit-scrollbar-thumb { background: #88C4B5; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #72b0a2; }
 
-/* Cart drawer transition */
-#cart-drawer { transition: transform 0.3s ease-in-out; }
+/* Drawer transitions */
+#cart-drawer,
+#fav-drawer { transition: transform 0.3s ease-in-out; }
 
 /* WooCommerce price HTML */
 .woocommerce-Price-amount { font-weight: 700; }
