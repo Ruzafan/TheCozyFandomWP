@@ -53,45 +53,39 @@ $cozy_cats = [
 <!--  HERO SECTION + TRUST BADGES                                  -->
 <!-- ============================================================ -->
 <?php $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos'; ?>
-<section id="home" class="relative flex flex-col bg-cozy-cream" style="min-height:580px; overflow:hidden;">
+<section id="home" class="relative bg-cozy-cream" style="overflow:hidden;">
 
-    <!-- Background banner image -->
-    <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
-         alt="" aria-hidden="true" loading="eager"
-         class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
+    <!-- Banner image, fixed height, with overlay copy -->
+    <div class="relative w-full h-[440px] md:h-[560px]">
 
-    <!-- Copy: glass card aligned within max-w-7xl -->
-    <div class="relative z-10 flex-1 flex items-center py-10">
-        <div class="w-full max-w-7xl mx-auto px-6 md:px-16">
-        <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm"
-             style="background:rgba(255,255,255,0.76); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
+        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
+             alt="" aria-hidden="true" loading="eager"
+             class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
-            <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-5">
-                🌿 Concepto Cozy Geek Boutique
+        <!-- Copy: glass card aligned within max-w-7xl -->
+        <div class="relative z-10 h-full flex items-center">
+            <div class="w-full max-w-7xl mx-auto px-6 md:px-16">
+            <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm"
+                 style="background:rgba(255,255,255,0.76); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
+
+                <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-5">
+                    🌿 Concepto Cozy Geek Boutique
+                </div>
+
+                <h1 class="font-serif text-4xl md:text-5xl font-semibold leading-tight text-cozy-coffee m-0 p-0 border-0">
+                    Tu rincón friki <span class="italic text-cozy-mint font-normal">más acogedor</span>
+                </h1>
+
             </div>
-
-            <h1 class="font-serif text-4xl md:text-5xl font-semibold leading-tight text-cozy-coffee m-0 p-0 border-0">
-                Tu rincón friki <br>
-                <span class="italic text-cozy-mint font-normal">más acogedor</span>.
-            </h1>
-
-            <p class="text-sm md:text-base text-cozy-coffee/80 leading-relaxed mt-4 mb-6 max-w-sm">
-                Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado. Merchandising oficial seleccionado con un toque cálido y sofisticado.
-            </p>
-
-            <a href="<?php echo esc_url( $shop_url ); ?>"
-               class="inline-flex items-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                Ver la Colección <?php echo cozy_icon( 'arrow-right', '12' ); ?>
-            </a>
-
+            </div>
         </div>
-        </div>
+
     </div>
-
-    <!-- Trust badges: max-w-7xl container with rounded corners and glass effect -->
-    <div class="relative z-10 px-6 md:px-16 pb-10">
+    <div style="height:40px;"></div>
+    <!-- Trust badges: floating card below the banner, on the section's cream background -->
+    <div class="px-6 md:px-16 py-8 md:py-10">
         <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-[24px] px-6 md:px-10"
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-[24px] px-6 md:px-10 shadow-sm"
                  style="background:rgba(255,255,255,0.76); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
 
                 <?php
@@ -108,10 +102,6 @@ $cozy_cats = [
             </div>
         </div>
     </div>
-
-    <!-- Spacer so image shows below the badges strip -->
-    <div style="height:40px;"></div>
-
 </section>
 
 <!-- ============================================================ -->
