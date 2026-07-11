@@ -68,10 +68,6 @@ $cozy_cats = [
             <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm"
                  style="background:rgba(255,255,255,0.76); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
-                <div class="inline-flex items-center gap-2 bg-cozy-mintLight text-cozy-mint text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-cozy-mint/20 mb-5">
-                    🌿 Concepto Cozy Geek Boutique
-                </div>
-
                 <h1 class="font-serif text-4xl md:text-5xl font-semibold leading-tight text-cozy-coffee m-0 p-0 border-0">
                     Tu rincón friki <span class="italic text-cozy-mint font-normal">más acogedor</span>
                 </h1>
