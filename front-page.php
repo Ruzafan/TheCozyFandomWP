@@ -69,9 +69,16 @@ $cozy_cats = [
                  style="background:rgba(255,255,255,0.76); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
                 <h1 class="font-serif text-4xl md:text-5xl font-semibold leading-tight text-cozy-coffee m-0 p-0 border-0">
-                    Tu rincón friki <span class="italic text-cozy-mint font-normal">más acogedor</span>
+                    Tu rincón friki <span class="italic text-cozy-mint font-normal block md:inline">más acogedor</span>
                 </h1>
+                <p class="text-sm md:text-base text-cozy-coffee/80 leading-relaxed mt-4 mb-6 max-w-sm">
+                    Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado. Merchandising oficial seleccionado con un toque cálido y sofisticado.
+                </p>
 
+                <a href="<?php echo esc_url( $shop_url ); ?>"
+                class="inline-flex items-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                    Ver la Colección <?php echo cozy_icon( 'arrow-right', '12' ); ?>
+                </a>
             </div>
             </div>
         </div>
