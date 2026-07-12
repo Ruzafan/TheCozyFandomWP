@@ -56,7 +56,7 @@ $cozy_cats = [
 <section id="home" class="relative" style="overflow:hidden;">
 
     <!-- Banner image, fixed height, with overlay copy -->
-    <div class="relative w-full h-[440px] md:h-[560px]">
+    <div class="relative w-full h-[60vh] md:h-[80vh]">
 
         <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
              alt="" aria-hidden="true" loading="eager"
