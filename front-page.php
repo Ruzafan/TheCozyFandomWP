@@ -53,7 +53,7 @@ $cozy_cats = [
 <!--  HERO SECTION + TRUST BADGES                                  -->
 <!-- ============================================================ -->
 <?php $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : '#productos'; ?>
-<section id="home" class="relative bg-cozy-cream" style="overflow:hidden;">
+<section id="home" class="relative" style="overflow:hidden;">
 
     <!-- Banner image, fixed height, with overlay copy -->
     <div class="relative w-full h-[440px] md:h-[560px]">
@@ -84,7 +84,6 @@ $cozy_cats = [
         </div>
 
     </div>
-    <div style="height:40px;"></div>
     <!-- Trust badges: floating card below the banner, on the section's cream background -->
     <div class="px-6 md:px-16 py-8 md:py-10">
         <div class="max-w-7xl mx-auto">

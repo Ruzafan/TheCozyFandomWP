@@ -90,7 +90,7 @@ do_action( 'woocommerce_before_customer_login_form' );
                 <input type="hidden" name="redirect" value="<?php echo esc_url( wc_get_account_endpoint_url( 'dashboard' ) ); ?>" />
 
                 <button type="submit" name="login" value="<?php esc_attr_e( 'Log in', 'woocommerce' ); ?>"
-                    class="w-full bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 text-sm">
+                    class="w-full inline-flex items-center justify-center gap-2 bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 text-sm">
                     Entrar a mi cuenta <?php echo cozy_icon( 'arrow-right', '12' ); ?>
                 </button>
 
@@ -184,7 +184,7 @@ do_action( 'woocommerce_before_customer_login_form' );
                 <?php endif; ?>
 
                 <button type="submit" name="register" value="<?php esc_attr_e( 'Register', 'woocommerce' ); ?>"
-                    class="w-full bg-cozy-coffee hover:bg-cozy-coffee/90 text-white font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 text-sm">
+                    class="w-full inline-flex items-center justify-center gap-2 bg-cozy-coffee hover:bg-cozy-coffee/90 text-white font-semibold px-8 py-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 text-sm">
                     Unirme al Fandom <?php echo cozy_icon( 'heart', '12' ); ?>
                 </button>
 

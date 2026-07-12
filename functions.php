@@ -81,6 +81,26 @@ add_action( 'init', function() {
     }
 } );
 
+/* WooCommerce core auto-hooks WC_Privacy_Policy::registration_privacy_policy_text()
+   onto woocommerce_register_form, which duplicates the privacy text our
+   woocommerce/myaccount/form-login.php template already renders manually
+   (with its own cozy styling). Remove the core auto-injected copy, keeping
+   only the theme's styled one. */
+add_action( 'init', function() {
+    global $wp_filter;
+    if ( empty( $wp_filter['woocommerce_register_form'] ) ) {
+        return;
+    }
+    foreach ( $wp_filter['woocommerce_register_form']->callbacks as $priority => $callbacks ) {
+        foreach ( $callbacks as $callback ) {
+            $fn = $callback['function'];
+            if ( is_array( $fn ) && is_object( $fn[0] ) && 'WC_Privacy_Policy' === get_class( $fn[0] ) ) {
+                remove_action( 'woocommerce_register_form', $fn, $priority );
+            }
+        }
+    }
+}, 20 );
+
 /* ------------------------------------------------------------------ */
 /*  PRODUCT REVIEWS — verified purchasers only                          */
 /* ------------------------------------------------------------------ */
