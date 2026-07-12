@@ -2810,3 +2810,28 @@ body.woocommerce-order-pay .woocommerce-privacy-policy-text {
   background-color: #faf6ee;
   border-radius: 16px;
 }
+
+/* Notifima "Notify Me" out-of-stock subscribe form */
+.notifima-subscribe-form {
+  margin: 20px 0 16px;
+}
+.notifima-subscribe-form form {
+  gap: 12px;
+}
+.notifima-subscribe-form form input {
+  background: #FAF6EE !important;
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 16px !important;
+  padding: 12px 16px !important;
+  font-size: 0.875rem !important;
+  color: #4A3F35 !important;
+}
+.notifima-subscribe-form form input:focus {
+  border-color: #88C4B5 !important;
+  box-shadow: 0 0 0 3px rgba(136, 196, 181, 0.15) !important;
+  outline: none !important;
+}
+.notifima-subscribe-form form button {
+  border-radius: 16px !important;
+  padding: 14px !important;
+}
