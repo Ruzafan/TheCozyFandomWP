@@ -2819,7 +2819,7 @@ body.woocommerce-order-pay .woocommerce-privacy-policy-text {
   gap: 12px;
 }
 .notifima-subscribe-form form input {
-  background: #FAF6EE !important;
+  background: #FFFFFF !important;
   border: 1px solid #F5EDE0 !important;
   border-radius: 16px !important;
   padding: 12px 16px !important;
@@ -2834,4 +2834,9 @@ body.woocommerce-order-pay .woocommerce-privacy-policy-text {
 .notifima-subscribe-form form button {
   border-radius: 16px !important;
   padding: 14px !important;
+  color: #4A3F35 !important;
+}
+.notifima-subscribe-form form button:hover,
+.notifima-subscribe-form form button:focus {
+  color: #4A3F35 !important;
 }
