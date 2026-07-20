@@ -22,7 +22,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
     <div class="relative">
         <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block no-underline">
             <div class="bg-white h-40 sm:h-52 lg:h-64 overflow-hidden">
-                <?php echo $product->get_image( 'medium', [ 'class' => 'bg-white w-full h-full object-contain' ] ); ?>
+                <?php echo $product->get_image( 'woocommerce_thumbnail', [ 'class' => 'bg-white w-full h-full object-contain' ] ); ?>
             </div>
         </a>
 

@@ -104,10 +104,18 @@ add_action( 'init', function() {
 /* Catalog/shop-loop product images were capped at 300x300 (WooCommerce's
    default), even though uploads and the single-product image go up to
    600-700px. Bump the registered "woocommerce_thumbnail" size so listings
-   render sharp. Existing images still need Regenerate Thumbnails to
+   render sharp. Width alone only produces a 600x600 crop when the store's
+   cropping ratio is "1:1"; height is forced too so it's 600x600 regardless
+   of that setting. Existing images still need Regenerate Thumbnails to
    actually produce files at the new size. */
 add_filter( 'pre_option_woocommerce_thumbnail_image_width', function() {
     return 600;
+} );
+add_filter( 'pre_option_woocommerce_thumbnail_image_height', function() {
+    return 600;
+} );
+add_filter( 'pre_option_woocommerce_thumbnail_cropping', function() {
+    return '1:1';
 } );
 
 /* ------------------------------------------------------------------ */
