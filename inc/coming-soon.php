@@ -70,10 +70,6 @@ function cozy_render_coming_soon_page() {
     $logo_id       = get_theme_mod( 'custom_logo' );
     $instagram_url = get_option( 'cozy_instagram_url', '' );
     $tiktok_url    = get_option( 'cozy_tiktok_url', '' );
-    $whatsapp_raw  = get_option( 'cozy_whatsapp_number', '' );
-    $whatsapp_url  = $whatsapp_raw
-        ? 'https://wa.me/' . preg_replace( '/[^0-9]/', '', $whatsapp_raw ) . '?text=' . rawurlencode( 'Hola, me gustaría obtener más información.' )
-        : '';
 
     $teasers = [
         [ 'img' => 'snoopy-heart.png',  'label' => 'Snoopy' ],
@@ -87,14 +83,14 @@ function cozy_render_coming_soon_page() {
         <div class="absolute top-[-4rem] left-[-3rem] w-72 h-72 bg-cozy-mint/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
         <div class="absolute top-10 right-[-4rem] w-72 h-72 bg-cozy-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
 
-        <div class="relative w-full h-[30vh] md:h-[42vh]">
+        <div class="relative w-full h-[24vh] md:h-[32vh]">
             <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
                  alt="" aria-hidden="true" loading="eager"
                  class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
             <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(58,49,40,.15) 0%, rgba(252,249,245,.95) 100%);"></div>
         </div>
 
-        <div class="relative z-10 px-6 -mt-24 md:-mt-32 pb-16">
+        <div class="relative z-10 px-6 -mt-14 md:-mt-16 pb-16">
             <div class="max-w-md mx-auto bg-white rounded-[28px] shadow-lg border border-cozy-sand p-8 sm:p-10 text-center">
 
                 <?php if ( $logo_id ) : ?>
@@ -118,7 +114,7 @@ function cozy_render_coming_soon_page() {
                 </form>
                 <p id="cozy-coming-soon-message" class="text-xs mt-4 min-h-[1em]"></p>
 
-                <?php if ( ( $instagram_url && $instagram_url !== '#' ) || ( $tiktok_url && $tiktok_url !== '#' ) || $whatsapp_url ) : ?>
+                <?php if ( ( $instagram_url && $instagram_url !== '#' ) || ( $tiktok_url && $tiktok_url !== '#' ) ) : ?>
                 <div class="flex items-center justify-center gap-3 pt-6 mt-6 border-t border-cozy-sand/70">
                     <?php if ( $instagram_url && $instagram_url !== '#' ) : ?>
                     <a href="<?php echo esc_url( $instagram_url ); ?>" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
@@ -132,12 +128,6 @@ function cozy_render_coming_soon_page() {
                         <?php echo cozy_icon( 'tiktok', '16' ); ?>
                     </a>
                     <?php endif; ?>
-                    <?php if ( $whatsapp_url ) : ?>
-                    <a href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-                       class="w-10 h-10 rounded-full bg-cozy-cream hover:bg-cozy-mint flex items-center justify-center text-cozy-coffee/60 hover:text-cozy-coffee transition-colors">
-                        <?php echo cozy_icon( 'whatsapp', '16' ); ?>
-                    </a>
-                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
             </div>
@@ -145,14 +135,14 @@ function cozy_render_coming_soon_page() {
     </section>
 
     <!-- Sneak peek of what's coming + trust badges -->
-    <section class="px-6 pb-14">
-        <div class="max-w-3xl mx-auto space-y-8">
+    <section class="px-6 pt-10 md:pt-14 pb-14">
+        <div class="max-w-3xl mx-auto space-y-10 md:space-y-12">
 
             <div class="text-center">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-cozy-mintDark mb-4">Muy pronto en la tienda</p>
-                <div class="flex items-center justify-center gap-5 sm:gap-8">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-cozy-mintDark mb-6">Muy pronto en la tienda</p>
+                <div class="flex items-center justify-center gap-8 sm:gap-12">
                     <?php foreach ( $teasers as $teaser ) : ?>
-                    <div class="flex flex-col items-center gap-2">
+                    <div class="flex flex-col items-center gap-3">
                         <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white border border-cozy-sand shadow-sm flex items-center justify-center overflow-hidden">
                             <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $teaser['img'] ); ?>"
                                  alt="" aria-hidden="true" loading="lazy" class="w-full h-full object-contain p-1.5 opacity-90">
@@ -163,7 +153,7 @@ function cozy_render_coming_soon_page() {
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-[24px] px-6 md:px-8 bg-white border border-cozy-sand shadow-sm">
+            <div class="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-items-center rounded-[24px] px-6 md:px-10 py-2 bg-white border border-cozy-sand shadow-sm">
                 <?php
                 get_template_part( 'template-parts/trust-badges', null, [
                     'icon_bg_class'   => 'bg-cozy-mintLight',
