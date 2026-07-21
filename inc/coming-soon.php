@@ -66,19 +66,120 @@ function cozy_render_coming_soon_page() {
 <link rel="stylesheet" href="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/css/main.css' ); ?>">
 </head>
 <body class="bg-cozy-cream">
-    <div class="min-h-screen flex items-center justify-center px-6 py-12">
-        <div class="max-w-md w-full bg-white rounded-[28px] shadow-lg border border-cozy-sand p-8 sm:p-10 text-center">
-            <span class="font-serif text-2xl font-bold text-cozy-coffee block mb-2">🌿 <?php bloginfo( 'name' ); ?></span>
-            <h1 class="font-bold text-lg text-cozy-coffee mb-2 m-0">Estamos preparando algo bonito</h1>
-            <p class="text-sm text-cozy-coffee/60 mt-2 mb-6">Muy pronto abrimos la tienda. Déjanos tu email y te avisamos en cuanto esté lista.</p>
-            <form id="cozy-coming-soon-form" class="space-y-3" novalidate>
-                <input type="email" name="email" required placeholder="tú@email.com"
-                       class="w-full text-sm px-4 py-3 rounded-full border border-cozy-sand focus:outline-none focus:border-cozy-mint bg-cozy-cream/60 text-cozy-coffee">
-                <button type="submit" class="w-full bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-bold text-sm px-4 py-3 rounded-full transition-colors">Avísame</button>
-            </form>
-            <p id="cozy-coming-soon-message" class="text-xs mt-4 min-h-[1em]"></p>
+    <?php
+    $logo_id       = get_theme_mod( 'custom_logo' );
+    $instagram_url = get_option( 'cozy_instagram_url', '' );
+    $tiktok_url    = get_option( 'cozy_tiktok_url', '' );
+    $whatsapp_raw  = get_option( 'cozy_whatsapp_number', '' );
+    $whatsapp_url  = $whatsapp_raw
+        ? 'https://wa.me/' . preg_replace( '/[^0-9]/', '', $whatsapp_raw ) . '?text=' . rawurlencode( 'Hola, me gustaría obtener más información.' )
+        : '';
+
+    $teasers = [
+        [ 'img' => 'snoopy-heart.png',  'label' => 'Snoopy' ],
+        [ 'img' => 'harry-potter.png',  'label' => 'Harry Potter' ],
+        [ 'img' => 'disney.png',        'label' => 'Disney' ],
+    ];
+    ?>
+
+    <!-- Banner + overlapping card -->
+    <section class="relative" style="overflow:hidden;">
+        <div class="absolute top-[-4rem] left-[-3rem] w-72 h-72 bg-cozy-mint/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute top-10 right-[-4rem] w-72 h-72 bg-cozy-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+        <div class="relative w-full h-[30vh] md:h-[42vh]">
+            <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
+                 alt="" aria-hidden="true" loading="eager"
+                 class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
+            <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(58,49,40,.15) 0%, rgba(252,249,245,.95) 100%);"></div>
         </div>
-    </div>
+
+        <div class="relative z-10 px-6 -mt-24 md:-mt-32 pb-16">
+            <div class="max-w-md mx-auto bg-white rounded-[28px] shadow-lg border border-cozy-sand p-8 sm:p-10 text-center">
+
+                <?php if ( $logo_id ) : ?>
+                    <?php echo wp_get_attachment_image( $logo_id, [ 72, 72 ], false, [
+                        'class' => 'mx-auto mb-3 rounded-2xl object-cover',
+                        'alt'   => get_bloginfo( 'name' ),
+                    ] ); ?>
+                <?php else : ?>
+                    <span class="text-4xl block mb-2" aria-hidden="true">🌿</span>
+                <?php endif; ?>
+
+                <span class="font-serif text-xl font-bold text-cozy-coffee block mb-3"><?php bloginfo( 'name' ); ?></span>
+
+                <h1 class="font-bold text-lg text-cozy-coffee mb-2 m-0">Estamos preparando algo bonito</h1>
+                <p class="text-sm text-cozy-coffee/60 mt-2 mb-6">Muy pronto abrimos la tienda. Déjanos tu email y te avisamos en cuanto esté lista.</p>
+
+                <form id="cozy-coming-soon-form" class="space-y-3" novalidate>
+                    <input type="email" name="email" required placeholder="tú@email.com"
+                           class="w-full text-sm px-4 py-3 rounded-full border border-cozy-sand focus:outline-none focus:border-cozy-mint bg-cozy-cream/60 text-cozy-coffee">
+                    <button type="submit" class="w-full bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-bold text-sm px-4 py-3 rounded-full transition-colors">Avísame</button>
+                </form>
+                <p id="cozy-coming-soon-message" class="text-xs mt-4 min-h-[1em]"></p>
+
+                <?php if ( ( $instagram_url && $instagram_url !== '#' ) || ( $tiktok_url && $tiktok_url !== '#' ) || $whatsapp_url ) : ?>
+                <div class="flex items-center justify-center gap-3 pt-6 mt-6 border-t border-cozy-sand/70">
+                    <?php if ( $instagram_url && $instagram_url !== '#' ) : ?>
+                    <a href="<?php echo esc_url( $instagram_url ); ?>" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+                       class="w-10 h-10 rounded-full bg-cozy-cream hover:bg-cozy-mint flex items-center justify-center text-cozy-coffee/60 hover:text-cozy-coffee transition-colors">
+                        <?php echo cozy_icon( 'instagram', '16' ); ?>
+                    </a>
+                    <?php endif; ?>
+                    <?php if ( $tiktok_url && $tiktok_url !== '#' ) : ?>
+                    <a href="<?php echo esc_url( $tiktok_url ); ?>" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
+                       class="w-10 h-10 rounded-full bg-cozy-cream hover:bg-cozy-mint flex items-center justify-center text-cozy-coffee/60 hover:text-cozy-coffee transition-colors">
+                        <?php echo cozy_icon( 'tiktok', '16' ); ?>
+                    </a>
+                    <?php endif; ?>
+                    <?php if ( $whatsapp_url ) : ?>
+                    <a href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
+                       class="w-10 h-10 rounded-full bg-cozy-cream hover:bg-cozy-mint flex items-center justify-center text-cozy-coffee/60 hover:text-cozy-coffee transition-colors">
+                        <?php echo cozy_icon( 'whatsapp', '16' ); ?>
+                    </a>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sneak peek of what's coming + trust badges -->
+    <section class="px-6 pb-14">
+        <div class="max-w-3xl mx-auto space-y-8">
+
+            <div class="text-center">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-cozy-mintDark mb-4">Muy pronto en la tienda</p>
+                <div class="flex items-center justify-center gap-5 sm:gap-8">
+                    <?php foreach ( $teasers as $teaser ) : ?>
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white border border-cozy-sand shadow-sm flex items-center justify-center overflow-hidden">
+                            <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $teaser['img'] ); ?>"
+                                 alt="" aria-hidden="true" loading="lazy" class="w-full h-full object-contain p-1.5 opacity-90">
+                        </div>
+                        <span class="text-[10px] font-bold text-cozy-coffee/50 uppercase tracking-wide"><?php echo esc_html( $teaser['label'] ); ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-[24px] px-6 md:px-8 bg-white border border-cozy-sand shadow-sm">
+                <?php
+                get_template_part( 'template-parts/trust-badges', null, [
+                    'icon_bg_class'   => 'bg-cozy-mintLight',
+                    'text_size_title' => 'text-xs',
+                    'text_size_desc'  => 'text-[11px]',
+                    'text_desc_muted' => 'text-cozy-coffee/60',
+                    'item_class'      => 'py-4',
+                    'has_border'      => true,
+                ] );
+                ?>
+            </div>
+
+            <p class="text-center text-[11px] text-cozy-coffee/40">&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. Todos los derechos reservados.</p>
+        </div>
+    </section>
+
     <script>
     (function () {
         var form = document.getElementById( 'cozy-coming-soon-form' );
