@@ -86,6 +86,9 @@ function cozy_render_coming_soon_page() {
                  alt="" aria-hidden="true" loading="eager"
                  class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
+            <div class="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
+                 style="background:linear-gradient(180deg, rgba(252,249,245,0) 0%, #FCF9F5 100%);"></div>
+
             <div class="relative z-10 h-full flex items-center justify-center px-6">
                 <div class="w-full max-w-md rounded-[28px] p-8 sm:p-10 text-center shadow-sm"
                      style="background:rgba(255,255,255,0.85); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
