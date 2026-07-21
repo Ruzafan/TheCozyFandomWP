@@ -83,14 +83,14 @@ function cozy_render_coming_soon_page() {
         <div class="absolute top-[-4rem] left-[-3rem] w-72 h-72 bg-cozy-mint/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
         <div class="absolute top-10 right-[-4rem] w-72 h-72 bg-cozy-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
 
-        <div class="relative w-full h-[24vh] md:h-[32vh]">
+        <div class="relative w-full h-40 md:h-56">
             <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
                  alt="" aria-hidden="true" loading="eager"
                  class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
             <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(58,49,40,.15) 0%, rgba(252,249,245,.95) 100%);"></div>
         </div>
 
-        <div class="relative z-10 px-6 -mt-14 md:-mt-16 pb-16">
+        <div class="relative z-10 px-6 -mt-10 md:-mt-14 pb-16">
             <div class="max-w-md mx-auto bg-white rounded-[28px] shadow-lg border border-cozy-sand p-8 sm:p-10 text-center">
 
                 <?php if ( $logo_id ) : ?>
