@@ -4,6 +4,7 @@
  */
 
 require_once get_stylesheet_directory() . '/inc/cozy-icons.php';
+require_once get_stylesheet_directory() . '/inc/coming-soon.php';
 
 /* ------------------------------------------------------------------ */
 /*  THEME SETUP                                                         */
@@ -266,6 +267,22 @@ function cozy_newsletter_subscribe() {
         wp_send_json_error( [ 'message' => 'Por favor introduce un email válido.' ] );
     }
 
+    $result = cozy_mailchimp_upsert_subscriber( $email );
+
+    if ( is_wp_error( $result ) ) {
+        wp_send_json_error( [ 'message' => $result->get_error_message() ] );
+    }
+
+    wp_send_json_success();
+}
+
+/**
+ * Adds/updates a subscriber in Mailchimp using the theme's configured API key + list.
+ * Shared by the footer newsletter form and the "coming soon" waitlist form.
+ *
+ * @return true|WP_Error True on success, WP_Error with a user-facing message on failure.
+ */
+function cozy_mailchimp_upsert_subscriber( $email ) {
     // Check theme option → MC4WP plugin → Mailchimp for WooCommerce plugin
     $api_key = get_option( 'cozy_mailchimp_api_key', '' );
     if ( ! $api_key ) {
@@ -278,7 +295,7 @@ function cozy_newsletter_subscribe() {
     }
 
     if ( ! $api_key ) {
-        wp_send_json_error( [ 'message' => 'Newsletter no configurada.' ] );
+        return new WP_Error( 'cozy_no_mailchimp', 'Newsletter no configurada.' );
     }
 
     // Data center is the suffix after the last dash (e.g. "us14")
@@ -301,16 +318,16 @@ function cozy_newsletter_subscribe() {
     ] );
 
     if ( is_wp_error( $response ) ) {
-        wp_send_json_error( [ 'message' => 'Error de conexión. Inténtalo de nuevo.' ] );
+        return new WP_Error( 'cozy_mailchimp_conn', 'Error de conexión. Inténtalo de nuevo.' );
     }
 
     $code = wp_remote_retrieve_response_code( $response );
     if ( $code === 200 || $code === 201 ) {
-        wp_send_json_success();
-    } else {
-        $body   = json_decode( wp_remote_retrieve_body( $response ), true );
-        wp_send_json_error( [ 'message' => $body['detail'] ?? 'Error al suscribir. Inténtalo de nuevo.' ] );
+        return true;
     }
+
+    $body = json_decode( wp_remote_retrieve_body( $response ), true );
+    return new WP_Error( 'cozy_mailchimp_api', $body['detail'] ?? 'Error al suscribir. Inténtalo de nuevo.' );
 }
 
 /* ------------------------------------------------------------------ */
