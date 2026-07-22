@@ -80,7 +80,7 @@ function cozy_render_coming_soon_page() {
 
     <!-- Full-bleed banner (same pattern as front-page.php's hero), email box overlaid on top -->
     <section class="relative" style="overflow:hidden;">
-        <div class="relative w-full h-[60vh] md:h-[80vh]">
+        <div class="relative w-full h-full md:h-[80vh]">
 
             <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
                  alt="" aria-hidden="true" loading="eager"
@@ -90,7 +90,7 @@ function cozy_render_coming_soon_page() {
                  style="background:linear-gradient(180deg, rgba(252,249,245,0) 0%, #FCF9F5 100%);"></div>
 
             <div class="relative z-10 h-full flex items-center justify-center px-6">
-                <div class="w-full max-w-md rounded-[28px] p-8 sm:p-10 text-center shadow-sm"
+                <div class="w-full max-w-md rounded-[28px] p-8 sm:p-10 text-center shadow-sm my-5 mx-auto"
                      style="background:rgba(255,255,255,0.85); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
                     <?php if ( $logo_id ) : ?>
@@ -137,8 +137,7 @@ function cozy_render_coming_soon_page() {
 
     <!-- Sneak peek of what's coming + trust badges -->
     <section class="px-6 pt-10 md:pt-14 pb-14">
-        <div class="max-w-3xl mx-auto space-y-10 md:space-y-12">
-
+        <div class="max-w-3xl mx-auto space-y-10 md:space-y-12 flex flex-col gap-y-2.5 mt-[15px]">
             <div class="text-center">
                 <p class="text-[11px] font-bold uppercase tracking-wider text-cozy-mintDark mb-6">Muy pronto en la tienda</p>
                 <div class="flex items-center justify-center gap-8 sm:gap-12">
@@ -153,20 +152,6 @@ function cozy_render_coming_soon_page() {
                     <?php endforeach; ?>
                 </div>
             </div>
-
-            <div class="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-items-center rounded-[24px] px-6 md:px-10 py-2 bg-white border border-cozy-sand shadow-sm">
-                <?php
-                get_template_part( 'template-parts/trust-badges', null, [
-                    'icon_bg_class'   => 'bg-cozy-mintLight',
-                    'text_size_title' => 'text-xs',
-                    'text_size_desc'  => 'text-[11px]',
-                    'text_desc_muted' => 'text-cozy-coffee/60',
-                    'item_class'      => 'py-4',
-                    'has_border'      => true,
-                ] );
-                ?>
-            </div>
-
             <p class="text-center text-[11px] text-cozy-coffee/40">&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. Todos los derechos reservados.</p>
         </div>
     </section>
