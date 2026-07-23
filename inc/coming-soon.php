@@ -95,7 +95,7 @@ function cozy_render_coming_soon_page() {
 
                     <?php if ( $logo_id ) : ?>
                         <?php echo wp_get_attachment_image( $logo_id, [ 72, 72 ], false, [
-                            'class' => 'mx-auto mb-3 rounded-2xl object-cover',
+                            'class' => 'mx-auto mb-3 object-contain',
                             'alt'   => get_bloginfo( 'name' ),
                         ] ); ?>
                     <?php else : ?>
