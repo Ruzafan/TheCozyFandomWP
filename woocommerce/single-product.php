@@ -71,7 +71,7 @@ while ( have_posts() ) :
                     <div></div>
                     <?php endif; ?>
 
-                    <button onclick="toggleFavorite(<?php echo get_the_ID(); ?>)"
+                    <button type="button" data-action="toggle-favorite"
                             class="cozy-fav-btn inline-flex items-center gap-1.5 border border-cozy-sand rounded-2xl px-3 py-1.5 text-xs font-medium text-cozy-coffee/50 hover:border-red-200 hover:text-red-400 transition-all"
                             data-product-id="<?php echo get_the_ID(); ?>"
                             aria-label="Guardar en favoritos">

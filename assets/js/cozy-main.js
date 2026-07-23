@@ -137,7 +137,7 @@ window.openCozyLightbox = function (index) {
     lightbox.innerHTML = 
         '<div class="flex items-center justify-between text-white/70 px-4 py-2 relative z-10">' +
             '<span class="text-xs font-bold font-mono" id="cozy-lightbox-counter">1 / 1</span>' +
-            '<button onclick="closeCozyLightbox()" class="text-white/70 hover:text-white transition-colors p-2 text-2xl border-0 bg-transparent cursor-pointer" aria-label="Cerrar">&times;</button>' +
+            '<button type="button" id="cozy-lightbox-close" class="text-white/70 hover:text-white transition-colors p-2 text-2xl border-0 bg-transparent cursor-pointer" aria-label="Cerrar">&times;</button>' +
         '</div>' +
         '<div class="flex-grow flex items-center justify-center relative overflow-hidden my-4">' +
             '<button id="cozy-lightbox-prev" class="absolute left-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all cursor-pointer border-0" aria-label="Anterior">' +
@@ -208,6 +208,13 @@ window.openCozyLightbox = function (index) {
         });
     }
     
+    // Event listener for close button
+    var closeBtn = document.getElementById('cozy-lightbox-close');
+    if (closeBtn) closeBtn.onclick = function(e) {
+        e.stopPropagation();
+        closeCozyLightbox();
+    };
+
     // Event listeners for prev / next
     var prevBtn = document.getElementById('cozy-lightbox-prev');
     var nextBtn = document.getElementById('cozy-lightbox-next');
@@ -296,7 +303,145 @@ window.toggleFavorite = function (productId) {
         });
 };
 
+/* ---------- PRODUCT GALLERY SLIDER (main image strip, not the lightbox) ---------- */
+function cozyGalleryUpdate(gallery, index) {
+    var track  = gallery.querySelector('.cozy-gallery__track');
+    var slides = track ? track.querySelectorAll('.cozy-gallery__slide') : [];
+    var thumbs = gallery.querySelectorAll('.cozy-gallery__thumb');
+    var total  = slides.length;
+    if (!total) return;
+
+    if (index < 0) index = total - 1;
+    if (index >= total) index = 0;
+
+    gallery.setAttribute('data-current', index);
+
+    if (track) track.style.transform = 'translateX(-' + (index * 100) + '%)';
+
+    slides.forEach(function (s, i) {
+        s.setAttribute('aria-hidden', i !== index ? 'true' : 'false');
+    });
+    thumbs.forEach(function (t, i) {
+        t.classList.toggle('is-active', i === index);
+        t.setAttribute('aria-selected', i === index ? 'true' : 'false');
+    });
+
+    if (thumbs[index]) {
+        thumbs[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+}
+function cozyGalleryCurrent(gallery) {
+    return parseInt(gallery.getAttribute('data-current') || '0', 10);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.cozy-gallery__track').forEach(function (track) {
+        var gallery = track.closest('.cozy-gallery');
+        if (!gallery) return;
+        var startX = 0;
+        track.addEventListener('touchstart', function (e) {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+        track.addEventListener('touchend', function (e) {
+            var diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) {
+                cozyGalleryUpdate(gallery, cozyGalleryCurrent(gallery) + (diff > 0 ? 1 : -1));
+            }
+        }, { passive: true });
+    });
+});
+
+document.addEventListener('keydown', function (e) {
+    var gallery = document.querySelector('.cozy-gallery');
+    if (!gallery || !gallery.matches(':focus-within')) return;
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); cozyGalleryUpdate(gallery, cozyGalleryCurrent(gallery) - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); cozyGalleryUpdate(gallery, cozyGalleryCurrent(gallery) + 1); }
+});
+
 /* ─── Global keyboard / click handlers ─────────────────────────── */
+
+/* Central dispatcher for data-action="..." — replaces inline onclick=""
+   attributes, which are blocked by this site's Content-Security-Policy
+   (script-src-attr 'none'). Keep every clickable control's behaviour wired
+   here instead of via markup attributes. */
+document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+
+    switch (el.getAttribute('data-action')) {
+        case 'open-favorites':
+            window.openFavorites();
+            break;
+        case 'close-favorites':
+            window.closeFavorites();
+            break;
+        case 'open-cart':
+            window.openCart(e);
+            break;
+        case 'close-cart':
+            window.closeCart();
+            break;
+        case 'toggle-mobile-menu':
+            window.toggleMobileMenu();
+            break;
+        case 'close-mobile-menu':
+            window.closeMobileMenu();
+            break;
+        case 'close-mobile-menu-open-favorites':
+            window.closeMobileMenu();
+            setTimeout(window.openFavorites, 320);
+            break;
+        case 'close-mobile-menu-open-cart':
+            window.closeMobileMenu();
+            setTimeout(window.openCart, 320);
+            break;
+        case 'toggle-dropdown':
+            window.cozyToggleDropdown(el);
+            break;
+        case 'close-login-modal':
+            window.closeLoginModal();
+            break;
+        case 'open-filters':
+            window.openFilters(e);
+            break;
+        case 'close-filters':
+            window.closeFilters();
+            break;
+        case 'toggle-favorite':
+            window.toggleFavorite(parseInt(el.getAttribute('data-product-id'), 10));
+            break;
+        case 'gallery-open':
+            window.openCozyLightbox(parseInt(el.getAttribute('data-index'), 10));
+            break;
+        case 'gallery-prev': {
+            var galleryPrev = el.closest('.cozy-gallery');
+            if (galleryPrev) cozyGalleryUpdate(galleryPrev, cozyGalleryCurrent(galleryPrev) - 1);
+            break;
+        }
+        case 'gallery-next': {
+            var galleryNext = el.closest('.cozy-gallery');
+            if (galleryNext) cozyGalleryUpdate(galleryNext, cozyGalleryCurrent(galleryNext) + 1);
+            break;
+        }
+        case 'gallery-thumb': {
+            var galleryThumb = el.closest('.cozy-gallery');
+            if (galleryThumb) cozyGalleryUpdate(galleryThumb, parseInt(el.getAttribute('data-index'), 10));
+            break;
+        }
+    }
+});
+
+/* Backdrop-click-to-close: only fires when the click lands directly on the
+   element carrying data-close-on-self (i.e. not bubbled from its content). */
+document.addEventListener('click', function (e) {
+    if (!e.target.hasAttribute || !e.target.hasAttribute('data-close-on-self')) return;
+    switch (e.target.getAttribute('data-close-on-self')) {
+        case 'close-login-modal':
+            window.closeLoginModal();
+            break;
+    }
+});
+
 document.addEventListener('click', function (e) {
     if (!e.target.closest('.cozy-nav-item')) {
         document.querySelectorAll('.cozy-nav-item.is-open').forEach(function (item) {
@@ -354,7 +499,7 @@ function cozyRemoveFavItem(productId) {
         container.innerHTML = '<div id="fav-empty" class="text-center py-12 space-y-4">'
             + '<svg class="mx-auto" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:rgba(58,49,40,0.2)"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
             + '<p style="font-size:0.875rem;color:rgba(58,49,40,0.6)">Aún no tienes favoritos guardados.</p>'
-            + '<button onclick="closeFavorites()" style="font-size:0.75rem;font-weight:700;color:#88C4B5">¡Descubre la tienda!</button>'
+            + '<button type="button" data-action="close-favorites" style="font-size:0.75rem;font-weight:700;color:#88C4B5">¡Descubre la tienda!</button>'
             + '</div>';
     }
 }

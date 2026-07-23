@@ -36,7 +36,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
         </span>
         <?php endif; ?>
 
-        <button onclick="toggleFavorite(<?php echo absint( $product->get_id() ); ?>)"
+        <button type="button" data-action="toggle-favorite"
                 class="cozy-fav-btn cozy-fav-icon absolute top-2 right-2 z-10 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
                 data-product-id="<?php echo absint( $product->get_id() ); ?>"
                 aria-label="<?php esc_attr_e( 'Guardar en favoritos', 'woocommerce' ); ?>">

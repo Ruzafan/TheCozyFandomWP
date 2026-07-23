@@ -39,7 +39,7 @@ $total = count( $all_ids );
                 $alt = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
                 if ( ! $alt ) $alt = $product->get_name();
             ?>
-            <div class="cozy-gallery__slide cursor-zoom-in" onclick="openCozyLightbox(<?php echo absint( $i ); ?>)" aria-hidden="<?php echo $i > 0 ? 'true' : 'false'; ?>">
+            <div class="cozy-gallery__slide cursor-zoom-in" data-action="gallery-open" data-index="<?php echo absint( $i ); ?>" aria-hidden="<?php echo $i > 0 ? 'true' : 'false'; ?>">
                 <?php echo wp_get_attachment_image( $image_id, 'woocommerce_single', false, [
                     'class'   => 'cozy-gallery__img',
                     'loading' => $i === 0 ? 'eager' : 'lazy',
@@ -51,12 +51,14 @@ $total = count( $all_ids );
 
         <?php if ( $total > 1 ) : ?>
         <button class="cozy-gallery__arrow cozy-gallery__arrow--prev"
-                onclick="cozyGalleryNav(-1)"
+                type="button"
+                data-action="gallery-prev"
                 aria-label="<?php esc_attr_e( 'Imagen anterior', 'woocommerce' ); ?>">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <button class="cozy-gallery__arrow cozy-gallery__arrow--next"
-                onclick="cozyGalleryNav(1)"
+                type="button"
+                data-action="gallery-next"
                 aria-label="<?php esc_attr_e( 'Siguiente imagen', 'woocommerce' ); ?>">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </button>
@@ -67,7 +69,9 @@ $total = count( $all_ids );
     <div class="cozy-gallery__thumbs" role="tablist" aria-label="<?php esc_attr_e( 'Miniaturas del producto', 'woocommerce' ); ?>">
         <?php foreach ( $all_ids as $i => $image_id ) : ?>
         <button class="cozy-gallery__thumb<?php echo $i === 0 ? ' is-active' : ''; ?>"
-                onclick="cozyGalleryGoTo(<?php echo absint( $i ); ?>)"
+                type="button"
+                data-action="gallery-thumb"
+                data-index="<?php echo absint( $i ); ?>"
                 role="tab"
                 aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>"
                 aria-label="<?php printf( esc_attr__( 'Imagen %d', 'woocommerce' ), $i + 1 ); ?>">
@@ -81,60 +85,3 @@ $total = count( $all_ids );
     <?php endif; ?>
 
 </div>
-
-<script>
-(function () {
-    var current = 0;
-    var total   = <?php echo absint( $total ); ?>;
-
-    window.cozyGalleryGoTo = function (index) {
-        if (index < 0)      index = total - 1;
-        if (index >= total) index = 0;
-        current = index;
-
-        var track  = document.getElementById('cozy-gallery-track');
-        var slides = track  ? track.querySelectorAll('.cozy-gallery__slide')  : [];
-        var thumbs = document.querySelectorAll('.cozy-gallery__thumb');
-
-        if (track) track.style.transform = 'translateX(-' + (current * 100) + '%)';
-
-        slides.forEach(function (s, i) {
-            s.setAttribute('aria-hidden', i !== current ? 'true' : 'false');
-        });
-        thumbs.forEach(function (t, i) {
-            t.classList.toggle('is-active', i === current);
-            t.setAttribute('aria-selected', i === current ? 'true' : 'false');
-        });
-
-        /* Scroll the active thumb into view */
-        if (thumbs[current]) {
-            thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-    };
-
-    window.cozyGalleryNav = function (dir) {
-        cozyGalleryGoTo(current + dir);
-    };
-
-    /* Touch/swipe support */
-    var track = document.getElementById('cozy-gallery-track');
-    if (track && total > 1) {
-        var startX = 0;
-        track.addEventListener('touchstart', function (e) {
-            startX = e.touches[0].clientX;
-        }, { passive: true });
-        track.addEventListener('touchend', function (e) {
-            var diff = startX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 40) cozyGalleryNav(diff > 0 ? 1 : -1);
-        }, { passive: true });
-    }
-
-    /* Keyboard navigation when gallery is focused */
-    document.addEventListener('keydown', function (e) {
-        var gallery = document.querySelector('.cozy-gallery');
-        if (!gallery || !gallery.matches(':focus-within')) return;
-        if (e.key === 'ArrowLeft')  { e.preventDefault(); cozyGalleryNav(-1); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); cozyGalleryNav(1); }
-    });
-}());
-</script>

@@ -86,14 +86,14 @@
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </a>
 
-                    <button onclick="openFavorites()" class="cozy-hdr-icon relative" aria-label="Mis favoritos">
+                    <button type="button" data-action="open-favorites" class="cozy-hdr-icon relative" aria-label="Mis favoritos">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                         <span id="fav-badge" class="<?php echo $fav_count > 0 ? '' : 'hidden '; ?>absolute -top-0.5 -right-0.5 bg-red-400 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">
                             <?php echo absint( $fav_count ); ?>
                         </span>
                     </button>
 
-                    <button onclick="openCart()" class="cozy-hdr-icon cozy-hdr-cart" aria-label="<?php esc_attr_e( 'Carrito', 'woocommerce' ); ?>">
+                    <button type="button" data-action="open-cart" class="cozy-hdr-icon cozy-hdr-cart" aria-label="<?php esc_attr_e( 'Carrito', 'woocommerce' ); ?>">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                         <?php if ( class_exists( 'WooCommerce' ) && WC()->cart ) :
                             $count = WC()->cart->get_cart_contents_count(); ?>
@@ -105,7 +105,7 @@
                 </div>
 
                 <!-- Hamburger (always visible — opens sidebar on mobile) -->
-                <button onclick="toggleMobileMenu()" class="cozy-hdr-icon cozy-hdr-hamburger" aria-label="Menú" aria-expanded="false">
+                <button type="button" data-action="toggle-mobile-menu" class="cozy-hdr-icon cozy-hdr-hamburger" aria-label="Menú" aria-expanded="false">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
 
@@ -124,7 +124,7 @@
         <!-- Close button + title — only rendered on mobile via CSS -->
         <div class="cozy-mobile-nav-header">
             <span class="cozy-mobile-nav-title">Menú</span>
-            <button onclick="closeMobileMenu()" class="cozy-mobile-nav-close" aria-label="Cerrar menú">
+            <button type="button" data-action="close-mobile-menu" class="cozy-mobile-nav-close" aria-label="Cerrar menú">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
         </div>
@@ -135,14 +135,14 @@
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span class="cozy-mobile-nav-action-label">Mi cuenta</span>
             </a>
-            <button onclick="closeMobileMenu(); setTimeout(openFavorites, 320);" class="cozy-mobile-nav-action-btn" aria-label="Mis favoritos">
+            <button type="button" data-action="close-mobile-menu-open-favorites" class="cozy-mobile-nav-action-btn" aria-label="Mis favoritos">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 <?php if ( $fav_count > 0 ) : ?>
                 <span class="cozy-mobile-action-badge"><?php echo absint( $fav_count ); ?></span>
                 <?php endif; ?>
                 <span class="cozy-mobile-nav-action-label">Favoritos</span>
             </button>
-            <button onclick="closeMobileMenu(); setTimeout(openCart, 320);" class="cozy-mobile-nav-action-btn" aria-label="<?php esc_attr_e( 'Carrito', 'woocommerce' ); ?>">
+            <button type="button" data-action="close-mobile-menu-open-cart" class="cozy-mobile-nav-action-btn" aria-label="<?php esc_attr_e( 'Carrito', 'woocommerce' ); ?>">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 <?php if ( class_exists( 'WooCommerce' ) && WC()->cart ) :
                     $mob_cart_n = WC()->cart->get_cart_contents_count();
@@ -199,7 +199,7 @@
                         <div class="cozy-nav-item cozy-nav-has-dropdown">
                             <button class="cozy-nav-link cozy-nav-link--has-arrow<?php echo $is_active ? ' cozy-nav-link--active' : ''; ?>"
                                     aria-haspopup="true" aria-expanded="false"
-                                    onclick="cozyToggleDropdown(this)">
+                                    data-action="toggle-dropdown">
                                 <?php echo esc_html( $cat->name ); ?>
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                             </button>
@@ -249,7 +249,7 @@
                     <div class="cozy-nav-item cozy-nav-has-dropdown">
                         <button class="cozy-nav-link cozy-nav-link--has-arrow<?php echo $has_act_lic ? ' cozy-nav-link--active' : ''; ?>"
                                 aria-haspopup="true" aria-expanded="false"
-                                onclick="cozyToggleDropdown(this)">
+                                data-action="toggle-dropdown">
                             Licencias
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                         </button>
@@ -281,14 +281,14 @@
     </div>
 
 <!-- Mobile menu overlay (closes sidebar when clicked) -->
-<div id="mobile-menu-overlay" onclick="closeMobileMenu()" aria-hidden="true"></div>
+<div id="mobile-menu-overlay" data-action="close-mobile-menu" aria-hidden="true"></div>
 
 <!-- ============================================================ -->
 <!-- CART DRAWER                                                    -->
 <!-- ============================================================ -->
 <div id="cart-overlay"
      class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm"
-     onclick="closeCart()" aria-hidden="true"></div>
+     data-action="close-cart" aria-hidden="true"></div>
 
 <div id="cart-drawer"
      class="translate-x-full fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[1001] flex flex-col shadow-2xl"
@@ -296,7 +296,7 @@
 
     <div class="flex items-center justify-between p-6 border-b border-cozy-sand">
         <h2 class="font-serif text-xl font-bold text-cozy-coffee">Tu carrito</h2>
-        <button onclick="closeCart()"
+        <button type="button" data-action="close-cart"
                 class="w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors"
                 aria-label="Cerrar carrito">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -330,7 +330,7 @@
 <!-- ============================================================ -->
 <div id="fav-overlay"
      class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm"
-     onclick="closeFavorites()" aria-hidden="true"></div>
+     data-action="close-favorites" aria-hidden="true"></div>
 
 <div id="fav-drawer"
      class="translate-x-full fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[1001] flex flex-col shadow-2xl"
@@ -338,7 +338,7 @@
 
     <div class="flex items-center justify-between p-6 border-b border-cozy-sand">
         <h2 class="font-serif text-xl font-bold text-cozy-coffee">Mis favoritos</h2>
-        <button onclick="closeFavorites()"
+        <button type="button" data-action="close-favorites"
                 class="w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors"
                 aria-label="Cerrar favoritos">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -355,7 +355,7 @@
             <div id="fav-empty" class="text-center py-12 space-y-4">
                 <svg class="mx-auto text-cozy-coffee/20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 <p class="text-sm text-cozy-coffee/60">Aún no tienes favoritos guardados.</p>
-                <button onclick="closeFavorites()" class="text-xs font-bold text-cozy-mint hover:underline">¡Descubre la tienda!</button>
+                <button type="button" data-action="close-favorites" class="text-xs font-bold text-cozy-mint hover:underline">¡Descubre la tienda!</button>
             </div>
             <?php endif;
         else : ?>
@@ -373,7 +373,7 @@
     <div class="p-6 border-t border-cozy-sand bg-white mt-auto">
         <?php if ( class_exists( 'WooCommerce' ) ) : ?>
         <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
-           onclick="closeFavorites()"
+           data-action="close-favorites"
            class="block w-full text-center border border-cozy-sand hover:border-cozy-coffee text-cozy-coffee font-medium py-3 rounded-2xl transition-colors text-sm no-underline">
             Seguir explorando
         </a>
@@ -386,10 +386,9 @@
 <!-- ============================================================ -->
 <div id="login-modal-overlay"
      class="hidden fixed inset-0 bg-cozy-coffee/50 z-[2000] flex items-center justify-center p-4 backdrop-blur-sm"
-     onclick="closeLoginModal()">
-    <div class="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl relative text-center"
-         onclick="event.stopPropagation()">
-        <button onclick="closeLoginModal()"
+     data-close-on-self="close-login-modal">
+    <div class="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl relative text-center">
+        <button type="button" data-action="close-login-modal"
                 class="absolute top-4 right-4 w-8 h-8 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors"
                 aria-label="Cerrar">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>

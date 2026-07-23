@@ -392,7 +392,7 @@ function cozy_render_favorite_item( $product_id ) {
                class="text-[10px] font-bold bg-cozy-mintLight text-cozy-mint px-2.5 py-1 rounded-lg hover:bg-cozy-mint hover:text-white transition-colors no-underline">
                 Ver
             </a>
-            <button onclick="toggleFavorite(<?php echo absint( $product_id ); ?>)"
+            <button type="button" data-action="toggle-favorite" data-product-id="<?php echo absint( $product_id ); ?>"
                     class="text-cozy-coffee/30 hover:text-red-400 transition-colors leading-none"
                     aria-label="Quitar de favoritos">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -436,7 +436,7 @@ function cozy_render_mini_cart() {
         <div class="text-center py-12 space-y-4">
             <?php echo cozy_icon( 'box-open', '48', 'text-cozy-coffee/20 block' ); ?>
             <p class="text-sm text-cozy-coffee/60">Aún no hay tesoros en tu carrito.</p>
-            <button onclick="closeCart()" class="text-xs font-bold text-cozy-mint hover:underline">¡Empezar a explorar!</button>
+            <button type="button" data-action="close-cart" class="text-xs font-bold text-cozy-mint hover:underline">¡Empezar a explorar!</button>
         </div>
     <?php else :
         foreach ( WC()->cart->get_cart() as $key => $item ) :
@@ -591,7 +591,7 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
                     <?php echo esc_html( $badge_icon ); ?> <?php echo esc_html( $badge_label ); ?>
                 </span>
                 <?php endif; ?>
-                <button onclick="toggleFavorite(<?php echo absint( $product->get_id() ); ?>)"
+                <button type="button" data-action="toggle-favorite"
                         class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
                         data-product-id="<?php echo absint( $product->get_id() ); ?>"
                         aria-label="Guardar en favoritos">

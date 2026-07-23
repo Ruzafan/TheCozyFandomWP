@@ -93,7 +93,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
             <?php endif; ?>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="openFilters()" aria-controls="cozy-shop-filters" aria-expanded="false"
+            <button type="button" data-action="open-filters" aria-controls="cozy-shop-filters" aria-expanded="false"
                     class="cozy-filter-btn lg:hidden py-2 px-4 rounded-xl border border-cozy-sand bg-white text-xs font-bold text-cozy-coffee hover:bg-cozy-mintLight hover:border-cozy-mint flex items-center gap-2 transition-all cursor-pointer">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
                 Filtrar <?php if ( $_cozy_has_filters ) : ?><span class="w-1.5 h-1.5 rounded-full bg-cozy-mint inline-block"></span><?php endif; ?>
@@ -132,7 +132,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
     <!-- Filter Overlay (mobile drawer backdrop) -->
     <div id="cozy-filters-overlay"
          class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm lg:hidden"
-         onclick="closeFilters()" aria-hidden="true"></div>
+         data-action="close-filters" aria-hidden="true"></div>
 
     <div class="lg:flex lg:items-start lg:gap-8">
 
@@ -143,7 +143,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
         <!-- Drawer Header -->
         <div class="flex items-center justify-between p-6 border-b border-cozy-sand shrink-0">
             <h2 class="font-serif text-xl font-bold text-cozy-coffee m-0">Filtros</h2>
-            <button onclick="closeFilters()"
+            <button type="button" data-action="close-filters"
                     class="lg:hidden w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors border-0 cursor-pointer"
                     aria-label="Cerrar filtros">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
