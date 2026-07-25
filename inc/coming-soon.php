@@ -67,7 +67,6 @@ function cozy_render_coming_soon_page() {
 </head>
 <body class="bg-cozy-cream">
     <?php
-    $logo_id       = get_theme_mod( 'custom_logo' );
     $instagram_url = get_option( 'cozy_instagram_url', '' );
     $tiktok_url    = get_option( 'cozy_tiktok_url', '' );
 
@@ -93,14 +92,10 @@ function cozy_render_coming_soon_page() {
                 <div class="w-full max-w-md rounded-[28px] p-8 sm:p-10 text-center shadow-sm"
                      style="background:rgba(255,255,255,0.85); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
-                    <?php if ( $logo_id ) : ?>
-                        <?php echo wp_get_attachment_image( $logo_id, [ 72, 72 ], false, [
-                            'class' => 'mx-auto mb-3 object-contain',
-                            'alt'   => get_bloginfo( 'name' ),
-                        ] ); ?>
-                    <?php else : ?>
-                        <span class="text-4xl block mb-2" aria-hidden="true">🌿</span>
-                    <?php endif; ?>
+                    <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/logo.jpeg' ); ?>"
+                         alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
+                         width="72" height="72"
+                         class="mx-auto mb-3 object-contain" style="width:72px;height:72px;">
 
                     <span class="font-serif text-xl font-bold text-cozy-coffee block mb-3"><?php bloginfo( 'name' ); ?></span>
 
