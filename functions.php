@@ -7,20 +7,124 @@ require_once get_stylesheet_directory() . '/inc/cozy-icons.php';
 require_once get_stylesheet_directory() . '/inc/coming-soon.php';
 
 /* ------------------------------------------------------------------ */
-/*  GOOGLE ANALYTICS (GA4)                                              */
+/*  GOOGLE ANALYTICS (GA4) — gated behind cookie consent                */
 /* ------------------------------------------------------------------ */
+/* No analytics cookie or network request happens until the visitor accepts
+   the banner below (cozy_render_consent_banner()). Defining the dataLayer
+   array and a gtag() stub up front is safe on its own — pushing to a plain
+   JS array sets no cookie and contacts no server; the actual gtag.js script
+   (which is what starts the _ga cookies) only loads after consent. */
+define( 'COZY_GA4_ID', 'G-3KDLH6MJ94' );
+
 add_action( 'wp_head', function() {
     if ( is_admin() ) return;
+    $consent = isset( $_COOKIE['cozy_consent'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['cozy_consent'] ) ) : '';
     ?>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KDLH6MJ94"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-3KDLH6MJ94');
+        function gtag(){ dataLayer.push(arguments); }
+        window.cozyGaLoaded = false;
+        window.cozyLoadGA = function () {
+            if ( window.cozyGaLoaded ) return;
+            window.cozyGaLoaded = true;
+            var s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=<?php echo esc_js( COZY_GA4_ID ); ?>';
+            document.head.appendChild(s);
+            gtag('js', new Date());
+            gtag('config', '<?php echo esc_js( COZY_GA4_ID ); ?>');
+        };
+        <?php if ( 'granted' === $consent ) : ?>
+        window.cozyLoadGA();
+        <?php endif; ?>
     </script>
     <?php
 }, 1 );
+
+/* ------------------------------------------------------------------ */
+/*  COOKIE CONSENT BANNER                                               */
+/* ------------------------------------------------------------------ */
+/* Only rendered for visitors who haven't decided yet (no cozy_consent
+   cookie). "Aceptar"/"Rechazar" are wired via the data-action dispatcher
+   in cozy-main.js, consistent with the rest of the site's CSP-safe pattern. */
+add_action( 'wp_footer', function() {
+    if ( is_admin() || isset( $_COOKIE['cozy_consent'] ) ) return;
+    ?>
+    <div id="cozy-consent-banner"
+         class="fixed inset-x-0 bottom-0 z-[3000] bg-cozy-coffee text-white/90 px-6 py-5 md:py-4 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 shadow-2xl"
+         role="dialog" aria-label="Aviso de cookies">
+        <p class="text-xs md:text-[13px] leading-relaxed m-0 flex-1">
+            Usamos cookies analíticas para entender cómo usas la tienda y mejorarla. No se activan hasta que las aceptas.
+            <a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-privacidad' ) ); ?>" class="underline hover:text-cozy-mint">Más información</a>.
+        </p>
+        <div class="flex items-center gap-3 shrink-0">
+            <button type="button" data-action="consent-reject"
+                    class="border border-white/30 hover:border-white/60 text-white/80 hover:text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors">
+                Rechazar
+            </button>
+            <button type="button" data-action="consent-accept"
+                    class="bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee text-xs font-bold px-5 py-2.5 rounded-xl transition-colors">
+                Aceptar
+            </button>
+        </div>
+    </div>
+    <?php
+}, 5 );
+
+/* ------------------------------------------------------------------ */
+/*  GA4 ECOMMERCE — core funnel events (view_item, purchase)            */
+/*  add_to_cart is pushed client-side (cozy-main.js, added_to_cart hook) */
+/*  begin_checkout is pushed client-side (data-action="begin-checkout") */
+/* ------------------------------------------------------------------ */
+add_action( 'wp_footer', function() {
+    if ( ! function_exists( 'is_product' ) || ! is_product() ) return;
+    global $product;
+    if ( ! $product instanceof WC_Product ) return;
+    ?>
+    <script>
+    gtag('event', 'view_item', {
+        currency: 'EUR',
+        value: <?php echo wp_json_encode( (float) $product->get_price() ); ?>,
+        items: [{
+            item_id:   <?php echo wp_json_encode( (string) $product->get_id() ); ?>,
+            item_name: <?php echo wp_json_encode( $product->get_name() ); ?>,
+            price:     <?php echo wp_json_encode( (float) $product->get_price() ); ?>,
+            quantity:  1
+        }]
+    });
+    </script>
+    <?php
+}, 20 );
+
+add_action( 'woocommerce_thank_you', function( $order_id ) {
+    if ( ! $order_id ) return;
+    $order = wc_get_order( $order_id );
+    if ( ! $order || $order->get_meta( '_cozy_ga4_tracked' ) ) return;
+
+    $items = [];
+    foreach ( $order->get_items() as $item ) {
+        $items[] = [
+            'item_id'   => (string) $item->get_product_id(),
+            'item_name' => $item->get_name(),
+            'price'     => (float) $order->get_item_total( $item, false, false ),
+            'quantity'  => $item->get_quantity(),
+        ];
+    }
+    ?>
+    <script>
+    gtag('event', 'purchase', {
+        transaction_id: <?php echo wp_json_encode( $order->get_order_number() ); ?>,
+        value:          <?php echo wp_json_encode( (float) $order->get_total() ); ?>,
+        tax:            <?php echo wp_json_encode( (float) $order->get_total_tax() ); ?>,
+        shipping:       <?php echo wp_json_encode( (float) $order->get_shipping_total() ); ?>,
+        currency:       <?php echo wp_json_encode( $order->get_currency() ); ?>,
+        items:          <?php echo wp_json_encode( $items ); ?>
+    });
+    </script>
+    <?php
+    $order->update_meta_data( '_cozy_ga4_tracked', 1 );
+    $order->save();
+}, 20 );
 
 /* ------------------------------------------------------------------ */
 /*  THEME SETUP                                                         */
@@ -635,6 +739,8 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
                <?php if ( $is_ajax ) : ?>
                data-product_id="<?php echo absint( $product->get_id() ); ?>"
                data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
+               data-product-name="<?php echo esc_attr( $product->get_name() ); ?>"
+               data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
                data-quantity="1"
                <?php endif; ?>
                class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 min-w-0 overflow-hidden no-underline">

@@ -32,6 +32,23 @@ window.closeFavorites = function () {
     document.body.style.overflow = '';
 };
 
+/* ---------- COOKIE CONSENT BANNER ---------- */
+function cozySetCookie(name, value, days) {
+    var expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + value + '; expires=' + expires + '; path=/; SameSite=Lax';
+}
+window.cozyAcceptConsent = function () {
+    cozySetCookie('cozy_consent', 'granted', 180);
+    if (typeof window.cozyLoadGA === 'function') window.cozyLoadGA();
+    var banner = document.getElementById('cozy-consent-banner');
+    if (banner) banner.remove();
+};
+window.cozyRejectConsent = function () {
+    cozySetCookie('cozy_consent', 'denied', 180);
+    var banner = document.getElementById('cozy-consent-banner');
+    if (banner) banner.remove();
+};
+
 /* ---------- LOGIN MODAL ---------- */
 window.openLoginModal = function () {
     var modal = document.getElementById('login-modal-overlay');
@@ -428,6 +445,20 @@ document.addEventListener('click', function (e) {
             if (galleryThumb) cozyGalleryUpdate(galleryThumb, parseInt(el.getAttribute('data-index'), 10));
             break;
         }
+        case 'consent-accept':
+            window.cozyAcceptConsent();
+            break;
+        case 'consent-reject':
+            window.cozyRejectConsent();
+            break;
+        case 'begin-checkout':
+            if (typeof gtag === 'function') {
+                gtag('event', 'begin_checkout', {
+                    currency: 'EUR',
+                    value: parseFloat(el.getAttribute('data-value')) || 0
+                });
+            }
+            break;
     }
 });
 
@@ -513,8 +544,21 @@ function cozyRemoveFavItem(productId) {
        Since WC itself loads jQuery, we can listen for it via the jQuery bridge
        if jQuery is available, or fall back to a MutationObserver on cart-badge. */
     if (typeof jQuery !== 'undefined') {
-        jQuery(document.body).on('added_to_cart', function () {
+        jQuery(document.body).on('added_to_cart', function (e, fragments, cart_hash, $button) {
             window.openCart();
+
+            if (typeof gtag === 'function' && $button && $button.length) {
+                gtag('event', 'add_to_cart', {
+                    currency: 'EUR',
+                    value: parseFloat($button.data('product-price')) || 0,
+                    items: [{
+                        item_id:   String($button.data('product_id') || ''),
+                        item_name: $button.data('product-name') || '',
+                        price:     parseFloat($button.data('product-price')) || 0,
+                        quantity:  parseInt($button.data('quantity'), 10) || 1
+                    }]
+                });
+            }
         });
         jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function () {
             var badge = document.getElementById('cart-badge');
@@ -534,6 +578,14 @@ function cozyRemoveFavItem(productId) {
     });
 
     /* ---------- NEWSLETTER — Mailchimp via WP AJAX ---------- */
+    /* Bound via addEventListener (not inline onsubmit="") — this site's CSP
+       blocks inline event-handler attributes (script-src-attr 'none'), same
+       reason every onclick="" was replaced by data-action dispatching above. */
+    var newsletterFormEl = document.getElementById('newsletter-form');
+    if (newsletterFormEl) {
+        newsletterFormEl.addEventListener('submit', function (e) { window.handleNewsletterSubmit(e); });
+    }
+
     window.handleNewsletterSubmit = function (e) {
         e.preventDefault();
         var form    = document.getElementById('newsletter-form');

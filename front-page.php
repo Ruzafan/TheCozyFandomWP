@@ -58,7 +58,7 @@ $cozy_cats = [
     <!-- Banner image, fixed height, with overlay copy -->
     <div class="relative w-full h-[60vh] md:h-[80vh]">
 
-        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
+        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>"
              alt="" aria-hidden="true" loading="eager"
              class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
@@ -289,7 +289,7 @@ $cozy_cats = [
             </p>
 
             <!-- Form -->
-            <form id="newsletter-form" onsubmit="handleNewsletterSubmit(event)" class="w-full flex flex-col sm:flex-row gap-3 mt-2">
+            <form id="newsletter-form" class="w-full flex flex-col sm:flex-row gap-3 mt-2">
                 <input type="email" required
                        placeholder="tu@email.com"
                        class="flex-1 bg-white border-2 border-white rounded-2xl px-5 py-3.5 text-sm text-cozy-coffee placeholder-cozy-coffee/40 outline-none focus:border-cozy-mint transition-colors"

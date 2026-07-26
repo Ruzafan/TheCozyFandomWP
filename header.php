@@ -314,6 +314,8 @@
         </div>
         <?php if ( class_exists( 'WooCommerce' ) ) : ?>
         <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>"
+           data-action="begin-checkout"
+           data-value="<?php echo esc_attr( WC()->cart->get_cart_contents_total() ); ?>"
            class="block w-full text-center bg-cozy-mint hover:bg-cozy-mintDark text-white font-bold py-3.5 rounded-2xl transition-colors text-sm">
             Finalizar pedido
         </a>

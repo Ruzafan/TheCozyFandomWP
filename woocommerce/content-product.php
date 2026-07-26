@@ -63,6 +63,8 @@ if ( empty( $product ) || ! $product->is_visible() ) {
                <?php if ( $is_ajax ) : ?>
                data-product_id="<?php echo absint( $product->get_id() ); ?>"
                data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
+               data-product-name="<?php echo esc_attr( $product->get_name() ); ?>"
+               data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
                data-quantity="1"
                <?php endif; ?>
                class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> px-3 sm:px-3.5 py-2 rounded-full text-xs font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
