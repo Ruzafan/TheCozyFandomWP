@@ -71,9 +71,9 @@ function cozy_render_coming_soon_page() {
     $tiktok_url    = get_option( 'cozy_tiktok_url', '' );
 
     $teasers = [
-        [ 'img' => 'snoopy-heart.png',  'label' => 'Snoopy' ],
-        [ 'img' => 'harry-potter.png',  'label' => 'Harry Potter' ],
-        [ 'img' => 'disney.png',        'label' => 'Disney' ],
+        [ 'img' => 'snoopy-heart.webp',  'label' => 'Snoopy' ],
+        [ 'img' => 'harry-potter.webp',  'label' => 'Harry Potter' ],
+        [ 'img' => 'disney.webp',        'label' => 'Disney' ],
     ];
     ?>
 
@@ -81,7 +81,7 @@ function cozy_render_coming_soon_page() {
     <section class="relative" style="overflow:hidden;">
         <div class="relative w-full min-h-[80vh] md:h-[80vh] content-center">
 
-            <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.jpeg' ); ?>"
+            <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>"
                  alt="" aria-hidden="true" loading="eager"
                  class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
