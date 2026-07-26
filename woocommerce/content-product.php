@@ -39,6 +39,8 @@ if ( empty( $product ) || ! $product->is_visible() ) {
         <button type="button" data-action="toggle-favorite"
                 class="cozy-fav-btn cozy-fav-icon absolute top-2 right-2 z-10 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
                 data-product-id="<?php echo absint( $product->get_id() ); ?>"
+                data-product-name="<?php echo esc_attr( $product->get_name() ); ?>"
+                data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
                 aria-label="<?php esc_attr_e( 'Guardar en favoritos', 'woocommerce' ); ?>">
             <svg class="cozy-fav-heart" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>

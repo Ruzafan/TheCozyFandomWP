@@ -96,6 +96,33 @@ add_action( 'wp_footer', function() {
     <?php
 }, 20 );
 
+/* Full-fidelity view_cart (with items[]) on the real Cart page.
+   The drawer also pushes a lighter view_cart (value only) when opened —
+   see openCart() in cozy-main.js. */
+add_action( 'wp_footer', function() {
+    if ( ! function_exists( 'is_cart' ) || ! is_cart() || WC()->cart->is_empty() ) return;
+
+    $items = [];
+    foreach ( WC()->cart->get_cart() as $cart_item ) {
+        $product = $cart_item['data'];
+        $items[] = [
+            'item_id'   => (string) $product->get_id(),
+            'item_name' => $product->get_name(),
+            'price'     => (float) wc_get_price_to_display( $product ),
+            'quantity'  => $cart_item['quantity'],
+        ];
+    }
+    ?>
+    <script>
+    gtag('event', 'view_cart', {
+        currency: <?php echo wp_json_encode( get_woocommerce_currency() ); ?>,
+        value:    <?php echo wp_json_encode( (float) WC()->cart->get_cart_contents_total() ); ?>,
+        items:    <?php echo wp_json_encode( $items ); ?>
+    });
+    </script>
+    <?php
+}, 20 );
+
 add_action( 'woocommerce_thank_you', function( $order_id ) {
     if ( ! $order_id ) return;
     $order = wc_get_order( $order_id );
@@ -125,6 +152,37 @@ add_action( 'woocommerce_thank_you', function( $order_id ) {
     $order->update_meta_data( '_cozy_ga4_tracked', 1 );
     $order->save();
 }, 20 );
+
+/* ------------------------------------------------------------------ */
+/*  GA4 — sign_up / login                                               */
+/*  Both hooks fire mid-request (during form processing, before any      */
+/*  output), so the event itself is flashed via a one-time cookie and    */
+/*  fired on the very next page load (the post-login/registration        */
+/*  redirect), then cleared so it never fires twice.                      */
+/* ------------------------------------------------------------------ */
+add_action( 'user_register', function( $user_id ) {
+    if ( is_admin() ) return; // skip accounts created manually from wp-admin
+    setcookie( 'cozy_ga_signup', '1', time() + MINUTE_IN_SECONDS, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
+} );
+
+add_action( 'wp_login', function( $user_login, $user ) {
+    if ( $user instanceof WP_User && user_can( $user, 'manage_options' ) ) return; // skip the store owner's own logins
+    setcookie( 'cozy_ga_login', '1', time() + MINUTE_IN_SECONDS, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
+}, 10, 2 );
+
+add_action( 'wp_footer', function() {
+    $is_signup = ! empty( $_COOKIE['cozy_ga_signup'] );
+    $is_login  = ! empty( $_COOKIE['cozy_ga_login'] );
+    if ( ! $is_signup && ! $is_login ) return;
+
+    setcookie( 'cozy_ga_signup', '', time() - HOUR_IN_SECONDS, COOKIEPATH ?: '/', COOKIE_DOMAIN );
+    setcookie( 'cozy_ga_login', '', time() - HOUR_IN_SECONDS, COOKIEPATH ?: '/', COOKIE_DOMAIN );
+    ?>
+    <script>
+    gtag('event', '<?php echo $is_signup ? 'sign_up' : 'login'; ?>', { method: 'woocommerce_account' });
+    </script>
+    <?php
+}, 21 );
 
 /* ------------------------------------------------------------------ */
 /*  THEME SETUP                                                         */
@@ -584,7 +642,8 @@ add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
     $count = WC()->cart->get_cart_contents_count();
 
     $fragments['#cart-badge'] = sprintf(
-        '<span id="cart-badge" class="%sabsolute -top-1 -right-1 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">%d</span>',
+        '<span id="cart-badge" data-cart-value="%s" class="%sabsolute -top-1 -right-1 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">%d</span>',
+        esc_attr( WC()->cart->get_cart_contents_total() ),
         $count > 0 ? '' : 'hidden ',
         $count
     );
@@ -767,6 +826,8 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
                 <button type="button" data-action="toggle-favorite"
                         class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
                         data-product-id="<?php echo absint( $product->get_id() ); ?>"
+                        data-product-name="<?php echo esc_attr( $product->get_name() ); ?>"
+                        data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
                         aria-label="Guardar en favoritos">
                     <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </button>

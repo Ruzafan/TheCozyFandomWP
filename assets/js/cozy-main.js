@@ -9,6 +9,14 @@ window.openCart = function (e) {
     document.getElementById('cart-drawer').classList.remove('translate-x-full');
     document.getElementById('cart-overlay').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+
+    if (typeof gtag === 'function') {
+        var badge = document.getElementById('cart-badge');
+        gtag('event', 'view_cart', {
+            currency: 'EUR',
+            value: badge ? (parseFloat(badge.getAttribute('data-cart-value')) || 0) : 0
+        });
+    }
 };
 window.closeCart = function () {
     document.getElementById('cart-drawer').classList.add('translate-x-full');
@@ -314,7 +322,21 @@ function cozyFetchWishlistItemsHtml(ids, callback) {
 }
 
 /* ---------- TOGGLE FAVORITE ---------- */
-window.toggleFavorite = function (productId) {
+function cozyTrackAddToWishlist(productId, productName, productPrice) {
+    if (typeof gtag !== 'function') return;
+    gtag('event', 'add_to_wishlist', {
+        currency: 'EUR',
+        value: productPrice || 0,
+        items: [{
+            item_id:   String(productId),
+            item_name: productName || '',
+            price:     productPrice || 0,
+            quantity:  1
+        }]
+    });
+}
+
+window.toggleFavorite = function (productId, productName, productPrice) {
     if (typeof cozyAjax === 'undefined') return;
 
     if (!cozyAjax.isLoggedIn) {
@@ -333,6 +355,7 @@ window.toggleFavorite = function (productId) {
         cozyUpdateFavBadge(guestIds.length);
 
         if (nowFavorited) {
+            cozyTrackAddToWishlist(productId, productName, productPrice);
             cozyFetchWishlistItemsHtml([productId], function (items) {
                 items.forEach(function (item) { cozyAddFavItem(item.html); });
             });
@@ -355,6 +378,7 @@ window.toggleFavorite = function (productId) {
             cozyUpdateFavBtns(productId, data.is_favorited);
             cozyUpdateFavBadge(data.count);
             if (data.is_favorited && data.item_html) {
+                cozyTrackAddToWishlist(productId, productName, productPrice);
                 cozyAddFavItem(data.item_html);
             } else {
                 cozyRemoveFavItem(productId);
@@ -467,7 +491,11 @@ document.addEventListener('click', function (e) {
             window.closeFilters();
             break;
         case 'toggle-favorite':
-            window.toggleFavorite(parseInt(el.getAttribute('data-product-id'), 10));
+            window.toggleFavorite(
+                parseInt(el.getAttribute('data-product-id'), 10),
+                el.getAttribute('data-product-name') || '',
+                parseFloat(el.getAttribute('data-product-price')) || 0
+            );
             break;
         case 'gallery-open':
             window.openCozyLightbox(parseInt(el.getAttribute('data-index'), 10));
@@ -682,6 +710,9 @@ function cozyRemoveFavItem(productId) {
                 if (res.success) {
                     if (form)    form.classList.add('hidden');
                     if (success) success.classList.remove('hidden');
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'sign_up', { method: 'newsletter' });
+                    }
                 } else {
                     if (btn) { btn.disabled = false; btn.textContent = originalText; }
                     alert(res.data && res.data.message ? res.data.message : 'Ha ocurrido un error. Inténtalo de nuevo.');
@@ -719,10 +750,13 @@ function cozyRemoveFavItem(productId) {
                 fetch(cozyAjax.url + '?action=cozy_ajax_search&term=' + encodeURIComponent(term))
                     .then(function (r) { return r.json(); })
                     .then(function (res) {
-                        if (res.success && res.data) {
-                            renderSuggestions(res.data);
-                        } else {
-                            renderSuggestions([]);
+                        var results = (res.success && res.data) ? res.data : [];
+                        renderSuggestions(results);
+                        if (typeof gtag === 'function') {
+                            gtag('event', 'search', {
+                                search_term: term,
+                                results_count: results.length
+                            });
                         }
                     })
                     .catch(function () {

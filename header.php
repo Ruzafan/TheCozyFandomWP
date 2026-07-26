@@ -97,7 +97,7 @@
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                         <?php if ( class_exists( 'WooCommerce' ) && WC()->cart ) :
                             $count = WC()->cart->get_cart_contents_count(); ?>
-                        <span id="cart-badge" class="<?php echo $count > 0 ? '' : 'hidden '; ?>absolute -top-0.5 -right-0.5 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">
+                        <span id="cart-badge" data-cart-value="<?php echo esc_attr( WC()->cart->get_cart_contents_total() ); ?>" class="<?php echo $count > 0 ? '' : 'hidden '; ?>absolute -top-0.5 -right-0.5 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">
                             <?php echo absint( $count ); ?>
                         </span>
                         <?php endif; ?>
