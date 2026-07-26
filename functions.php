@@ -297,7 +297,10 @@ function cozy_fandom_enqueue_scripts() {
         'loginUrl'   => class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : wp_login_url(),
     ] );
 
-    if ( class_exists( 'WooCommerce' ) ) {
+    /* Only pages that can actually add to cart / show cart contents need
+       jQuery + wc-cart-fragments' background AJAX refresh — everything else
+       (blog, legal pages, my account…) was loading it for nothing. */
+    if ( class_exists( 'WooCommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_front_page() ) ) {
         wp_enqueue_script( 'wc-add-to-cart' );
         wp_enqueue_script( 'wc-cart-fragments' );
     }
@@ -487,6 +490,56 @@ function cozy_toggle_favorite() {
         'product_id'   => $product_id,
         'item_html'    => $item_html,
     ] );
+}
+
+/* ------------------------------------------------------------------ */
+/*  FAVORITOS DE INVITADO — guests keep their wishlist in localStorage;   */
+/*  these two endpoints let the browser render item cards for IDs it     */
+/*  already has, and merge them into the account once the guest logs in. */
+/* ------------------------------------------------------------------ */
+add_action( 'wp_ajax_cozy_get_wishlist_items',        'cozy_get_wishlist_items' );
+add_action( 'wp_ajax_nopriv_cozy_get_wishlist_items',  'cozy_get_wishlist_items' );
+
+function cozy_get_wishlist_items() {
+    $ids   = isset( $_POST['ids'] ) ? array_values( array_filter( array_map( 'absint', (array) $_POST['ids'] ) ) ) : [];
+    $items = [];
+
+    foreach ( $ids as $id ) {
+        if ( ! wc_get_product( $id ) ) continue;
+        ob_start();
+        cozy_render_favorite_item( $id );
+        $items[] = [ 'id' => $id, 'html' => ob_get_clean() ];
+    }
+
+    wp_send_json_success( [ 'items' => $items ] );
+}
+
+add_action( 'wp_ajax_cozy_merge_wishlist', 'cozy_merge_wishlist' );
+
+function cozy_merge_wishlist() {
+    check_ajax_referer( 'cozy_favorites', 'nonce' );
+
+    $incoming = isset( $_POST['ids'] ) ? array_values( array_filter( array_map( 'absint', (array) $_POST['ids'] ) ) ) : [];
+    if ( empty( $incoming ) ) {
+        wp_send_json_success( [ 'count' => 0, 'added' => [] ] );
+    }
+
+    $user_id  = get_current_user_id();
+    $existing = array_values( array_filter( array_map( 'absint', (array) get_user_meta( $user_id, '_cozy_wishlist', true ) ) ) );
+    $new_ids  = array_values( array_diff( $incoming, $existing ) );
+    $merged   = array_values( array_unique( array_merge( $existing, $new_ids ) ) );
+
+    update_user_meta( $user_id, '_cozy_wishlist', $merged );
+
+    $added = [];
+    foreach ( $new_ids as $id ) {
+        if ( ! wc_get_product( $id ) ) continue;
+        ob_start();
+        cozy_render_favorite_item( $id );
+        $added[] = [ 'id' => $id, 'html' => ob_get_clean() ];
+    }
+
+    wp_send_json_success( [ 'count' => count( $merged ), 'added' => $added ] );
 }
 
 function cozy_render_favorite_item( $product_id ) {
@@ -743,7 +796,7 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
                data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
                data-quantity="1"
                <?php endif; ?>
-               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee hover:text-white' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 min-w-0 overflow-hidden no-underline">
+               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 min-w-0 overflow-hidden no-underline">
                 <?php echo cozy_icon( $is_ajax ? 'basket-shopping' : ( $product->is_in_stock() ? 'eye' : 'ban' ), '14', 'shrink-0' ); ?>
                 <span class="truncate"><?php echo $is_ajax ? 'Añadir al carrito' : ( $product->is_in_stock() ? 'Ver opciones' : 'Sin stock' ); ?></span>
             </a>

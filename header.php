@@ -360,15 +360,13 @@
                 <button type="button" data-action="close-favorites" class="text-xs font-bold text-cozy-mint hover:underline">¡Descubre la tienda!</button>
             </div>
             <?php endif;
-        else : ?>
-        <div class="text-center py-12 space-y-4">
-            <svg class="mx-auto text-cozy-coffee/20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            <p class="text-sm text-cozy-coffee/60">Inicia sesión para ver tus favoritos.</p>
-            <a href="<?php echo esc_url( $account_url ); ?>"
-               class="inline-block text-xs font-bold bg-cozy-mint text-white px-4 py-2 rounded-xl hover:bg-cozy-mintDark transition-colors no-underline">
-                Iniciar sesión
-            </a>
-        </div>
+        else : /* Guests: favorites live in this browser's localStorage — cozy-main.js
+                  fills this container on load and keeps it in sync (see cozyGetGuestWishlist). */ ?>
+            <div id="fav-empty" class="text-center py-12 space-y-4">
+                <svg class="mx-auto text-cozy-coffee/20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <p class="text-sm text-cozy-coffee/60">Aún no tienes favoritos guardados.</p>
+                <button type="button" data-action="close-favorites" class="text-xs font-bold text-cozy-mint hover:underline">¡Descubre la tienda!</button>
+            </div>
         <?php endif; ?>
     </div>
 

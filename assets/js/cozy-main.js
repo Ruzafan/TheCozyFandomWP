@@ -291,12 +291,54 @@ window.closeCozyLightbox = function () {
     }, 300);
 };
 
+/* ---------- GUEST WISHLIST (localStorage — no login required) ---------- */
+function cozyGetGuestWishlist() {
+    try {
+        return JSON.parse(localStorage.getItem('cozy_guest_wishlist') || '[]');
+    } catch (e) {
+        return [];
+    }
+}
+function cozySaveGuestWishlist(ids) {
+    localStorage.setItem('cozy_guest_wishlist', JSON.stringify(ids));
+}
+function cozyFetchWishlistItemsHtml(ids, callback) {
+    if (!ids.length) { callback([]); return; }
+    var body = new FormData();
+    body.append('action', 'cozy_get_wishlist_items');
+    ids.forEach(function (id) { body.append('ids[]', id); });
+    fetch(cozyAjax.url, { method: 'POST', body: body, credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) { callback(res && res.success ? res.data.items : []); })
+        .catch(function () { callback([]); });
+}
+
 /* ---------- TOGGLE FAVORITE ---------- */
 window.toggleFavorite = function (productId) {
     if (typeof cozyAjax === 'undefined') return;
 
     if (!cozyAjax.isLoggedIn) {
-        window.openLoginModal();
+        var guestIds = cozyGetGuestWishlist();
+        var idx = guestIds.indexOf(productId);
+        var nowFavorited;
+        if (idx > -1) {
+            guestIds.splice(idx, 1);
+            nowFavorited = false;
+        } else {
+            guestIds.push(productId);
+            nowFavorited = true;
+        }
+        cozySaveGuestWishlist(guestIds);
+        cozyUpdateFavBtns(productId, nowFavorited);
+        cozyUpdateFavBadge(guestIds.length);
+
+        if (nowFavorited) {
+            cozyFetchWishlistItemsHtml([productId], function (items) {
+                items.forEach(function (item) { cozyAddFavItem(item.html); });
+            });
+        } else {
+            cozyRemoveFavItem(productId);
+        }
         return;
     }
 
@@ -568,12 +610,43 @@ function cozyRemoveFavItem(productId) {
         });
     }
 
-    /* Mark already-favorited products on page load */
+    /* Mark already-favorited products on page load, and reconcile the
+       guest wishlist (localStorage) — either merge it into the account
+       right after login, or render it into the drawer for a logged-out visitor. */
     document.addEventListener('DOMContentLoaded', function () {
-        if (typeof cozyAjax !== 'undefined' && cozyAjax.favorites && cozyAjax.favorites.length) {
-            cozyAjax.favorites.forEach(function (id) {
+        if (typeof cozyAjax === 'undefined') return;
+
+        if (cozyAjax.isLoggedIn) {
+            (cozyAjax.favorites || []).forEach(function (id) {
                 cozyUpdateFavBtns(id, true);
             });
+
+            var guestIds = cozyGetGuestWishlist();
+            if (guestIds.length) {
+                var body = new FormData();
+                body.append('action', 'cozy_merge_wishlist');
+                body.append('nonce', cozyAjax.favNonce);
+                guestIds.forEach(function (id) { body.append('ids[]', id); });
+
+                fetch(cozyAjax.url, { method: 'POST', body: body, credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (res) {
+                        if (!res || !res.success) return;
+                        localStorage.removeItem('cozy_guest_wishlist');
+                        guestIds.forEach(function (id) { cozyUpdateFavBtns(id, true); });
+                        cozyUpdateFavBadge(res.data.count);
+                        (res.data.added || []).forEach(function (item) { cozyAddFavItem(item.html); });
+                    });
+            }
+        } else {
+            var guestFavIds = cozyGetGuestWishlist();
+            if (guestFavIds.length) {
+                guestFavIds.forEach(function (id) { cozyUpdateFavBtns(id, true); });
+                cozyUpdateFavBadge(guestFavIds.length);
+                cozyFetchWishlistItemsHtml(guestFavIds, function (items) {
+                    items.forEach(function (item) { cozyAddFavItem(item.html); });
+                });
+            }
         }
     });
 
