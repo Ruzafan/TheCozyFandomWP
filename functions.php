@@ -7,6 +7,22 @@ require_once get_stylesheet_directory() . '/inc/cozy-icons.php';
 require_once get_stylesheet_directory() . '/inc/coming-soon.php';
 
 /* ------------------------------------------------------------------ */
+/*  GOOGLE ANALYTICS (GA4)                                              */
+/* ------------------------------------------------------------------ */
+add_action( 'wp_head', function() {
+    if ( is_admin() ) return;
+    ?>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3KDLH6MJ94"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3KDLH6MJ94');
+    </script>
+    <?php
+}, 1 );
+
+/* ------------------------------------------------------------------ */
 /*  THEME SETUP                                                         */
 /* ------------------------------------------------------------------ */
 function cozy_fandom_theme_setup() {
