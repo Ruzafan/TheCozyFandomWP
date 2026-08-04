@@ -285,7 +285,7 @@ $cozy_cats = [
 
             <!-- Body -->
             <p class="text-sm md:text-base text-cozy-coffee/80 max-w-md leading-relaxed m-0">
-                Apúntate a nuestra newsletter y recibe un <strong>10% de descuento</strong> en tu primer pedido. Cero spam, solo novedades bonitas, tips de decoración geek y ofertas exclusivas para la comunidad.
+                Apúntate a nuestra newsletter y recibe un <strong>5% de descuento</strong> en tu primer pedido. Cero spam, solo novedades bonitas, tips de decoración geek y ofertas exclusivas para la comunidad.
             </p>
 
             <!-- Form -->
