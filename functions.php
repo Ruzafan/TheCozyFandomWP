@@ -1022,4 +1022,46 @@ function cozy_ajax_search() {
     exit;
 }
 
+/* ------------------------------------------------------------------ */
+/*  ADMIN — filtro "Solo con 1 imagen" en el listado de Productos       */
+/* ------------------------------------------------------------------ */
+/* Detecta productos con imagen destacada pero sin ninguna imagen de
+   galería (_product_image_gallery vacío o inexistente), útil para
+   encontrar fichas incompletas tras una importación. */
+add_action( 'restrict_manage_posts', function( $post_type ) {
+    if ( 'product' !== $post_type ) return;
+    $selected = isset( $_GET['cozy_single_image'] ) ? sanitize_text_field( wp_unslash( $_GET['cozy_single_image'] ) ) : '';
+    ?>
+    <select name="cozy_single_image">
+        <option value=""><?php esc_html_e( 'Todas las imágenes', 'cozy-fandom-child' ); ?></option>
+        <option value="1" <?php selected( $selected, '1' ); ?>><?php esc_html_e( 'Solo con 1 imagen', 'cozy-fandom-child' ); ?></option>
+    </select>
+    <?php
+} );
+
+add_action( 'pre_get_posts', function( $query ) {
+    if ( ! is_admin() || ! $query->is_main_query() ) return;
+    if ( 'product' !== $query->get( 'post_type' ) ) return;
+    if ( empty( $_GET['cozy_single_image'] ) ) return;
+
+    $meta_query   = (array) $query->get( 'meta_query' );
+    $meta_query[] = [
+        'key'     => '_thumbnail_id',
+        'compare' => 'EXISTS',
+    ];
+    $meta_query[] = [
+        'relation' => 'OR',
+        [
+            'key'     => '_product_image_gallery',
+            'compare' => 'NOT EXISTS',
+        ],
+        [
+            'key'     => '_product_image_gallery',
+            'value'   => '',
+            'compare' => '=',
+        ],
+    ];
+    $query->set( 'meta_query', $meta_query );
+} );
+
 
