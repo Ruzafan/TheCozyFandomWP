@@ -41,8 +41,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- ── Extra Cozy Mode: sticky interactive cat ───────────────────── -->
 <div class="cozy-cat">
-  <button class="cozy-cat__close" aria-label="Cerrar gato">&times;</button>
-  
   <div class="cozy-cat__body">
     <!-- Corazoncitos para el estado feliz -->
     <div class="cozy-cat__hearts">

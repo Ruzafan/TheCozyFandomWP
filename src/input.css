@@ -3127,7 +3127,7 @@ body.extra-cozy .cozy-plant--right {
   display: none;
   position: fixed;
   bottom: 0;
-  right: 1.5rem;
+  left: 1.5rem;
   width: 96px;
   z-index: 60;
   user-select: none;
