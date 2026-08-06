@@ -56,6 +56,10 @@ window.cozyRejectConsent = function () {
     var banner = document.getElementById('cozy-consent-banner');
     if (banner) banner.remove();
 };
+window.cozyOpenCookieSettings = function () {
+    document.cookie = 'cozy_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax';
+    window.location.reload();
+};
 
 /* ---------- LOGIN MODAL ---------- */
 window.openLoginModal = function () {
@@ -520,6 +524,9 @@ document.addEventListener('click', function (e) {
             break;
         case 'consent-reject':
             window.cozyRejectConsent();
+            break;
+        case 'open-cookie-settings':
+            window.cozyOpenCookieSettings();
             break;
         case 'begin-checkout':
             if (typeof gtag === 'function') {
