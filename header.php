@@ -28,6 +28,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <?php wp_body_open(); ?>
 
+<!-- ── Extra Cozy Mode: pre-paint class sync (avoids flash) ─────── -->
+<script>
+(function () {
+    try {
+        if ( localStorage.getItem( 'cozyMode' ) === 'on' ) {
+            document.body.classList.add( 'extra-cozy' );
+        }
+    } catch ( e ) {}
+})();
+</script>
+
+<!-- ── Extra Cozy Mode: sticky interactive cat ───────────────────── -->
+<div id="cozy-cat" class="cozy-cat" aria-hidden="true">
+    <button type="button" class="cozy-cat__close" data-action="cozy-cat-close" aria-label="Ocultar gatito">×</button>
+    <div class="cozy-cat__body">
+        <span class="cozy-cat__heart">💛</span>
+        <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+            <g class="cozy-cat__tail">
+                <path d="M84 70 C 100 66, 100 40, 82 34" fill="none" stroke="#C98A5E" stroke-width="8" stroke-linecap="round"/>
+            </g>
+            <ellipse cx="46" cy="58" rx="34" ry="26" fill="#E3A876"/>
+            <path d="M18 34 L26 10 L38 32 Z" fill="#E3A876"/>
+            <path d="M74 34 L66 10 L54 32 Z" fill="#E3A876"/>
+            <path d="M20 32 L26 16 L34 30 Z" fill="#F6D3B0"/>
+            <path d="M72 32 L66 16 L58 30 Z" fill="#F6D3B0"/>
+            <circle cx="46" cy="40" r="22" fill="#EDB98A"/>
+            <g class="cozy-cat__eyes">
+                <ellipse cx="37" cy="40" rx="2.6" ry="3.6" fill="#4A3F35"/>
+                <ellipse cx="55" cy="40" rx="2.6" ry="3.6" fill="#4A3F35"/>
+            </g>
+            <path d="M44 46 Q46 49 48 46" fill="none" stroke="#4A3F35" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M30 44 L18 42 M30 47 L17 48 M62 44 L74 42 M62 47 L75 48" stroke="#C9A889" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+    </div>
+</div>
+
 <div id="page" class="hfeed site ast-page-builder-template">
 <a class="skip-link screen-reader-text" href="#main"><?php esc_html_e( 'Skip to content', 'astra' ); ?></a>
 
@@ -35,6 +71,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- HEADER                                                         -->
 <!-- ============================================================ -->
 <header id="masthead" class="site-header ast-primary-header" itemtype="https://schema.org/WPHeader" itemscope>
+
+    <!-- ── Extra Cozy Mode: hanging plants (desktop only) ─────── -->
+    <div class="cozy-plant cozy-plant--left" aria-hidden="true">
+        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/cozy-mode/plant-left.svg' ); ?>" alt="" width="64" height="100" loading="lazy">
+    </div>
+    <div class="cozy-plant cozy-plant--right" aria-hidden="true">
+        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/cozy-mode/plant-right.svg' ); ?>" alt="" width="64" height="100" loading="lazy">
+    </div>
 
     <!-- ── Announcement bar ──────────────────────────────────── -->
     <div class="cozy-announcement-bar">
@@ -112,6 +156,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <?php echo absint( $count ); ?>
                         </span>
                         <?php endif; ?>
+                    </button>
+
+                    <button type="button" data-action="toggle-cozy-mode" id="cozy-mode-toggle" class="cozy-hdr-icon cozy-mode-toggle" aria-pressed="false" aria-label="Activar modo Extra Cozy">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c-4-3-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-3 8-7 11z"/><path d="M12 17V9"/><path d="M12 12c-2-2-2-4-1-6"/><path d="M12 9c2-1 3-3 2-5"/></svg>
                     </button>
                 </div>
 

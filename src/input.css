@@ -3056,3 +3056,150 @@ body.single-post .ast-archive-description { display: none !important; }
 .notifima-subscribe-form form button:focus {
   color: #4A3F35 !important;
 }
+
+/* ============================================================ */
+/*  EXTRA COZY MODE — opt-in decorative layer                    */
+/*  Off by default; toggled via #cozy-mode-toggle in header.php  */
+/*  and persisted in localStorage. Visual effects only apply on  */
+/*  desktop (>=1280px) — see spec docs/superpowers/specs.        */
+/* ============================================================ */
+
+/* Toggle button */
+.cozy-mode-toggle svg {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.cozy-mode-toggle.is-active {
+  color: #4C8C74 !important;
+  background: rgba(136, 196, 181, 0.18);
+}
+.cozy-mode-toggle.is-active svg {
+  filter: drop-shadow(0 0 4px rgba(136, 196, 181, 0.6));
+}
+.cozy-mode-toggle--pulse svg {
+  animation: cozy-toggle-pulse 0.5s ease;
+}
+@keyframes cozy-toggle-pulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* Hanging plants in the header corners */
+.cozy-plant {
+  display: none;
+  position: absolute;
+  top: 0.25rem;
+  pointer-events: none;
+  z-index: 1;
+  width: 64px;
+}
+.cozy-plant--left  { left: 0.5rem; }
+.cozy-plant--right { right: 0.5rem; }
+.cozy-plant img { display: block; width: 100%; height: auto; }
+@media (min-width: 1280px) {
+  body.extra-cozy .cozy-plant { display: block; }
+}
+body.extra-cozy .cozy-plant--left {
+  animation: cozy-sway 5s ease-in-out infinite;
+  transform-origin: top center;
+}
+body.extra-cozy .cozy-plant--right {
+  animation: cozy-sway 6s ease-in-out infinite;
+  animation-delay: -2s;
+  transform-origin: top center;
+}
+@keyframes cozy-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+
+/* Cozy cursor */
+@media (min-width: 1280px) {
+  body.extra-cozy,
+  body.extra-cozy a,
+  body.extra-cozy button {
+    cursor: url('../images/cozy-mode/cursor-leaf.svg') 4 4, auto !important;
+  }
+}
+
+/* Sticky interactive cat */
+.cozy-cat {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 1.5rem;
+  width: 84px;
+  z-index: 60;
+}
+@media (min-width: 1280px) {
+  body.extra-cozy .cozy-cat { display: block; }
+}
+.cozy-cat.is-dismissed { display: none !important; }
+
+.cozy-cat__body { cursor: pointer; position: relative; }
+.cozy-cat__body svg { display: block; width: 100%; height: auto; }
+
+.cozy-cat__close {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid #F5EDE0 !important;
+  color: #4A3F35;
+  font-size: 0.875rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(74, 63, 53, 0.15);
+}
+
+/* Idle animation */
+.cozy-cat__tail {
+  animation: cozy-cat-tail 3s ease-in-out infinite;
+  transform-origin: 80% 90%;
+}
+@keyframes cozy-cat-tail {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(10deg); }
+}
+.cozy-cat__eyes {
+  animation: cozy-cat-blink 4.5s ease-in-out infinite;
+}
+@keyframes cozy-cat-blink {
+  0%, 92%, 100% { opacity: 1; }
+  94%, 98%      { opacity: 0; }
+}
+
+/* Happy interaction state */
+.cozy-cat.is-happy .cozy-cat__body {
+  animation: cozy-cat-bounce 0.5s ease;
+}
+@keyframes cozy-cat-bounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-10px); }
+  60%  { transform: translateY(0); }
+  80%  { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+.cozy-cat__heart {
+  position: absolute;
+  top: -0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  opacity: 0;
+  pointer-events: none;
+}
+.cozy-cat.is-happy .cozy-cat__heart {
+  animation: cozy-cat-heart 1.4s ease forwards;
+}
+@keyframes cozy-cat-heart {
+  0%   { opacity: 0; transform: translate(-50%, 0); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -24px); }
+}

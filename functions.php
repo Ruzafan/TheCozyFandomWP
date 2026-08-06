@@ -342,6 +342,16 @@ function cozy_fandom_enqueue_scripts() {
         true
     );
 
+    /* Extra Cozy Mode — opt-in decorative layer, off by default (see
+       docs/superpowers/specs/2026-08-06-extra-cozy-mode-design.md) */
+    wp_enqueue_script(
+        'cozy-mode',
+        get_stylesheet_directory_uri() . '/assets/js/cozy-mode.js',
+        [],
+        filemtime( get_stylesheet_directory() . '/assets/js/cozy-mode.js' ),
+        true
+    );
+
     $fav_ids = is_user_logged_in()
         ? array_values( array_filter( array_map( 'absint', (array) get_user_meta( get_current_user_id(), '_cozy_wishlist', true ) ) ) )
         : [];
