@@ -40,28 +40,91 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </script>
 
 <!-- ── Extra Cozy Mode: sticky interactive cat ───────────────────── -->
-<div id="cozy-cat" class="cozy-cat" aria-hidden="true">
-    <button type="button" class="cozy-cat__close" data-action="cozy-cat-close" aria-label="Ocultar gatito">×</button>
-    <div class="cozy-cat__body">
-        <span class="cozy-cat__heart">💛</span>
-        <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
-            <g class="cozy-cat__tail">
-                <path d="M84 70 C 100 66, 100 40, 82 34" fill="none" stroke="#C98A5E" stroke-width="8" stroke-linecap="round"/>
-            </g>
-            <ellipse cx="46" cy="58" rx="34" ry="26" fill="#E3A876"/>
-            <path d="M18 34 L26 10 L38 32 Z" fill="#E3A876"/>
-            <path d="M74 34 L66 10 L54 32 Z" fill="#E3A876"/>
-            <path d="M20 32 L26 16 L34 30 Z" fill="#F6D3B0"/>
-            <path d="M72 32 L66 16 L58 30 Z" fill="#F6D3B0"/>
-            <circle cx="46" cy="40" r="22" fill="#EDB98A"/>
-            <g class="cozy-cat__eyes">
-                <ellipse cx="37" cy="40" rx="2.6" ry="3.6" fill="#4A3F35"/>
-                <ellipse cx="55" cy="40" rx="2.6" ry="3.6" fill="#4A3F35"/>
-            </g>
-            <path d="M44 46 Q46 49 48 46" fill="none" stroke="#4A3F35" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M30 44 L18 42 M30 47 L17 48 M62 44 L74 42 M62 47 L75 48" stroke="#C9A889" stroke-width="1.2" stroke-linecap="round"/>
-        </svg>
+<div class="cozy-cat">
+  <button class="cozy-cat__close" aria-label="Cerrar gato">&times;</button>
+  
+  <div class="cozy-cat__body">
+    <!-- Corazoncitos para el estado feliz -->
+    <div class="cozy-cat__hearts">
+      <span class="cozy-cat__heart h1">💛</span>
+      <span class="cozy-cat__heart h2">✨</span>
+      <span class="cozy-cat__heart h3">🧡</span>
     </div>
+
+    <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" class="cozy-cat__svg">
+      <defs>
+        <!-- Degradado cálido para dar volumen al cuerpo -->
+        <linearGradient id="cat-body-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F5B27B"/>
+          <stop offset="100%" stop-color="#E28B4D"/>
+        </linearGradient>
+        <!-- Sombra suave para la base -->
+        <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#4A3F35" flood-opacity="0.15"/>
+        </filter>
+      </defs>
+
+      <!-- Cola con animación independiente -->
+      <g class="cozy-cat__tail-group">
+        <path d="M 92 75 C 115 72, 118 42, 98 38 C 92 36, 88 42, 94 48 C 106 52, 102 70, 85 78 Z" 
+              fill="#D97B3E" />
+      </g>
+
+      <!-- Grupo principal del cuerpo (Respiración/Ronroneo) -->
+      <g class="cozy-cat__torso">
+        <!-- Cuerpo principal en postura acurrucada -->
+        <path d="M 18 90 C 12 65, 30 45, 60 45 C 90 45, 105 62, 102 90 Z" 
+              fill="url(#cat-body-grad)" filter="url(#soft-shadow)"/>
+
+        <!-- Oreja izquierda con animación de movimiento -->
+        <g class="cozy-cat__ear-left">
+          <path d="M 28 48 L 18 18 L 42 36 Z" fill="#E28B4D"/>
+          <path d="M 30 44 L 23 23 L 39 36 Z" fill="#F9A3A3" opacity="0.85"/>
+        </g>
+
+        <!-- Oreja derecha -->
+        <g class="cozy-cat__ear-right">
+          <path d="M 92 48 L 102 18 L 78 36 Z" fill="#E28B4D"/>
+          <path d="M 90 44 L 97 23 L 81 36 Z" fill="#F9A3A3" opacity="0.85"/>
+        </g>
+
+        <!-- Cabeza -->
+        <ellipse cx="60" cy="48" rx="34" ry="26" fill="url(#cat-body-grad)"/>
+
+        <!-- Parche claro en el hocico -->
+        <ellipse cx="60" cy="55" rx="16" ry="12" fill="#FDF3E7"/>
+
+        <!-- Rubor en los cachetes -->
+        <ellipse cx="38" cy="53" rx="5" ry="3" fill="#FF9E9E" opacity="0.5"/>
+        <ellipse cx="82" cy="53" rx="5" ry="3" fill="#FF9E9E" opacity="0.5"/>
+
+        <!-- Ojos con pestañas y brillo -->
+        <g class="cozy-cat__eyes">
+          <!-- Ojo izquierdo -->
+          <ellipse cx="45" cy="46" rx="3.5" ry="4.5" fill="#3D2E24"/>
+          <circle cx="43.8" cy="44.2" r="1.2" fill="#FFFFFF"/>
+          
+          <!-- Ojo derecho -->
+          <ellipse cx="75" cy="46" rx="3.5" ry="4.5" fill="#3D2E24"/>
+          <circle cx="73.8" cy="44.2" r="1.2" fill="#FFFFFF"/>
+        </g>
+
+        <!-- Nariz y boquita sonriente -->
+        <polygon points="60,51 57,48 63,48" fill="#E88282"/>
+        <path d="M 55 54 Q 60 58 60 54 Q 60 58 65 54" 
+              fill="none" stroke="#3D2E24" stroke-width="1.8" stroke-linecap="round"/>
+
+        <!-- Bigotes suaves -->
+        <path d="M 38 52 L 20 49 M 37 55 L 22 56 M 82 52 L 100 49 M 83 55 L 98 56" 
+              stroke="#B36B3B" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+        <!-- Patitas cruzadas adelante -->
+        <ellipse cx="48" cy="85" rx="9" ry="6" fill="#FDF3E7" filter="url(#soft-shadow)"/>
+        <ellipse cx="72" cy="85" rx="9" ry="6" fill="#FDF3E7" filter="url(#soft-shadow)"/>
+        <path d="M 48 82 L 48 88 M 72 82 L 72 88" stroke="#E28B4D" stroke-width="1" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
 </div>
 
 <div id="page" class="hfeed site ast-page-builder-template">
