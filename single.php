@@ -10,7 +10,6 @@ the_post();
 
 $cats      = get_the_category();
 $cat       = $cats ? $cats[0] : null;
-$thumb_url = get_the_post_thumbnail_url( null, 'full' );
 $author_id = get_the_author_meta( 'ID' );
 $read_time = max( 1, (int) ceil( str_word_count( wp_strip_all_tags( get_the_content() ) ) / 200 ) );
 ?>
@@ -22,23 +21,11 @@ $read_time = max( 1, (int) ceil( str_word_count( wp_strip_all_tags( get_the_cont
 <!-- ============================================================ -->
 <div class="relative bg-cozy-cream overflow-hidden">
 
-    <?php if ( $thumb_url ) : ?>
-    <!-- Featured image with gradient overlay -->
-    <div class="relative h-64 md:h-[480px] w-full">
-        <img src="<?php echo esc_url( $thumb_url ); ?>"
-             alt="<?php the_title_attribute(); ?>"
-             class="absolute inset-0 w-full h-full object-cover object-center"
-             loading="eager">
-        <div class="absolute inset-0"
-             style="background:linear-gradient(180deg, rgba(252,249,245,0) 30%, rgba(252,249,245,0.7) 70%, #FCF9F5 100%);"></div>
-    </div>
-    <?php else : ?>
-    <!-- No image: decorative gradient header -->
-    <div class="h-32 md:h-48 bg-gradient-to-b from-cozy-sand/60 to-cozy-cream"></div>
-    <?php endif; ?>
+    <!-- Decorative header: fade from white to the page background -->
+    <div class="h-32 md:h-48 w-full" style="background:linear-gradient(180deg, #ffffff 0%, #FCF9F5 100%);"></div>
 
     <!-- Title card -->
-    <div class="relative z-10 max-w-3xl mx-auto px-6 md:px-8 <?php echo $thumb_url ? '-mt-24 md:-mt-40' : 'pt-10'; ?> pb-10">
+    <div class="relative z-10 max-w-3xl mx-auto px-6 md:px-8 pt-10 pb-10">
 
         <!-- Category + meta -->
         <div class="flex items-center flex-wrap gap-3 mb-4">

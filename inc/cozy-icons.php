@@ -322,9 +322,9 @@ function cozy_icon_paw( $size = '16', $extra_class = '' ) {
 
 function cozy_icon_hat_wizard( $size = '16', $extra_class = '' ) {
     return cozy_icon_svg_open( $size, $extra_class ) .
-        '<path d="M12 2L4 20h16L12 2z"/>' .
-        '<path d="M8 14h8"/>' .
-        '<path d="M14 8l2-1"/>' .
+        '<path d="M4 18c2-8 4-14 8-14s6 6 8 14"/>' .
+        '<ellipse cx="12" cy="18" rx="9" ry="2"/>' .
+        '<path d="M10 8l1-1 1 1 1-1 1 1"/>' .
         '</svg>';
 }
 

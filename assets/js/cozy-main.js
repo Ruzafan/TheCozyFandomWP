@@ -59,6 +59,19 @@ window.cozyRejectConsent = function () {
     if (banner) banner.remove();
 };
 window.cozyOpenCookieSettings = function () {
+    var banner = document.getElementById('cozy-consent-banner');
+    if (banner) {
+        banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var prevTransition = banner.style.transition;
+        var prevShadow = banner.style.boxShadow;
+        banner.style.transition = 'box-shadow 0.2s ease';
+        banner.style.boxShadow = '0 0 0 3px #6ee7b7';
+        setTimeout(function () {
+            banner.style.boxShadow = prevShadow;
+            banner.style.transition = prevTransition;
+        }, 1200);
+        return;
+    }
     document.cookie = 'cozy_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax';
     window.location.reload();
 };
@@ -423,6 +436,21 @@ function cozyGalleryCurrent(gallery) {
     return parseInt(gallery.getAttribute('data-current') || '0', 10);
 }
 
+/* ---------- PAGINATION — scroll to top on page change ---------- */
+document.addEventListener('click', function (e) {
+    if (e.target.closest('.page-numbers:not(.dots):not(.current)')) {
+        try { sessionStorage.setItem('cozy_scroll_top', '1'); } catch (err) {}
+    }
+});
+if (window.location.search.indexOf('paged=') !== -1 || /\/page\/\d+\//.test(window.location.pathname)) {
+    try {
+        if (sessionStorage.getItem('cozy_scroll_top')) {
+            sessionStorage.removeItem('cozy_scroll_top');
+            window.scrollTo(0, 0);
+        }
+    } catch (err) {}
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.cozy-gallery__track').forEach(function (track) {
         var gallery = track.closest('.cozy-gallery');
@@ -682,6 +710,11 @@ function cozyRemoveFavItem(productId) {
                 cozyUpdateFavBadge(guestFavIds.length);
                 cozyFetchWishlistItemsHtml(guestFavIds, function (items) {
                     items.forEach(function (item) { cozyAddFavItem(item.html); });
+                    var validIds = items.map(function (item) { return item.id; });
+                    if (validIds.length !== guestFavIds.length) {
+                        cozySaveGuestWishlist(validIds);
+                        cozyUpdateFavBadge(validIds.length);
+                    }
                 });
             }
         }
