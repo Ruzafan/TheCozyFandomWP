@@ -43,11 +43,13 @@ window.closeFavorites = function () {
 /* ---------- COOKIE CONSENT BANNER ---------- */
 function cozySetCookie(name, value, days) {
     var expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = name + '=' + value + '; expires=' + expires + '; path=/; SameSite=Lax';
+    var secure = location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = name + '=' + value + '; expires=' + expires + '; path=/; SameSite=Lax' + secure;
 }
 window.cozyAcceptConsent = function () {
     cozySetCookie('cozy_consent', 'granted', 180);
     if (typeof window.cozyLoadGA === 'function') window.cozyLoadGA();
+    if (typeof window.cozyLoadGTM === 'function') window.cozyLoadGTM();
     var banner = document.getElementById('cozy-consent-banner');
     if (banner) banner.remove();
 };
