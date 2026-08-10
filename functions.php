@@ -1023,18 +1023,59 @@ function cozy_ajax_search() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  CHECKOUT — teléfono obligatorio (lo exige el transportista)         */
+/*  TELÉFONO OBLIGATORIO — lo exige el transportista                    */
 /* ------------------------------------------------------------------ */
-/* Cubre el checkout clásico (shortcode) vía woocommerce_checkout_fields.
-   Si la tienda usa el checkout por bloques (Gutenberg), este filtro no
-   aplica — en ese caso hay que activarlo desde Woo > Ajustes > General >
-   "Campos de facturación" en el editor de bloques del checkout. */
+/* Cubre: checkout clásico (shortcode), y las pantallas de dirección de
+   facturación/envío en "Mi cuenta". El checkout por BLOQUES (Gutenberg)
+   no lee estos filtros — ese se configura aparte, ver nota más abajo. */
 add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
     if ( isset( $fields['billing']['billing_phone'] ) ) {
         $fields['billing']['billing_phone']['required'] = true;
     }
     return $fields;
 } );
+
+add_filter( 'woocommerce_billing_fields', function ( $fields ) {
+    if ( isset( $fields['billing_phone'] ) ) {
+        $fields['billing_phone']['required'] = true;
+    }
+    return $fields;
+}, 20 );
+
+add_filter( 'woocommerce_shipping_fields', function ( $fields ) {
+    if ( ! isset( $fields['shipping_phone'] ) ) {
+        $fields['shipping_phone'] = [
+            'label'       => 'Teléfono',
+            'required'    => true,
+            'type'        => 'tel',
+            'class'       => [ 'form-row-wide' ],
+            'priority'    => 25,
+        ];
+    } else {
+        $fields['shipping_phone']['required'] = true;
+    }
+    return $fields;
+}, 20 );
+
+/* Validación en servidor: bloquea el pedido si falta el teléfono,
+   sea cual sea el checkout usado (clásico shortcode o bloques Gutenberg).
+   Los filtros de arriba solo cambian el HTML del formulario; esto es lo
+   que realmente lo hace obligatorio a nivel de pedido. */
+add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors ) {
+    if ( empty( $data['billing_phone'] ) ) {
+        $errors->add( 'billing_phone', 'Por favor introduce un número de teléfono — es necesario para la entrega.' );
+    }
+}, 10, 2 );
+
+add_action( 'woocommerce_store_api_checkout_update_order_from_request', function ( $order, $request ) {
+    if ( ! $order->get_billing_phone() ) {
+        throw new Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+            'cozy_phone_required',
+            'Por favor introduce un número de teléfono — es necesario para la entrega.',
+            400
+        );
+    }
+}, 10, 2 );
 
 /* ------------------------------------------------------------------ */
 /*  ADMIN — filtro "Solo con 1 imagen" en el listado de Productos       */
