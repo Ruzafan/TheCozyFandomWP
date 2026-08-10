@@ -1023,6 +1023,20 @@ function cozy_ajax_search() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  CHECKOUT — teléfono obligatorio (lo exige el transportista)         */
+/* ------------------------------------------------------------------ */
+/* Cubre el checkout clásico (shortcode) vía woocommerce_checkout_fields.
+   Si la tienda usa el checkout por bloques (Gutenberg), este filtro no
+   aplica — en ese caso hay que activarlo desde Woo > Ajustes > General >
+   "Campos de facturación" en el editor de bloques del checkout. */
+add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
+    if ( isset( $fields['billing']['billing_phone'] ) ) {
+        $fields['billing']['billing_phone']['required'] = true;
+    }
+    return $fields;
+} );
+
+/* ------------------------------------------------------------------ */
 /*  ADMIN — filtro "Solo con 1 imagen" en el listado de Productos       */
 /* ------------------------------------------------------------------ */
 /* Detecta productos con imagen destacada pero sin ninguna imagen de
