@@ -720,51 +720,9 @@ function cozyRemoveFavItem(productId) {
         }
     });
 
-    /* ---------- NEWSLETTER — Mailchimp via WP AJAX ---------- */
-    /* Bound via addEventListener (not inline onsubmit="") — this site's CSP
-       blocks inline event-handler attributes (script-src-attr 'none'), same
-       reason every onclick="" was replaced by data-action dispatching above. */
-    var newsletterFormEl = document.getElementById('newsletter-form');
-    if (newsletterFormEl) {
-        newsletterFormEl.addEventListener('submit', function (e) { window.handleNewsletterSubmit(e); });
-    }
-
-    window.handleNewsletterSubmit = function (e) {
-        e.preventDefault();
-        var form    = document.getElementById('newsletter-form');
-        var success = document.getElementById('newsletter-success');
-        var btn     = form ? form.querySelector('button[type="submit"]') : null;
-        var input   = form ? form.querySelector('input[type="email"]') : null;
-
-        if (!form || !input) return;
-
-        var originalText = btn ? btn.textContent : '';
-        if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
-
-        var body = new FormData();
-        body.append('action', 'cozy_newsletter_subscribe');
-        body.append('nonce', cozyAjax.nonce);
-        body.append('email', input.value.trim());
-
-        fetch(cozyAjax.url, { method: 'POST', body: body, credentials: 'same-origin' })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-                if (res.success) {
-                    if (form)    form.classList.add('hidden');
-                    if (success) success.classList.remove('hidden');
-                    if (typeof gtag === 'function') {
-                        gtag('event', 'sign_up', { method: 'newsletter' });
-                    }
-                } else {
-                    if (btn) { btn.disabled = false; btn.textContent = originalText; }
-                    alert(res.data && res.data.message ? res.data.message : 'Ha ocurrido un error. Inténtalo de nuevo.');
-                }
-            })
-            .catch(function () {
-                if (btn) { btn.disabled = false; btn.textContent = originalText; }
-                alert('Error de conexión. Inténtalo de nuevo.');
-            });
-    };
+    /* NEWSLETTER — now the native Hostinger Reach subscription block
+       (see cozy_reach_subscription_form() in functions.php), which handles
+       its own submission. No custom JS needed here anymore. */
 
     /* ---------- LIVE SEARCH SUGGESTIONS ---------- */
     var searchInput = document.querySelector('.cozy-hdr-search__input');

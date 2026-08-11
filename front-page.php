@@ -288,22 +288,9 @@ $cozy_cats = [
                 Apúntate a nuestra newsletter y recibe un <strong>5% de descuento</strong> en tu primer pedido. Cero spam, solo novedades bonitas, tips de decoración geek y ofertas exclusivas para la comunidad.
             </p>
 
-            <!-- Form -->
-            <form id="newsletter-form" class="w-full flex flex-col sm:flex-row gap-3 mt-2">
-                <input type="email" required
-                       placeholder="tu@email.com"
-                       class="flex-1 bg-white border-2 border-white rounded-2xl px-5 py-3.5 text-sm text-cozy-coffee placeholder-cozy-coffee/40 outline-none focus:border-cozy-mint transition-colors"
-                       style="border-radius:16px">
-                <button type="submit"
-                        class="shrink-0 bg-cozy-mint hover:bg-cozy-mintDark text-white font-bold px-7 py-3.5 rounded-2xl text-sm transition-all hover:-translate-y-0.5 hover:shadow-lg whitespace-nowrap"
-                        style="border-radius:16px">
-                    Quiero mi descuento
-                </button>
-            </form>
-
-            <!-- Success state -->
-            <div id="newsletter-success" class="hidden text-center py-2">
-                <span class="text-cozy-mint font-bold text-sm">🌿 ¡Bienvenida al club! Te enviamos el código de descuento a tu correo en unos minutos.</span>
+            <!-- Form (Hostinger Reach native subscription block) -->
+            <div class="w-full mt-2 cozy-reach-form">
+                <?php cozy_reach_subscription_form( 'a87ce047-ee47-4dd0-865a-c37dd40e52d6' ); ?>
             </div>
 
             <!-- Micro-text -->

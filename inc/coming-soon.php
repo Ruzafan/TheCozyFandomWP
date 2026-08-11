@@ -102,12 +102,9 @@ function cozy_render_coming_soon_page() {
                     <h1 class="font-bold text-lg text-cozy-coffee mb-2 m-0">Estamos preparando algo bonito</h1>
                     <p class="text-sm text-cozy-coffee/70 mt-2 mb-6">Muy pronto abrimos la tienda. Déjanos tu email y te avisamos en cuanto esté lista.</p>
 
-                    <form id="cozy-coming-soon-form" class="space-y-3" novalidate>
-                        <input type="email" name="email" required placeholder="tú@email.com"
-                               class="w-full text-sm px-4 py-3 rounded-full border border-cozy-sand focus:outline-none focus:border-cozy-mint bg-white/80 text-cozy-coffee">
-                        <button type="submit" class="w-full bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-bold text-sm px-4 py-3 rounded-full transition-colors">Avísame</button>
-                    </form>
-                    <p id="cozy-coming-soon-message" class="text-xs mt-4 min-h-[1em]"></p>
+                    <div class="cozy-reach-form">
+                        <?php cozy_reach_subscription_form( 'a87ce047-ee47-4dd0-865a-c37dd40e52d6' ); ?>
+                    </div>
 
                     <?php if ( ( $instagram_url && $instagram_url !== '#' ) || ( $tiktok_url && $tiktok_url !== '#' ) ) : ?>
                     <div class="flex items-center justify-center gap-3 pt-6 mt-6 border-t border-cozy-sand/70">
@@ -151,53 +148,14 @@ function cozy_render_coming_soon_page() {
         </div>
     </section>
 
-    <script>
-    (function () {
-        var form = document.getElementById( 'cozy-coming-soon-form' );
-        var msg  = document.getElementById( 'cozy-coming-soon-message' );
-        form.addEventListener( 'submit', function ( e ) {
-            e.preventDefault();
-            var email = form.email.value.trim();
-            var btn   = form.querySelector( 'button' );
-            btn.disabled = true;
-            msg.textContent = '';
-
-            var body = new URLSearchParams();
-            body.set( 'action', 'cozy_coming_soon_notify' );
-            body.set( 'nonce', <?php echo wp_json_encode( wp_create_nonce( 'cozy_coming_soon' ) ); ?> );
-            body.set( 'email', email );
-
-            fetch( <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: body.toString()
-            } )
-            .then( function ( r ) { return r.json(); } )
-            .then( function ( res ) {
-                if ( res.success && res.data && res.data.redirect ) {
-                    window.location.href = res.data.redirect;
-                    return;
-                }
-                btn.disabled = false;
-                msg.textContent = ( res.data && res.data.message ) || '';
-                msg.className = 'text-xs mt-4 min-h-[1em] ' + ( res.success ? 'text-cozy-mintDark' : 'text-red-400' );
-                if ( res.success ) { form.reset(); }
-            } )
-            .catch( function () {
-                btn.disabled = false;
-                msg.textContent = 'Error de conexión. Inténtalo de nuevo.';
-                msg.className = 'text-xs mt-4 min-h-[1em] text-red-400';
-            } );
-        } );
-    })();
-    </script>
 </body>
 </html>
     <?php
 }
 
 /* ------------------------------------------------------------------ */
-/*  AJAX — email capture + hidden admin door                           */
+/*  AJAX — legacy Mailchimp email capture (unused since the form above  */
+/*  switched to the native Hostinger Reach block; kept as a fallback)   */
 /* ------------------------------------------------------------------ */
 add_action( 'wp_ajax_cozy_coming_soon_notify', 'cozy_coming_soon_notify' );
 add_action( 'wp_ajax_nopriv_cozy_coming_soon_notify', 'cozy_coming_soon_notify' );

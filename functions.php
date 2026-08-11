@@ -366,7 +366,21 @@ function cozy_fandom_enqueue_scripts() {
 add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_scripts', 20 );
 
 /* ------------------------------------------------------------------ */
-/*  NEWSLETTER — Mailchimp API subscription                            */
+/*  NEWSLETTER — Hostinger Reach subscription block                    */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Renders a Hostinger Reach subscription form outside the block editor by
+ * running its block markup through do_blocks(), the same rendering path
+ * Gutenberg uses. Avoids hardcoding the plugin's internal REST endpoint,
+ * which isn't public API and could change without notice.
+ */
+function cozy_reach_subscription_form( $form_id ) {
+    echo do_blocks( '<!-- wp:hostinger-reach/subscription {"formId":"' . esc_attr( $form_id ) . '"} /-->' );
+}
+
+/* ------------------------------------------------------------------ */
+/*  NEWSLETTER — Mailchimp API subscription (legacy, unused by default) */
 /* ------------------------------------------------------------------ */
 
 // Settings fields in WP Admin > Ajustes > Generales
