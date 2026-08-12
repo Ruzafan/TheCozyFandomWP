@@ -72,7 +72,7 @@ function cozy_render_coming_soon_page() {
 
     $teasers = [
         [ 'img' => 'snoopy.webp',  'label' => 'Snoopy' ],
-        [ 'img' => 'harry-potter.webp',  'label' => 'Harry Potter' ],
+        [ 'img' => 'harry_potter.webp',  'label' => 'Harry Potter' ],
         [ 'img' => 'stitch.webp',        'label' => 'Disney' ],
         [ 'img' => 'pokemon.webp',        'label' => 'Pokemon' ],
         [ 'img' => 'pusheen.webp',        'label' => 'Disney' ],
