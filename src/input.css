@@ -3184,7 +3184,7 @@ body.single-post .ast-archive-description { display: none !important; }
   margin: -0.125rem 0 !important;
   min-height: 24px !important;
   display: block !important;
-  padding-top: 5px;
+
 }
 .hostinger-reach-block-subscription-form-wrapper .cozy-reach-consent__label {
   display: flex !important;
@@ -3213,4 +3213,5 @@ body.single-post .ast-archive-description { display: none !important; }
   letter-spacing: normal !important;
   line-height: 1.5 !important;
   color: rgba(74, 63, 53, 0.75) !important;
+  padding-top: 14px;
 }
