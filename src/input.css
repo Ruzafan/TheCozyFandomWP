@@ -3064,7 +3064,7 @@ body.single-post .ast-archive-description { display: none !important; }
    because the id gives us higher specificity than anything Reach's own
    plugin stylesheet uses — needed since we can't control load order
    against a stylesheet enqueued by another plugin. */
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 {
+.hostinger-reach-block-subscription-form-wrapper {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.75rem !important;
@@ -3072,7 +3072,7 @@ body.single-post .ast-archive-description { display: none !important; }
   margin: 0 !important;
   box-sizing: border-box !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-fields {
+.hostinger-reach-block-subscription-form-wrapper .hostinger-reach-block-form-fields {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.75rem !important;
@@ -3083,8 +3083,8 @@ body.single-post .ast-archive-description { display: none !important; }
    (added via the render_block_hostinger-reach/subscription filter in
    functions.php) a row layout has nowhere sane to put a 3rd item, and
    this matches Reach's own default form design anyway. */
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field,
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit {
+.hostinger-reach-block-subscription-form-wrapper .hostinger-reach-block-form-field,
+.hostinger-reach-block-subscription-form-wrapper button.hostinger-reach-block-submit {
   flex: 1 1 100% !important;
   min-width: 0 !important;
   text-align: left !important;
@@ -3094,15 +3094,15 @@ body.single-post .ast-archive-description { display: none !important; }
    equal `order` values, and the consent checkbox (appended last in markup
    before the button) would sort ahead of the button but AFTER nothing else
    distinguishes it from the email field, landing in the wrong spot. */
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field:not(.cozy-reach-consent) {
+.hostinger-reach-block-subscription-form-wrapper .hostinger-reach-block-form-field:not(.cozy-reach-consent) {
   order: 1 !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit {
+.hostinger-reach-block-subscription-form-wrapper button.hostinger-reach-block-submit {
   order: 3 !important;
 }
 /* Labels are kept for accessibility but visually hidden, same as the
    original placeholder-only design — the input's own placeholder covers it. */
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field:not(.cozy-reach-consent) > label {
+.hostinger-reach-block-subscription-form-wrapper .hostinger-reach-block-form-field:not(.cozy-reach-consent) > label {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -3113,7 +3113,7 @@ body.single-post .ast-archive-description { display: none !important; }
   white-space: nowrap !important;
   border: 0 !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 input[type="email"] {
+.hostinger-reach-block-subscription-form-wrapper input[type="email"] {
   display: block !important;
   width: 100% !important;
   min-width: 0 !important;
@@ -3129,13 +3129,13 @@ body.single-post .ast-archive-description { display: none !important; }
   transition: border-color 0.2s !important;
   box-sizing: border-box !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 input[type="email"]::placeholder {
+.hostinger-reach-block-subscription-form-wrapper input[type="email"]::placeholder {
   color: rgba(74, 63, 53, 0.4) !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 input[type="email"]:focus {
+.hostinger-reach-block-subscription-form-wrapper input[type="email"]:focus {
   border-color: #88C4B5 !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit {
+.hostinger-reach-block-subscription-form-wrapper button.hostinger-reach-block-submit {
   width: 100% !important;
   margin-top: 0.25rem !important;
   background: #88C4B5 !important;
@@ -3150,7 +3150,7 @@ body.single-post .ast-archive-description { display: none !important; }
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s !important;
   box-sizing: border-box !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit:hover {
+.hostinger-reach-block-subscription-form-wrapper button.hostinger-reach-block-submit:hover {
   background: #72b0a2 !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 6px 18px rgba(136, 196, 181, 0.35) !important;
@@ -3159,8 +3159,8 @@ body.single-post .ast-archive-description { display: none !important; }
    toggles the inline display:none on submit/success/error. Forcing
    display here (a bug in an earlier version of this file) made the
    default "form unavailable" fallback text show permanently. */
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message[style*="flex"],
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message[style*="block"] {
+.hostinger-reach-block-subscription-form-wrapper .reach-subscription-message[style*="flex"],
+.hostinger-reach-block-subscription-form-wrapper .reach-subscription-message[style*="block"] {
   margin-top: 0.75rem !important;
   font-size: 0.8125rem !important;
   font-weight: 600 !important;
@@ -3168,25 +3168,25 @@ body.single-post .ast-archive-description { display: none !important; }
   justify-content: center !important;
   gap: 0.5rem !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message__text { color: #4A3F35 !important; }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message:has(.reach-subscription-message__icon-success:not([style*="none"])) .reach-subscription-message__text {
+.hostinger-reach-block-subscription-form-wrapper .reach-subscription-message__text { color: #4A3F35 !important; }
+.hostinger-reach-block-subscription-form-wrapper .reach-subscription-message:has(.reach-subscription-message__icon-success:not([style*="none"])) .reach-subscription-message__text {
   color: #72b0a2 !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message:has(.reach-subscription-message__icon-error:not([style*="none"])) .reach-subscription-message__text {
+.hostinger-reach-block-subscription-form-wrapper .reach-subscription-message:has(.reach-subscription-message__icon-error:not([style*="none"])) .reach-subscription-message__text {
   color: #b91c1c !important;
 }
 
 /* GDPR/marketing-consent checkbox — injected server-side via the
    render_block_hostinger-reach/subscription filter in functions.php,
    since the block itself doesn't render one. */
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent {
+.hostinger-reach-block-subscription-form-wrapper .cozy-reach-consent {
   order: 2 !important;
   margin: -0.125rem 0 !important;
   min-height: 24px !important;
   display: block !important;
   padding-top: 5px;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label {
+.hostinger-reach-block-subscription-form-wrapper .cozy-reach-consent__label {
   display: flex !important;
   align-items: flex-start !important;
   gap: 0.5rem !important;
@@ -3196,7 +3196,7 @@ body.single-post .ast-archive-description { display: none !important; }
   font-weight: 400 !important;
   letter-spacing: normal !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label input[type="checkbox"] {
+.hostinger-reach-block-subscription-form-wrapper .cozy-reach-consent__label input[type="checkbox"] {
   flex-shrink: 0 !important;
   width: 16px !important;
   height: 16px !important;
@@ -3204,7 +3204,7 @@ body.single-post .ast-archive-description { display: none !important; }
   accent-color: #88C4B5 !important;
   cursor: pointer !important;
 }
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label span {
+.hostinger-reach-block-subscription-form-wrapper .cozy-reach-consent__label span {
   display: inline-block !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   font-size: 0.75rem !important;
