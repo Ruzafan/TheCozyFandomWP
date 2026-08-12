@@ -3181,6 +3181,7 @@ body.single-post .ast-archive-description { display: none !important; }
    since the block itself doesn't render one. */
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent {
   order: 2 !important;
+  margin: -0.125rem 0 !important;
 }
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label {
   display: flex !important;
@@ -3188,17 +3189,25 @@ body.single-post .ast-archive-description { display: none !important; }
   gap: 0.5rem !important;
   cursor: pointer !important;
   text-align: left !important;
+  text-transform: none !important;
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
 }
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label input[type="checkbox"] {
   flex-shrink: 0 !important;
-  width: 18px !important;
-  height: 18px !important;
-  margin: 0.125rem 0 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0.1875rem 0 0 !important;
   accent-color: #88C4B5 !important;
   cursor: pointer !important;
 }
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label span {
+  display: inline-block !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
   font-size: 0.75rem !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
   line-height: 1.5 !important;
   color: rgba(74, 63, 53, 0.75) !important;
 }
