@@ -409,6 +409,35 @@ function cozy_reach_subscription_form( $form_id ) {
     wp_print_scripts();
 }
 
+/**
+ * Injects a mandatory GDPR/marketing-consent checkbox into the Reach
+ * subscription block's rendered HTML.
+ *
+ * The form itself has a GDPR field configured in the Reach dashboard (the
+ * standalone hosted version at reach-forms.hostingerusercontent.com renders
+ * it), but the WordPress block's own PHP render + JS
+ * (assets/dist/blocks/subscription-view.js) has no GDPR support at all —
+ * checked its source directly, no reference to consent/gdpr anywhere in it.
+ * So the block just never outputs the field, regardless of the form's config.
+ *
+ * Fixing it doesn't need touching Reach's JS: that script builds its POST
+ * body from `new FormData(form)`, so any input we add inside the same
+ * <form> — as long as it has a `name` — rides along automatically. Nesting
+ * it under "metadata." matches the convention the block's own hidden fields
+ * already use (metadata.plugin), so it lands in the same metadata object
+ * Reach stores on the contact.
+ */
+add_filter( 'render_block_hostinger-reach/subscription', function ( $block_content ) {
+    $consent_field = '<div class="hostinger-reach-block-form-field cozy-reach-consent">'
+        . '<label class="cozy-reach-consent__label">'
+        . '<input type="checkbox" name="metadata.marketing_consent" value="1" required>'
+        . '<span>Acepto recibir comunicaciones de marketing de The Cozy Fandom.</span>'
+        . '</label>'
+        . '</div>';
+
+    return str_replace( '<button', $consent_field . '<button', $block_content );
+}, 10, 1 );
+
 /* ------------------------------------------------------------------ */
 /*  NEWSLETTER — Mailchimp API subscription (legacy, unused by default) */
 /* ------------------------------------------------------------------ */

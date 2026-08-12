@@ -3079,17 +3079,26 @@ body.single-post .ast-archive-description { display: none !important; }
   width: 100% !important;
   box-sizing: border-box !important;
 }
-@media (min-width: 640px) {
-  #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-fields {
-    flex-direction: row !important;
-    align-items: flex-start !important;
-  }
-}
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field {
-  flex: 1 1 0% !important;
+/* Stacked full-width, not a row — with the consent checkbox in the mix
+   (added via the render_block_hostinger-reach/subscription filter in
+   functions.php) a row layout has nowhere sane to put a 3rd item, and
+   this matches Reach's own default form design anyway. */
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field,
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit {
+  flex: 1 1 100% !important;
   min-width: 0 !important;
   text-align: left !important;
   box-sizing: border-box !important;
+}
+/* Explicit order — without it, flexbox falls back to source order among
+   equal `order` values, and the consent checkbox (appended last in markup
+   before the button) would sort ahead of the button but AFTER nothing else
+   distinguishes it from the email field, landing in the wrong spot. */
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field:not(.cozy-reach-consent) {
+  order: 1 !important;
+}
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit {
+  order: 3 !important;
 }
 /* Labels are kept for accessibility but visually hidden, same as the
    original placeholder-only design — the input's own placeholder covers it. */
@@ -3127,8 +3136,8 @@ body.single-post .ast-archive-description { display: none !important; }
   border-color: #88C4B5 !important;
 }
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit {
-  flex: 0 0 auto !important;
-  width: auto !important;
+  width: 100% !important;
+  margin-top: 0.25rem !important;
   background: #88C4B5 !important;
   color: #fff !important;
   font-weight: 700 !important;
@@ -3165,4 +3174,31 @@ body.single-post .ast-archive-description { display: none !important; }
 }
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message:has(.reach-subscription-message__icon-error:not([style*="none"])) .reach-subscription-message__text {
   color: #b91c1c !important;
+}
+
+/* GDPR/marketing-consent checkbox — injected server-side via the
+   render_block_hostinger-reach/subscription filter in functions.php,
+   since the block itself doesn't render one. */
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent {
+  order: 2 !important;
+}
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.5rem !important;
+  cursor: pointer !important;
+  text-align: left !important;
+}
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label input[type="checkbox"] {
+  flex-shrink: 0 !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0.125rem 0 0 !important;
+  accent-color: #88C4B5 !important;
+  cursor: pointer !important;
+}
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label span {
+  font-size: 0.75rem !important;
+  line-height: 1.5 !important;
+  color: rgba(74, 63, 53, 0.75) !important;
 }
