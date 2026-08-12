@@ -94,7 +94,7 @@ function cozy_render_coming_soon_page() {
                 <div class="w-full max-w-md rounded-[28px] p-8 sm:p-10 text-center shadow-sm"
                      style="background:rgba(255,255,255,0.85); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
 
-                    <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/logo.jpeg' ); ?>"
+                    <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/logo.webp' ); ?>"
                          alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
                          width="72" height="72"
                          class="mx-auto mb-3 object-contain" style="width:72px;height:72px;">
