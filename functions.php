@@ -393,40 +393,20 @@ function cozy_reach_subscription_form( $form_id ) {
     }
 
     echo do_blocks( '<!-- wp:hostinger-reach/subscription {"formId":"' . esc_attr( $form_id ) . '"} /-->' );
-    cozy_print_block_assets( 'hostinger-reach/subscription' );
-}
 
-/**
- * Forces a registered block's styles/scripts to print immediately, instead
- * of relying on wp_head()/wp_footer() to have already run. Safe to call on
- * pages that DO go through the normal cycle too — do_items() skips handles
- * already marked done, so nothing gets printed twice.
- */
-function cozy_print_block_assets( $block_name ) {
-    $block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
-    if ( ! $block_type ) {
-        return;
-    }
-
-    $style_handles = array_unique( array_filter( array_merge(
-        (array) ( $block_type->style_handles ?? [] ),
-        array_filter( [ $block_type->style ?? '' ] )
-    ) ) );
-    $script_handles = array_unique( array_filter( array_merge(
-        (array) ( $block_type->view_script_handles ?? [] ),
-        (array) ( $block_type->script_handles ?? [] ),
-        array_filter( [ $block_type->view_script ?? '', $block_type->script ?? '' ] )
-    ) ) );
-
-    foreach ( $style_handles as $handle ) {
-        wp_enqueue_style( $handle );
-    }
-    foreach ( $script_handles as $handle ) {
-        wp_enqueue_script( $handle );
-    }
-
-    wp_styles()->do_items( $style_handles );
-    wp_scripts()->do_items( $script_handles );
+    /* Print whatever ended up in the queue rather than looking up the block's
+     * declared style/script handles by name — an earlier version of this did
+     * that (via WP_Block_Type_Registry) and it silently printed nothing,
+     * because Reach's actual submit-handling script isn't necessarily
+     * registered against the block type itself (e.g. it can be a plugin-wide
+     * handle enqueued unconditionally on 'wp_enqueue_scripts', unrelated to
+     * this specific block's block.json). Printing the whole queue sidesteps
+     * having to guess Reach's internal handle names. On pages that already
+     * ran wp_head()/wp_footer() normally (front-page.php), everything queued
+     * there is already marked "done" and gets skipped here — this only ever
+     * prints what wasn't already printed. */
+    wp_print_styles();
+    wp_print_scripts();
 }
 
 /* ------------------------------------------------------------------ */
