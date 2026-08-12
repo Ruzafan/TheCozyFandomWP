@@ -3182,12 +3182,9 @@ body.single-post .ast-archive-description { display: none !important; }
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent {
   order: 2 !important;
   margin: -0.125rem 0 !important;
-  /* TEMP DIAGNOSTIC — remove once the checkbox visibility issue is found.
-     Makes the element's actual rendered box unmistakable regardless of
-     how it reads in a screenshot. */
-  background: red !important;
   min-height: 24px !important;
   display: block !important;
+  padding-top: 5px;
 }
 #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .cozy-reach-consent__label {
   display: flex !important;
