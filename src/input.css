@@ -3056,3 +3056,99 @@ body.single-post .ast-archive-description { display: none !important; }
 .notifima-subscribe-form form button:focus {
   color: #4A3F35 !important;
 }
+
+/* ─── Hostinger Reach subscription block (newsletter + coming-soon) ───
+   Restyled to match the site's own newsletter form design — see
+   cozy_reach_subscription_form() in functions.php for where it's rendered. */
+.cozy-reach-form .hostinger-reach-block-subscription-form-wrapper {
+  width: 100% !important;
+}
+.cozy-reach-form form.hostinger-reach-block-subscription-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+@media (min-width: 640px) {
+  .cozy-reach-form form.hostinger-reach-block-subscription-form .hostinger-reach-block-form-fields {
+    flex-direction: row !important;
+  }
+}
+.cozy-reach-form .hostinger-reach-block-form-fields {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+}
+.cozy-reach-form .hostinger-reach-block-form-field {
+  flex: 1 !important;
+  text-align: left !important;
+}
+/* Labels are kept for accessibility but visually hidden, same as the
+   original placeholder-only design — the input's own label below covers it. */
+.cozy-reach-form .hostinger-reach-block-form-field label {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.cozy-reach-form .hostinger-reach-block-form-field input[type="email"] {
+  width: 100% !important;
+  background: #fff !important;
+  border: 2px solid #fff !important;
+  border-radius: 16px !important;
+  padding: 0.875rem 1.25rem !important;
+  font-size: 0.875rem !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  color: #4A3F35 !important;
+  outline: none !important;
+  transition: border-color 0.2s !important;
+  box-sizing: border-box !important;
+}
+.cozy-reach-form .hostinger-reach-block-form-field input[type="email"]::placeholder {
+  color: rgba(74, 63, 53, 0.4) !important;
+}
+.cozy-reach-form .hostinger-reach-block-form-field input[type="email"]:focus {
+  border-color: #88C4B5 !important;
+}
+.cozy-reach-form button.hostinger-reach-block-submit {
+  flex-shrink: 0 !important;
+  background: #88C4B5 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
+  padding: 0.875rem 1.75rem !important;
+  border-radius: 16px !important;
+  border: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s !important;
+}
+.cozy-reach-form button.hostinger-reach-block-submit:hover {
+  background: #72b0a2 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(136, 196, 181, 0.35) !important;
+}
+.cozy-reach-form .reach-subscription-message {
+  margin-top: 0.75rem !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+}
+.cozy-reach-form .reach-subscription-message__text { color: #4A3F35 !important; }
+.cozy-reach-form .reach-subscription-message:has(.reach-subscription-message__icon-success[style*="inline"]) .reach-subscription-message__text,
+.cozy-reach-form .reach-subscription-message:has(.reach-subscription-message__icon-success:not([style*="none"])) .reach-subscription-message__text {
+  color: #72b0a2 !important;
+}
+.cozy-reach-form .reach-subscription-message:has(.reach-subscription-message__icon-error:not([style*="none"])) .reach-subscription-message__text {
+  color: #b91c1c !important;
+}
