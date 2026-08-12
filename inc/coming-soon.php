@@ -96,8 +96,8 @@ function cozy_render_coming_soon_page() {
 
                     <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/logo.webp' ); ?>"
                          alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
-                         width="72" height="72"
-                         class="mx-auto mb-3 object-contain" style="width:72px;height:72px;">
+                         width="72" height="72 "
+                         class="mx-auto mb-3 object-contain" style="width:72px;height:72px;border-radius: 20%;">
 
                     <span class="font-serif text-xl font-bold text-cozy-coffee block mb-3"><?php bloginfo( 'name' ); ?></span>
 
