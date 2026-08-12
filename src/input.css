@@ -3059,35 +3059,41 @@ body.single-post .ast-archive-description { display: none !important; }
 
 /* ─── Hostinger Reach subscription block (newsletter + coming-soon) ───
    Restyled to match the site's own newsletter form design — see
-   cozy_reach_subscription_form() in functions.php for where it's rendered. */
-.cozy-reach-form .hostinger-reach-block-subscription-form-wrapper {
-  width: 100% !important;
-}
-.cozy-reach-form form.hostinger-reach-block-subscription-form {
+   cozy_reach_subscription_form() in functions.php for where it's rendered.
+   Scoped by the form's own id attribute (#a87ce047-…), not just a class,
+   because the id gives us higher specificity than anything Reach's own
+   plugin stylesheet uses — needed since we can't control load order
+   against a stylesheet enqueued by another plugin. */
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.75rem !important;
   width: 100% !important;
   margin: 0 !important;
+  box-sizing: border-box !important;
 }
-@media (min-width: 640px) {
-  .cozy-reach-form form.hostinger-reach-block-subscription-form .hostinger-reach-block-form-fields {
-    flex-direction: row !important;
-  }
-}
-.cozy-reach-form .hostinger-reach-block-form-fields {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-fields {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.75rem !important;
   width: 100% !important;
+  box-sizing: border-box !important;
 }
-.cozy-reach-form .hostinger-reach-block-form-field {
-  flex: 1 !important;
+@media (min-width: 640px) {
+  #a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-fields {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+  }
+}
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
   text-align: left !important;
+  box-sizing: border-box !important;
 }
 /* Labels are kept for accessibility but visually hidden, same as the
-   original placeholder-only design — the input's own label below covers it. */
-.cozy-reach-form .hostinger-reach-block-form-field label {
+   original placeholder-only design — the input's own placeholder covers it. */
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field > label {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -3098,8 +3104,11 @@ body.single-post .ast-archive-description { display: none !important; }
   white-space: nowrap !important;
   border: 0 !important;
 }
-.cozy-reach-form .hostinger-reach-block-form-field input[type="email"] {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 input[type="email"] {
+  display: block !important;
   width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
   background: #fff !important;
   border: 2px solid #fff !important;
   border-radius: 16px !important;
@@ -3111,14 +3120,15 @@ body.single-post .ast-archive-description { display: none !important; }
   transition: border-color 0.2s !important;
   box-sizing: border-box !important;
 }
-.cozy-reach-form .hostinger-reach-block-form-field input[type="email"]::placeholder {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 input[type="email"]::placeholder {
   color: rgba(74, 63, 53, 0.4) !important;
 }
-.cozy-reach-form .hostinger-reach-block-form-field input[type="email"]:focus {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 input[type="email"]:focus {
   border-color: #88C4B5 !important;
 }
-.cozy-reach-form button.hostinger-reach-block-submit {
-  flex-shrink: 0 !important;
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit {
+  flex: 0 0 auto !important;
+  width: auto !important;
   background: #88C4B5 !important;
   color: #fff !important;
   font-weight: 700 !important;
@@ -3129,26 +3139,30 @@ body.single-post .ast-archive-description { display: none !important; }
   white-space: nowrap !important;
   cursor: pointer !important;
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s !important;
+  box-sizing: border-box !important;
 }
-.cozy-reach-form button.hostinger-reach-block-submit:hover {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 button.hostinger-reach-block-submit:hover {
   background: #72b0a2 !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 6px 18px rgba(136, 196, 181, 0.35) !important;
 }
-.cozy-reach-form .reach-subscription-message {
+/* Message box: only style it, never force it visible — Reach's own JS
+   toggles the inline display:none on submit/success/error. Forcing
+   display here (a bug in an earlier version of this file) made the
+   default "form unavailable" fallback text show permanently. */
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message[style*="flex"],
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message[style*="block"] {
   margin-top: 0.75rem !important;
   font-size: 0.8125rem !important;
   font-weight: 600 !important;
-  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.5rem !important;
 }
-.cozy-reach-form .reach-subscription-message__text { color: #4A3F35 !important; }
-.cozy-reach-form .reach-subscription-message:has(.reach-subscription-message__icon-success[style*="inline"]) .reach-subscription-message__text,
-.cozy-reach-form .reach-subscription-message:has(.reach-subscription-message__icon-success:not([style*="none"])) .reach-subscription-message__text {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message__text { color: #4A3F35 !important; }
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message:has(.reach-subscription-message__icon-success:not([style*="none"])) .reach-subscription-message__text {
   color: #72b0a2 !important;
 }
-.cozy-reach-form .reach-subscription-message:has(.reach-subscription-message__icon-error:not([style*="none"])) .reach-subscription-message__text {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .reach-subscription-message:has(.reach-subscription-message__icon-error:not([style*="none"])) .reach-subscription-message__text {
   color: #b91c1c !important;
 }
