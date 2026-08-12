@@ -71,9 +71,11 @@ function cozy_render_coming_soon_page() {
     $tiktok_url    = get_option( 'cozy_tiktok_url', '' );
 
     $teasers = [
-        [ 'img' => 'snoopy-heart.webp',  'label' => 'Snoopy' ],
+        [ 'img' => 'snoopy.webp',  'label' => 'Snoopy' ],
         [ 'img' => 'harry-potter.webp',  'label' => 'Harry Potter' ],
-        [ 'img' => 'disney.webp',        'label' => 'Disney' ],
+        [ 'img' => 'stitch.webp',        'label' => 'Disney' ],
+        [ 'img' => 'pokemon.webp',        'label' => 'Pokemon' ],
+        [ 'img' => 'pusheen.webp',        'label' => 'Disney' ],
     ];
     ?>
 
