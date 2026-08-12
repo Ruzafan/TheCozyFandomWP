@@ -374,9 +374,49 @@ add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_scripts', 20 );
  * running its block markup through do_blocks(), the same rendering path
  * Gutenberg uses. Avoids hardcoding the plugin's internal REST endpoint,
  * which isn't public API and could change without notice.
+ *
+ * inc/coming-soon.php builds its page manually and never calls wp_head()/
+ * wp_footer(), so anything the block enqueues (its submit-handling JS,
+ * its base CSS) would otherwise sit in the queue and never get printed —
+ * the form renders but silently falls back to a native GET submit.
+ * cozy_print_block_assets() forces those assets out right here instead.
  */
 function cozy_reach_subscription_form( $form_id ) {
     echo do_blocks( '<!-- wp:hostinger-reach/subscription {"formId":"' . esc_attr( $form_id ) . '"} /-->' );
+    cozy_print_block_assets( 'hostinger-reach/subscription' );
+}
+
+/**
+ * Forces a registered block's styles/scripts to print immediately, instead
+ * of relying on wp_head()/wp_footer() to have already run. Safe to call on
+ * pages that DO go through the normal cycle too — do_items() skips handles
+ * already marked done, so nothing gets printed twice.
+ */
+function cozy_print_block_assets( $block_name ) {
+    $block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
+    if ( ! $block_type ) {
+        return;
+    }
+
+    $style_handles = array_unique( array_filter( array_merge(
+        (array) ( $block_type->style_handles ?? [] ),
+        array_filter( [ $block_type->style ?? '' ] )
+    ) ) );
+    $script_handles = array_unique( array_filter( array_merge(
+        (array) ( $block_type->view_script_handles ?? [] ),
+        (array) ( $block_type->script_handles ?? [] ),
+        array_filter( [ $block_type->view_script ?? '', $block_type->script ?? '' ] )
+    ) ) );
+
+    foreach ( $style_handles as $handle ) {
+        wp_enqueue_style( $handle );
+    }
+    foreach ( $script_handles as $handle ) {
+        wp_enqueue_script( $handle );
+    }
+
+    wp_styles()->do_items( $style_handles );
+    wp_scripts()->do_items( $script_handles );
 }
 
 /* ------------------------------------------------------------------ */
