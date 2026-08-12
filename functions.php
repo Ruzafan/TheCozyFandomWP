@@ -376,12 +376,22 @@ add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_scripts', 20 );
  * which isn't public API and could change without notice.
  *
  * inc/coming-soon.php builds its page manually and never calls wp_head()/
- * wp_footer(), so anything the block enqueues (its submit-handling JS,
- * its base CSS) would otherwise sit in the queue and never get printed —
- * the form renders but silently falls back to a native GET submit.
- * cozy_print_block_assets() forces those assets out right here instead.
+ * wp_footer(). That's a bigger problem than just "assets don't get printed":
+ * WordPress core fires the 'wp_enqueue_scripts' action — the hook virtually
+ * every plugin, including Reach, uses to register/enqueue its scripts and
+ * styles in the first place — from inside wp_head() (see wp-includes/
+ * default-filters.php: add_action('wp_head', 'wp_enqueue_scripts', 1)).
+ * Skip wp_head() and that action never fires, so Reach's submit-handling JS
+ * never even gets registered, let alone printed — confirmed live: the form
+ * fell back to a native GET submit with the email sitting in the URL.
+ * Firing the action ourselves first gives Reach (and everything else) its
+ * normal chance to register before we render the block and print its assets.
  */
 function cozy_reach_subscription_form( $form_id ) {
+    if ( ! did_action( 'wp_enqueue_scripts' ) ) {
+        do_action( 'wp_enqueue_scripts' );
+    }
+
     echo do_blocks( '<!-- wp:hostinger-reach/subscription {"formId":"' . esc_attr( $form_id ) . '"} /-->' );
     cozy_print_block_assets( 'hostinger-reach/subscription' );
 }
