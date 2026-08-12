@@ -3102,7 +3102,7 @@ body.single-post .ast-archive-description { display: none !important; }
 }
 /* Labels are kept for accessibility but visually hidden, same as the
    original placeholder-only design — the input's own placeholder covers it. */
-#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field > label {
+#a87ce047-ee47-4dd0-865a-c37dd40e52d6 .hostinger-reach-block-form-field:not(.cozy-reach-consent) > label {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
