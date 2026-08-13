@@ -558,6 +558,9 @@ document.addEventListener('click', function (e) {
         case 'open-cookie-settings':
             window.cozyOpenCookieSettings();
             break;
+        case 'toggle-ultra-cozy':
+            window.toggleUltraCozy();
+            break;
         case 'begin-checkout':
             if (typeof gtag === 'function') {
                 gtag('event', 'begin_checkout', {
@@ -1035,4 +1038,260 @@ function cozyRemoveFavItem(productId) {
     });
 
 })();
+
+/* ─── MODO ULTRA-COZY (Tarde de Lluvia, Té & Chimenea) ───────────── */
+(function() {
+    'use strict';
+    var isUltraActive = false;
+    var audioCtx = null;
+    var rainGain = null;
+    var fireGain = null;
+    var animFrameId = null;
+    var canvas = null;
+    var ctx = null;
+    var drops = [];
+    var embers = [];
+
+    function initCanvas() {
+        if (canvas) return;
+        canvas = document.createElement('canvas');
+        canvas.id = 'cozy-rain-canvas';
+        document.body.appendChild(canvas);
+        ctx = canvas.getContext('2d');
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        for (var i = 0; i < 70; i++) {
+            drops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                l: Math.random() * 20 + 10,
+                xs: (Math.random() - 0.5) * 1 - 1.5,
+                ys: Math.random() * 8 + 12,
+                o: Math.random() * 0.4 + 0.2
+            });
+        }
+        for (var j = 0; j < 35; j++) {
+            embers.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2.5 + 1,
+                ys: -(Math.random() * 0.8 + 0.3),
+                xs: (Math.random() - 0.5) * 0.6,
+                o: Math.random() * 0.7 + 0.3,
+                hue: Math.random() * 30 + 25
+            });
+        }
+    }
+
+    function resizeCanvas() {
+        if (!canvas) return;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function renderCanvas() {
+        if (!isUltraActive || !ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = 'rgba(215, 235, 240, 0.45)';
+        ctx.lineWidth = 1.2;
+        ctx.lineCap = 'round';
+        for (var i = 0; i < drops.length; i++) {
+            var d = drops[i];
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x + d.xs, d.y + d.l);
+            ctx.stroke();
+            d.x += d.xs;
+            d.y += d.ys;
+            if (d.y > canvas.height) {
+                d.y = -20;
+                d.x = Math.random() * canvas.width;
+            }
+        }
+
+        for (var j = 0; j < embers.length; j++) {
+            var e = embers[j];
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'hsla(' + e.hue + ', 85%, 65%, ' + e.o + ')';
+            ctx.fill();
+            e.y += e.ys;
+            e.x += e.xs;
+            if (e.y < -10) {
+                e.y = canvas.height + 10;
+                e.x = Math.random() * canvas.width;
+            }
+        }
+
+        animFrameId = requestAnimationFrame(renderCanvas);
+    }
+
+    function initAudio() {
+        if (audioCtx) return;
+        try {
+            var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+            audioCtx = new AudioContextClass();
+
+            var bufferSize = audioCtx.sampleRate * 2;
+            var noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            var output = noiseBuffer.getChannelData(0);
+            var b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (var i = 0; i < bufferSize; i++) {
+                var white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.04;
+                b6 = white * 0.115926;
+            }
+            var rainSource = audioCtx.createBufferSource();
+            rainSource.buffer = noiseBuffer;
+            rainSource.loop = true;
+
+            var rainFilter = audioCtx.createBiquadFilter();
+            rainFilter.type = 'lowpass';
+            rainFilter.frequency.value = 800;
+
+            rainGain = audioCtx.createGain();
+            rainGain.gain.value = 0;
+
+            rainSource.connect(rainFilter);
+            rainFilter.connect(rainGain);
+            rainGain.connect(audioCtx.destination);
+            rainSource.start(0);
+
+            fireGain = audioCtx.createGain();
+            fireGain.gain.value = 0;
+            fireGain.connect(audioCtx.destination);
+
+            function scheduleCrackle() {
+                if (!audioCtx) return;
+                if (isUltraActive) {
+                    var now = audioCtx.currentTime;
+                    if (Math.random() < 0.45) {
+                        var osc = audioCtx.createOscillator();
+                        var g = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(120 + Math.random() * 350, now);
+                        g.gain.setValueAtTime(0.025 + Math.random() * 0.035, now);
+                        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.03 + Math.random() * 0.04);
+                        osc.connect(g);
+                        g.connect(fireGain);
+                        osc.start(now);
+                        osc.stop(now + 0.08);
+                    }
+                }
+                setTimeout(scheduleCrackle, 80 + Math.random() * 220);
+            }
+            scheduleCrackle();
+
+        } catch (e) {
+            console.error('Cozy audio synth failed:', e);
+        }
+    }
+
+    function setAudioState(active) {
+        if (active) {
+            initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            if (rainGain && fireGain && audioCtx) {
+                rainGain.gain.setTargetAtTime(0.18, audioCtx.currentTime, 0.8);
+                fireGain.gain.setTargetAtTime(0.25, audioCtx.currentTime, 0.8);
+            }
+        } else {
+            if (rainGain && fireGain && audioCtx) {
+                rainGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
+                fireGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
+            }
+        }
+    }
+
+    window.toggleUltraCozy = function() {
+        isUltraActive = !isUltraActive;
+        document.body.classList.toggle('cozy-ultra-mode', isUltraActive);
+        document.documentElement.classList.toggle('cozy-ultra-mode', isUltraActive);
+
+        document.querySelectorAll('.cozy-ultra-label').forEach(function(el) {
+            el.textContent = isUltraActive ? 'Modo Cozy ON' : 'Modo Cozy';
+        });
+        document.querySelectorAll('.cozy-ultra-icon').forEach(function(el) {
+            el.textContent = isUltraActive ? '🌧️' : '🍵';
+        });
+
+        try {
+            localStorage.setItem('cozy_ultra_mode', isUltraActive ? 'active' : 'inactive');
+        } catch(e) {}
+
+        initCanvas();
+        if (isUltraActive) {
+            if (!animFrameId) renderCanvas();
+        } else {
+            if (animFrameId) {
+                cancelAnimationFrame(animFrameId);
+                animFrameId = null;
+            }
+        }
+
+        setAudioState(isUltraActive);
+
+        var msg = isUltraActive
+            ? '🌧️ Modo Ultra-Cozy activado: Lluvia, chimenea y un té calentito 🍵'
+            : '☀️ Modo normal restaurado';
+        window.cozyShowToast(msg);
+    };
+
+    document.addEventListener('mousemove', function(e) {
+        if (!isUltraActive) return;
+        if (Math.random() > 0.4) return;
+        var p = document.createElement('div');
+        p.className = 'cozy-sparkle-particle';
+        var size = Math.random() * 6 + 4;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = e.clientX + 'px';
+        p.style.top = e.clientY + 'px';
+        document.body.appendChild(p);
+        setTimeout(function() { p.remove(); }, 800);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var saved = false;
+        try {
+            saved = localStorage.getItem('cozy_ultra_mode') === 'active';
+        } catch(e) {}
+        if (saved) {
+            window.toggleUltraCozy();
+        }
+    });
+
+})();
+
+window.cozyShowToast = function(message) {
+    var toast = document.getElementById('cozy-toast');
+    if (toast) toast.remove();
+
+    toast = document.createElement('div');
+    toast.id = 'cozy-toast';
+    toast.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[3000] bg-cozy-coffee/90 text-white text-xs font-bold px-6 py-3 rounded-full shadow-2xl backdrop-blur-md transition-all duration-300 opacity-0 translate-y-4 flex items-center gap-2 border border-cozy-mint/30';
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+        toast.classList.remove('opacity-0', 'translate-y-4');
+    }, 20);
+
+    setTimeout(function() {
+        toast.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+    }, 3500);
+};
 
