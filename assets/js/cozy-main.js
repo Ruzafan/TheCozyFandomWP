@@ -1074,20 +1074,43 @@ function cozyRemoveFavItem(productId) {
     var animFrameId = null;
     var canvas = null;
     var ctx = null;
-    var particles = [];
+    var drops = [];
+    var embers = [];
 
-    var oracleQuotes = [
-        "Tómate las cosas a tu ritmo. Hoy es un gran día para consentirte con un té caliente 🍵",
-        "La magia de un hogar tranquilo empieza en los pequeños detalles reconfortantes 🌿",
-        "Respira hondo, ponte tu jersey más cómodo y disfruta del momento presente 🧸",
-        "Cada pequeño avance cuenta. Lo estás haciendo de maravilla 🌟",
-        "Un té caliente, tu rincón favorito y paz mental. No necesitas nada más 📖",
-        "Haz una pausa, cierra los ojos un segundo y regálate una sonrisa ☕",
-        "El mundo puede esperar un ratito mientras disfrutas de tu momento cozy ☁️",
-        "Las mejores cosas de la vida suceden despacito y con cariño 🍂",
-        "Rodéate de cosas bonitas que alegren tu corazón todos los días 🌸",
-        "No hay prisa. El camino también se disfruta a pequeños sorbos 🫖"
-    ];
+    function populateParticles() {
+        if (!canvas) return;
+        drops = [];
+        embers = [];
+        var isMobile = window.innerWidth < 640;
+        var isTablet = window.innerWidth < 1024;
+
+        var dropCount  = isMobile ? 25 : (isTablet ? 60 : 120);
+        var emberCount = isMobile ? 8  : (isTablet ? 20 : 35);
+        var lineW      = isMobile ? 1.6 : 2.2;
+
+        for (var i = 0; i < dropCount; i++) {
+            drops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                l: isMobile ? (Math.random() * 16 + 10) : (Math.random() * 26 + 14),
+                xs: (Math.random() - 0.5) * 1.2 - 1.5,
+                ys: Math.random() * 8 + 11,
+                o: Math.random() * 0.4 + 0.3,
+                w: lineW
+            });
+        }
+        for (var j = 0; j < emberCount; j++) {
+            embers.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2.2 + 1,
+                ys: -(Math.random() * 0.8 + 0.3),
+                xs: (Math.random() - 0.5) * 0.6,
+                o: Math.random() * 0.7 + 0.3,
+                hue: Math.random() * 30 + 25
+            });
+        }
+    }
 
     function initCanvas() {
         if (canvas) return;
@@ -1106,77 +1129,38 @@ function cozyRemoveFavItem(productId) {
         populateParticles();
     }
 
-    function populateParticles() {
-        if (!canvas) return;
-        particles = [];
-        var isMobile = window.innerWidth < 640;
-        var count = isMobile ? 25 : (window.innerWidth < 1024 ? 50 : 100);
-
-        for (var i = 0; i < count; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 8 + 4,
-                speedY: Math.random() * 2 + 1,
-                speedX: (Math.random() - 0.5) * 1.5,
-                angle: Math.random() * Math.PI * 2,
-                spin: (Math.random() - 0.5) * 0.05,
-                opacity: Math.random() * 0.5 + 0.35,
-                hue: Math.random() * 30 + 20
-            });
-        }
-    }
-
     function renderCanvas() {
         if (!isUltraActive || !ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (var i = 0; i < particles.length; i++) {
-            var p = particles[i];
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.angle);
-
-            if (currentWeather === 'rain') {
-                ctx.strokeStyle = 'rgba(100, 155, 170, ' + p.opacity + ')';
-                ctx.lineWidth = window.innerWidth < 640 ? 1.6 : 2.2;
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(p.speedX * 2, p.size * 2);
-                ctx.stroke();
-                p.y += p.speedY * 5;
-                p.x += p.speedX;
-            } else if (currentWeather === 'autumn') {
-                ctx.fillStyle = 'hsla(' + p.hue + ', 75%, 45%, ' + p.opacity + ')';
-                ctx.beginPath();
-                ctx.ellipse(0, 0, p.size, p.size / 2, Math.PI / 4, 0, Math.PI * 2);
-                ctx.fill();
-                p.y += p.speedY * 1.2;
-                p.x += Math.sin(p.angle) * 1.5;
-                p.angle += p.spin;
-            } else if (currentWeather === 'snow') {
-                ctx.fillStyle = 'rgba(255, 255, 255, ' + (p.opacity * 0.9) + ')';
-                ctx.beginPath();
-                ctx.arc(0, 0, p.size / 2.5, 0, Math.PI * 2);
-                ctx.fill();
-                p.y += p.speedY * 0.8;
-                p.x += Math.sin(p.angle) * 0.8;
-                p.angle += 0.02;
-            } else if (currentWeather === 'sakura') {
-                ctx.fillStyle = 'rgba(255, 182, 193, ' + (p.opacity * 0.85) + ')';
-                ctx.beginPath();
-                ctx.ellipse(0, 0, p.size, p.size / 1.8, Math.PI / 3, 0, Math.PI * 2);
-                ctx.fill();
-                p.y += p.speedY * 1.0;
-                p.x += Math.sin(p.angle) * 1.2;
-                p.angle += p.spin;
+        ctx.lineCap = 'round';
+        for (var i = 0; i < drops.length; i++) {
+            var d = drops[i];
+            ctx.lineWidth = d.w || 2;
+            ctx.strokeStyle = 'rgba(100, 155, 170, ' + d.o + ')';
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x + d.xs, d.y + d.l);
+            ctx.stroke();
+            d.x += d.xs;
+            d.y += d.ys;
+            if (d.y > canvas.height) {
+                d.y = -30;
+                d.x = Math.random() * canvas.width;
             }
+        }
 
-            ctx.restore();
-
-            if (p.y > canvas.height + 20) {
-                p.y = -20;
-                p.x = Math.random() * canvas.width;
+        for (var j = 0; j < embers.length; j++) {
+            var e = embers[j];
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'hsla(' + e.hue + ', 85%, 65%, ' + e.o + ')';
+            ctx.fill();
+            e.y += e.ys;
+            e.x += e.xs;
+            if (e.y < -10) {
+                e.y = canvas.height + 10;
+                e.x = Math.random() * canvas.width;
             }
         }
 
