@@ -51,9 +51,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <header id="masthead" class="site-header ast-primary-header" itemtype="https://schema.org/WPHeader" itemscope>
 
     <!-- ── Announcement bar ──────────────────────────────────── -->
-    <div class="cozy-announcement-bar">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-        Envíos gratis en pedidos de más de <strong>60 €</strong>
+    <div class="cozy-announcement-bar flex items-center justify-center gap-4 flex-wrap px-4 py-2">
+        <span class="inline-flex items-center gap-1.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Envíos gratis en pedidos de más de <strong>60 €</strong>
+        </span>
+        <button type="button" data-action="open-tea-oracle" class="inline-flex items-center gap-1 bg-white/30 hover:bg-white/60 text-cozy-coffee text-[11px] font-bold px-3 py-0.5 rounded-full border border-cozy-coffee/20 transition-all cursor-pointer">
+            ✨ Mensaje Cozy del Día 🫖
+        </button>
     </div>
 
     <!-- ── Row 1: Logo · Search · Icons ───────────────────────── -->
@@ -347,6 +352,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <?php cozy_render_mini_cart(); ?>
 
     <div class="p-6 border-t border-cozy-sand bg-white space-y-3 mt-auto">
+        <!-- Kraft Gift Note -->
+        <div class="cozy-gift-note-wrap border-b border-cozy-sand/60 pb-3 mb-2">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cozy-coffee select-none">
+                <input type="checkbox" id="cozy-gift-checkbox" data-action="toggle-gift-note" class="accent-cozy-mint w-4 h-4 rounded">
+                <span>🎁 ¿Es un regalo? Añadir nota manuscrita</span>
+            </label>
+            <div id="cozy-gift-field" class="hidden mt-2.5 p-3 bg-[#F5ECE0] border border-[#D8C6B0] rounded-2xl shadow-inner relative">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[10px] font-bold text-cozy-coffee/70 uppercase tracking-wider">🎀 Nota Kraft Vintage</span>
+                    <span class="text-[10px] text-cozy-mint font-bold uppercase">Gratis</span>
+                </div>
+                <textarea id="cozy-gift-text" rows="2" placeholder="Escribe aquí tu mensaje especial..." class="w-full bg-transparent border-0 text-xs text-cozy-coffee focus:ring-0 p-0 placeholder-cozy-coffee/40 resize-none font-serif italic"></textarea>
+            </div>
+        </div>
+
         <div class="flex items-center justify-between text-sm font-medium text-cozy-coffee/70">
             <span>Subtotal</span>
             <?php if ( class_exists( 'WooCommerce' ) && WC()->cart ) : ?>
@@ -454,6 +474,68 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 Crear cuenta gratis
             </a>
         </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FLOATING DRINK COMPANION & WEATHER SELECTOR WIDGETS           -->
+<!-- ============================================================ -->
+<div id="cozy-drink-widget" class="fixed bottom-6 left-6 z-[998] flex items-center">
+    <button type="button" id="cozy-drink-btn" data-action="toggle-drink-menu" class="bg-white/90 backdrop-blur-md border border-cozy-sand shadow-lg hover:shadow-xl rounded-full p-2.5 px-4 flex items-center gap-2 text-xs font-bold text-cozy-coffee transition-all hover:scale-105" title="Tu bebida cozy virtual">
+        <span class="cozy-steam-wrap relative flex items-center">
+            <span class="cozy-steam-icon absolute -top-3 left-1/2 -translate-x-1/2 text-xs opacity-70 animate-bounce">♨️</span>
+            <span id="cozy-drink-icon" class="text-base">🍵</span>
+        </span>
+        <span id="cozy-drink-label" class="hidden sm:inline">Matcha Latte</span>
+    </button>
+
+    <div id="cozy-drink-menu" class="hidden absolute bottom-14 left-0 bg-white/95 backdrop-blur-md border border-cozy-sand rounded-2xl p-3 shadow-2xl space-y-1.5 min-w-[210px] text-xs">
+        <p class="text-[10px] font-bold text-cozy-coffee/50 uppercase tracking-wider px-2 mb-1">Escoge tu bebida cozy</p>
+        <button type="button" data-action="select-drink" data-icon="🍵" data-name="Matcha Latte" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-mintLight flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
+            <span>🍵</span> Matcha Latte 🌿
+        </button>
+        <button type="button" data-action="select-drink" data-icon="☕" data-name="Café con Canela" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-sand/50 flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
+            <span>☕</span> Café con Canela 🤎
+        </button>
+        <button type="button" data-action="select-drink" data-icon="🫖" data-name="Té Chai Especiado" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-sand/50 flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
+            <span>🫖</span> Té Chai Especiado 🍂
+        </button>
+        <button type="button" data-action="select-drink" data-icon="🍫" data-name="Chocolate con Nubes" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-sand/50 flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
+            <span>🍫</span> Chocolate con Nubes ☁️
+        </button>
+    </div>
+</div>
+
+<div id="cozy-weather-selector" class="hidden fixed bottom-6 left-52 z-[998] items-center gap-1 bg-white/90 backdrop-blur-md border border-cozy-sand rounded-full p-1.5 shadow-md text-xs">
+    <button type="button" data-action="set-weather" data-weather="rain" title="Lluvia & Chimenea" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">🌧️</button>
+    <button type="button" data-action="set-weather" data-weather="autumn" title="Otoño Dorado" class="px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer">🍂</button>
+    <button type="button" data-action="set-weather" data-weather="snow" title="Nieve Silenciosa" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">❄️</button>
+    <button type="button" data-action="set-weather" data-weather="sakura" title="Primavera Sakura" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">🌸</button>
+</div>
+
+<!-- TEA ORACLE MODAL -->
+<div id="cozy-oracle-modal" class="hidden fixed inset-0 bg-cozy-coffee/40 z-[2000] flex items-center justify-center p-4 backdrop-blur-sm" data-close-on-self="close-oracle">
+    <div class="bg-white rounded-[36px] p-8 max-w-sm w-full shadow-2xl relative text-center border-2 border-cozy-sand">
+        <button type="button" data-action="close-oracle" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors border-0 cursor-pointer" aria-label="Cerrar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+
+        <div class="w-16 h-16 rounded-full bg-cozy-mintLight flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+            🫖
+        </div>
+
+        <span class="inline-block bg-cozy-sand/50 text-cozy-coffee text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">Oráculo de Té</span>
+        <h3 class="font-serif text-xl font-bold text-cozy-coffee mb-3">Tu mensaje cozy del día</h3>
+
+        <div class="p-4 bg-cozy-cream/60 rounded-2xl border border-cozy-sand/60 mb-5">
+            <p id="cozy-oracle-quote" class="font-serif italic text-sm text-cozy-coffee leading-relaxed m-0">
+                "Cargando mensaje..."
+            </p>
+        </div>
+
+        <button type="button" data-action="refresh-oracle" class="w-full bg-cozy-mint hover:bg-cozy-mintDark text-white font-bold py-3 rounded-2xl transition-colors text-xs border-0 cursor-pointer shadow-sm">
+            ✨ Sacar otra bolsita de té
+        </button>
     </div>
 </div>
 

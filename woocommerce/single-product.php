@@ -45,7 +45,10 @@ while ( have_posts() ) :
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start mb-12">
 
             <!-- Left: Product images -->
-            <div class="cozy-product-gallery">
+            <div class="cozy-product-gallery relative">
+                <span class="absolute top-3 left-3 z-20 bg-[#D4A373] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1 border border-white/40">
+                    🏷️ Selección Cozy
+                </span>
                 <?php do_action( 'woocommerce_before_single_product_summary' ); ?>
             </div>
 
@@ -83,6 +86,22 @@ while ( have_posts() ) :
                 </div>
 
                 <?php do_action( 'woocommerce_single_product_summary' ); ?>
+
+                <!-- Comfort Badges -->
+                <div class="cozy-comfort-badges grid grid-cols-3 gap-2 py-3 border-y border-cozy-sand/60 my-2">
+                    <div class="text-center p-2 rounded-xl bg-cozy-cream border border-cozy-sand/40">
+                        <span class="block text-base mb-0.5">☕</span>
+                        <span class="block text-[10px] font-bold text-cozy-coffee/80">Tardes Cozy</span>
+                    </div>
+                    <div class="text-center p-2 rounded-xl bg-cozy-cream border border-cozy-sand/40">
+                        <span class="block text-base mb-0.5">🧸</span>
+                        <span class="block text-[10px] font-bold text-cozy-coffee/80">Edición Especial</span>
+                    </div>
+                    <div class="text-center p-2 rounded-xl bg-cozy-cream border border-cozy-sand/40">
+                        <span class="block text-base mb-0.5">🌿</span>
+                        <span class="block text-[10px] font-bold text-cozy-coffee/80">100% Oficial</span>
+                    </div>
+                </div>
 
             </div>
         </div>
