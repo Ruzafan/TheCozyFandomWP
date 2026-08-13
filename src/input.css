@@ -3258,44 +3258,4 @@ body.cozy-ultra-mode #cozy-rain-canvas {
 @keyframes cozySparkleFade {
   0% { transform: scale(1) translateY(0); opacity: 1; }
   100% { transform: scale(0.2) translateY(-20px); opacity: 0; }
-}
-
-/* Mechanical Keyboard Keycaps styling (PBT 3D tactile feel) — ONLY in Cozy Mode */
-body.cozy-ultra-mode button,
-body.cozy-ultra-mode .button,
-body.cozy-ultra-mode a.button,
-body.cozy-ultra-mode input[type="submit"],
-body.cozy-ultra-mode .cozy-hdr-icon,
-body.cozy-ultra-mode .cozy-hdr-search__btn,
-body.cozy-ultra-mode .woocommerce ul.products li.product a.add_to_cart_button {
-  position: relative !important;
-  border-radius: 14px !important;
-  border-top: 2px solid rgba(255, 255, 255, 0.85) !important;
-  border-left: 1.5px solid rgba(255, 255, 255, 0.5) !important;
-  border-right: 1.5px solid rgba(74, 63, 53, 0.2) !important;
-  border-bottom: 4px solid #72b0a2 !important;
-  box-shadow: 0 4px 0 #5c998c, 0 6px 14px rgba(74, 63, 53, 0.18) !important;
-  transform: translateY(-2px) !important;
-  transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-body.cozy-ultra-mode button:hover,
-body.cozy-ultra-mode .button:hover,
-body.cozy-ultra-mode a.button:hover,
-body.cozy-ultra-mode input[type="submit"]:hover,
-body.cozy-ultra-mode .cozy-hdr-icon:hover,
-body.cozy-ultra-mode .woocommerce ul.products li.product a.add_to_cart_button:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 5px 0 #5c998c, 0 8px 18px rgba(74, 63, 53, 0.22) !important;
-}
-
-body.cozy-ultra-mode button:active,
-body.cozy-ultra-mode .button:active,
-body.cozy-ultra-mode a.button:active,
-body.cozy-ultra-mode input[type="submit"]:active,
-body.cozy-ultra-mode .cozy-hdr-icon:active,
-body.cozy-ultra-mode .woocommerce ul.products li.product a.add_to_cart_button:active {
-  transform: translateY(2px) !important;
-  border-bottom-width: 1.5px !important;
-  box-shadow: 0 1px 0 #5c998c, 0 2px 4px rgba(74, 63, 53, 0.12) !important;
 }
