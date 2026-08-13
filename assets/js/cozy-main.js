@@ -1215,16 +1215,20 @@ function cozyRemoveFavItem(productId) {
         }
     }
 
-    window.toggleUltraCozy = function() {
-        isUltraActive = !isUltraActive;
+    window.toggleUltraCozy = function(forcedState) {
+        if (typeof forcedState === 'boolean') {
+            isUltraActive = forcedState;
+        } else {
+            isUltraActive = !isUltraActive;
+        }
+
         document.body.classList.toggle('cozy-ultra-mode', isUltraActive);
         document.documentElement.classList.toggle('cozy-ultra-mode', isUltraActive);
 
-        document.querySelectorAll('.cozy-ultra-label').forEach(function(el) {
-            el.textContent = isUltraActive ? 'Modo Cozy ON' : 'Modo Cozy';
-        });
-        document.querySelectorAll('.cozy-ultra-icon').forEach(function(el) {
-            el.textContent = isUltraActive ? '🌧️' : '🍵';
+        // Sync toggle checkboxes
+        ['cozy-ultra-checkbox', 'cozy-ultra-checkbox-mobile'].forEach(function(id) {
+            var cb = document.getElementById(id);
+            if (cb) cb.checked = isUltraActive;
         });
 
         try {

@@ -106,12 +106,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 ?>
 
                 <!-- Desktop-only icons (hidden on mobile — appear inside sidebar) -->
-                <div class="cozy-hdr-actions-icons">
-                    <button type="button" data-action="toggle-ultra-cozy" class="cozy-hdr-icon cozy-ultra-btn group relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all duration-300 no-underline cursor-pointer border border-cozy-mint/40 bg-white/80 hover:bg-cozy-mintLight text-cozy-coffee text-xs font-bold shadow-xs hover:shadow-md" aria-label="Activar Modo Ultra-Cozy" title="Activar Modo Ultra-Cozy (Lluvia, Té y Chimenea)">
-                        <span class="cozy-ultra-icon text-sm transition-transform duration-300 group-hover:scale-125">🍵</span>
-                        <span class="cozy-ultra-label hidden lg:inline text-[11px] uppercase tracking-wider">Modo Cozy</span>
-                    </button>
-
+                <div class="cozy-hdr-actions-icons flex items-center gap-3">
                     <a href="<?php echo esc_url( $account_url ); ?>" class="cozy-hdr-icon" aria-label="<?php esc_attr_e( 'Mi cuenta', 'woocommerce' ); ?>">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </a>
@@ -132,6 +127,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </span>
                         <?php endif; ?>
                     </button>
+
+                    <!-- FAR RIGHT TOGGLE SWITCH -->
+                    <div class="cozy-hdr-switch-wrap flex items-center gap-2 border-l border-cozy-sand/80 pl-3 ml-1">
+                        <span class="text-[11px] font-bold text-cozy-coffee uppercase tracking-wider hidden xl:inline">Modo Cozy</span>
+                        <label class="relative inline-flex items-center cursor-pointer select-none" title="Activar Modo Cozy">
+                            <input type="checkbox" id="cozy-ultra-checkbox" data-action="toggle-ultra-cozy" class="sr-only peer">
+                            <div class="w-10 h-5 bg-cozy-sand peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cozy-sand after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cozy-mint shadow-inner"></div>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Hamburger (always visible — opens sidebar on mobile) -->
@@ -161,10 +165,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <!-- Quick-access icons inside sidebar (mobile only) -->
         <div class="cozy-mobile-nav-actions">
-            <button type="button" data-action="toggle-ultra-cozy" class="cozy-mobile-nav-action-btn cozy-ultra-btn-mobile" aria-label="Activar Modo Ultra-Cozy">
-                <span class="cozy-ultra-icon text-xl">🍵</span>
-                <span class="cozy-mobile-nav-action-label cozy-ultra-label">Modo Cozy</span>
-            </button>
             <a href="<?php echo esc_url( $account_url ); ?>" class="cozy-mobile-nav-action-btn" aria-label="<?php esc_attr_e( 'Mi cuenta', 'woocommerce' ); ?>">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span class="cozy-mobile-nav-action-label">Mi cuenta</span>
@@ -185,6 +185,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <?php endif; endif; ?>
                 <span class="cozy-mobile-nav-action-label">Carrito</span>
             </button>
+            <div class="cozy-mobile-nav-action-btn flex items-center justify-center cursor-pointer" title="Activar Modo Cozy">
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="cozy-ultra-checkbox-mobile" data-action="toggle-ultra-cozy" class="sr-only peer">
+                    <div class="w-9 h-5 bg-cozy-sand peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cozy-sand after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cozy-mint shadow-inner"></div>
+                </label>
+                <span class="cozy-mobile-nav-action-label text-[10px]">Modo Cozy</span>
+            </div>
         </div>
 
         <div class="cozy-hdr-nav-inner">
