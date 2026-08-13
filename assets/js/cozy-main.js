@@ -1052,30 +1052,33 @@ function cozyRemoveFavItem(productId) {
     var drops = [];
     var embers = [];
 
-    function initCanvas() {
-        if (canvas) return;
-        canvas = document.createElement('canvas');
-        canvas.id = 'cozy-rain-canvas';
-        document.body.appendChild(canvas);
-        ctx = canvas.getContext('2d');
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+    function populateParticles() {
+        if (!canvas) return;
+        drops = [];
+        embers = [];
+        var isMobile = window.innerWidth < 640;
+        var isTablet = window.innerWidth < 1024;
 
-        for (var i = 0; i < 140; i++) {
+        var dropCount  = isMobile ? 25 : (isTablet ? 60 : 120);
+        var emberCount = isMobile ? 8  : (isTablet ? 20 : 35);
+        var lineW      = isMobile ? 1.6 : 2.2;
+
+        for (var i = 0; i < dropCount; i++) {
             drops.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                l: Math.random() * 26 + 14,
-                xs: (Math.random() - 0.5) * 1.5 - 2,
-                ys: Math.random() * 9 + 13,
-                o: Math.random() * 0.45 + 0.4
+                l: isMobile ? (Math.random() * 16 + 10) : (Math.random() * 26 + 14),
+                xs: (Math.random() - 0.5) * 1.2 - 1.5,
+                ys: Math.random() * 8 + 11,
+                o: Math.random() * 0.4 + 0.3,
+                w: lineW
             });
         }
-        for (var j = 0; j < 40; j++) {
+        for (var j = 0; j < emberCount; j++) {
             embers.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                r: Math.random() * 2.5 + 1,
+                r: Math.random() * 2.2 + 1,
                 ys: -(Math.random() * 0.8 + 0.3),
                 xs: (Math.random() - 0.5) * 0.6,
                 o: Math.random() * 0.7 + 0.3,
@@ -1084,20 +1087,31 @@ function cozyRemoveFavItem(productId) {
         }
     }
 
+    function initCanvas() {
+        if (canvas) return;
+        canvas = document.createElement('canvas');
+        canvas.id = 'cozy-rain-canvas';
+        document.body.appendChild(canvas);
+        ctx = canvas.getContext('2d');
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+    }
+
     function resizeCanvas() {
         if (!canvas) return;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        populateParticles();
     }
 
     function renderCanvas() {
         if (!isUltraActive || !ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.lineWidth = 2.2;
         ctx.lineCap = 'round';
         for (var i = 0; i < drops.length; i++) {
             var d = drops[i];
+            ctx.lineWidth = d.w || 2;
             ctx.strokeStyle = 'rgba(100, 155, 170, ' + d.o + ')';
             ctx.beginPath();
             ctx.moveTo(d.x, d.y);
