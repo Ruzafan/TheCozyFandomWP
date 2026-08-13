@@ -1074,41 +1074,81 @@ function cozyRemoveFavItem(productId) {
     var animFrameId = null;
     var canvas = null;
     var ctx = null;
-    var drops = [];
-    var embers = [];
+    var particles = [];
 
     function populateParticles() {
         if (!canvas) return;
-        drops = [];
-        embers = [];
+        particles = [];
         var isMobile = window.innerWidth < 640;
         var isTablet = window.innerWidth < 1024;
+        var count = isMobile ? 25 : (isTablet ? 60 : 120);
 
-        var dropCount  = isMobile ? 25 : (isTablet ? 60 : 120);
-        var emberCount = isMobile ? 8  : (isTablet ? 20 : 35);
-        var lineW      = isMobile ? 1.6 : 2.2;
-
-        for (var i = 0; i < dropCount; i++) {
-            drops.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                l: isMobile ? (Math.random() * 16 + 10) : (Math.random() * 26 + 14),
-                xs: (Math.random() - 0.5) * 1.2 - 1.5,
-                ys: Math.random() * 8 + 11,
-                o: Math.random() * 0.4 + 0.3,
-                w: lineW
-            });
+        for (var i = 0; i < count; i++) {
+            if (currentWeather === 'rain') {
+                particles.push({
+                    type: 'rain',
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    l: isMobile ? (Math.random() * 16 + 10) : (Math.random() * 26 + 14),
+                    xs: (Math.random() - 0.5) * 1.2 - 1.5,
+                    ys: Math.random() * 8 + 11,
+                    o: Math.random() * 0.4 + 0.3,
+                    w: isMobile ? 1.6 : 2.2
+                });
+            } else if (currentWeather === 'autumn') {
+                particles.push({
+                    type: 'autumn',
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 10 + 6,
+                    speedY: Math.random() * 1.5 + 0.8,
+                    speedX: (Math.random() - 0.5) * 1.8,
+                    angle: Math.random() * Math.PI * 2,
+                    spin: (Math.random() - 0.5) * 0.04,
+                    o: Math.random() * 0.6 + 0.3,
+                    hue: Math.random() * 35 + 15
+                });
+            } else if (currentWeather === 'snow') {
+                particles.push({
+                    type: 'snow',
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 3.5 + 1.5,
+                    speedY: Math.random() * 1.0 + 0.5,
+                    sway: Math.random() * 0.03 + 0.01,
+                    swayOffset: Math.random() * Math.PI * 2,
+                    o: Math.random() * 0.7 + 0.3
+                });
+            } else if (currentWeather === 'sakura') {
+                particles.push({
+                    type: 'sakura',
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 9 + 5,
+                    speedY: Math.random() * 1.2 + 0.6,
+                    speedX: (Math.random() - 0.5) * 1.5,
+                    angle: Math.random() * Math.PI * 2,
+                    spin: (Math.random() - 0.5) * 0.03,
+                    o: Math.random() * 0.6 + 0.3
+                });
+            }
         }
-        for (var j = 0; j < emberCount; j++) {
-            embers.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                r: Math.random() * 2.2 + 1,
-                ys: -(Math.random() * 0.8 + 0.3),
-                xs: (Math.random() - 0.5) * 0.6,
-                o: Math.random() * 0.7 + 0.3,
-                hue: Math.random() * 30 + 25
-            });
+
+        // Add warm golden fire embers if weather is rain
+        if (currentWeather === 'rain') {
+            var emberCount = isMobile ? 8 : (isTablet ? 20 : 35);
+            for (var j = 0; j < emberCount; j++) {
+                particles.push({
+                    type: 'ember',
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 2.2 + 1,
+                    ys: -(Math.random() * 0.8 + 0.3),
+                    xs: (Math.random() - 0.5) * 0.6,
+                    o: Math.random() * 0.7 + 0.3,
+                    hue: Math.random() * 30 + 25
+                });
+            }
         }
     }
 
@@ -1133,34 +1173,81 @@ function cozyRemoveFavItem(productId) {
         if (!isUltraActive || !ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.lineCap = 'round';
-        for (var i = 0; i < drops.length; i++) {
-            var d = drops[i];
-            ctx.lineWidth = d.w || 2;
-            ctx.strokeStyle = 'rgba(100, 155, 170, ' + d.o + ')';
-            ctx.beginPath();
-            ctx.moveTo(d.x, d.y);
-            ctx.lineTo(d.x + d.xs, d.y + d.l);
-            ctx.stroke();
-            d.x += d.xs;
-            d.y += d.ys;
-            if (d.y > canvas.height) {
-                d.y = -30;
-                d.x = Math.random() * canvas.width;
-            }
-        }
+        for (var i = 0; i < particles.length; i++) {
+            var p = particles[i];
+            
+            if (p.type === 'rain') {
+                ctx.lineCap = 'round';
+                ctx.lineWidth = p.w || 2;
+                ctx.strokeStyle = 'rgba(100, 155, 170, ' + p.o + ')';
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x + p.xs, p.y + p.l);
+                ctx.stroke();
+                p.x += p.xs;
+                p.y += p.ys;
+                if (p.y > canvas.height) {
+                    p.y = -30;
+                    p.x = Math.random() * canvas.width;
+                }
+            } else if (p.type === 'ember') {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'hsla(' + p.hue + ', 85%, 65%, ' + p.o + ')';
+                ctx.fill();
+                p.y += p.ys;
+                p.x += p.xs;
+                if (p.y < -10) {
+                    p.y = canvas.height + 10;
+                    p.x = Math.random() * canvas.width;
+                }
+            } else if (p.type === 'autumn') {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.angle);
+                ctx.fillStyle = 'hsla(' + p.hue + ', 75%, 45%, ' + p.o + ')';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, p.size, p.size / 2.2, Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
 
-        for (var j = 0; j < embers.length; j++) {
-            var e = embers[j];
-            ctx.beginPath();
-            ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'hsla(' + e.hue + ', 85%, 65%, ' + e.o + ')';
-            ctx.fill();
-            e.y += e.ys;
-            e.x += e.xs;
-            if (e.y < -10) {
-                e.y = canvas.height + 10;
-                e.x = Math.random() * canvas.width;
+                p.y += p.speedY;
+                p.x += p.speedX + Math.sin(p.angle) * 0.8;
+                p.angle += p.spin;
+                if (p.y > canvas.height + 20) {
+                    p.y = -20;
+                    p.x = Math.random() * canvas.width;
+                }
+            } else if (p.type === 'snow') {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, ' + p.o + ')';
+                ctx.fill();
+
+                p.y += p.speedY;
+                p.swayOffset += p.sway;
+                p.x += Math.sin(p.swayOffset) * 0.8;
+                if (p.y > canvas.height + 10) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+            } else if (p.type === 'sakura') {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.angle);
+                ctx.fillStyle = 'rgba(255, 182, 193, ' + p.o + ')';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, p.size, p.size / 1.8, Math.PI / 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                p.y += p.speedY;
+                p.x += p.speedX + Math.sin(p.angle) * 0.8;
+                p.angle += p.spin;
+                if (p.y > canvas.height + 20) {
+                    p.y = -20;
+                    p.x = Math.random() * canvas.width;
+                }
             }
         }
 

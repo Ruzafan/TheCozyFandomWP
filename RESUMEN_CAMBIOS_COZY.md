@@ -28,7 +28,12 @@ Este documento contiene el desglose detallado de todos los cambios, mejoras de d
 - **Ubicaciones**: `header.php`, `assets/js/cozy-main.js`, `src/input.css`
 - **Funcionalidades**:
   - **Paleta de Colores**: Conserva la paleta clara y luminosa original de la tienda (crema, arena y blanco).
-  - **Lluvia Responsiva (Canvas HTML5)**: Restaurado el sistema de lluvia original con trazos definidos (`2.2px`) y chispas de fuego ascendentes. Adaptado a móviles (25 gotas en pantallas pequeñas vs 120 en escritorio) para no saturar.
+  - **Lluvia y Climas Responsivos (Canvas HTML5)**: Motor de partículas multiclima corregido que permite cambiar en vivo entre 4 ambientes:
+    - 🌧️ *Lluvia & Chimenea*: Gotas definidas (`2.2px`) + chispas de leña.
+    - 🍂 *Otoño Dorado*: Hojas doradas girando en el aire.
+    - ❄️ *Nieve Silenciosa*: Copos de nieve flotando suavemente.
+    - 🌸 *Primavera Sakura*: Pétalos rosas de cerezo bamboleándose con la brisa.
+    - Adaptado a móviles (25 partículas en pantalla pequeña vs 120 en escritorio) para no saturar.
   - **Sintetizador Web Audio API**: Genera sonido real de lluvia suave + chisporroteo de leña en chimenea con desvanecimiento de volumen progresivo.
   - **Rastro de Chispas en Ratón**: Partículas doradas flotantes al mover el cursor por la pantalla.
   - **Notificaciones Toast**: Mensajes emergentes reconfortantes al activar o cambiar de estado.
