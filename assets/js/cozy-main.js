@@ -1061,17 +1061,17 @@ function cozyRemoveFavItem(productId) {
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        for (var i = 0; i < 70; i++) {
+        for (var i = 0; i < 140; i++) {
             drops.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                l: Math.random() * 20 + 10,
-                xs: (Math.random() - 0.5) * 1 - 1.5,
-                ys: Math.random() * 8 + 12,
-                o: Math.random() * 0.4 + 0.2
+                l: Math.random() * 26 + 14,
+                xs: (Math.random() - 0.5) * 1.5 - 2,
+                ys: Math.random() * 9 + 13,
+                o: Math.random() * 0.45 + 0.4
             });
         }
-        for (var j = 0; j < 35; j++) {
+        for (var j = 0; j < 40; j++) {
             embers.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
@@ -1094,11 +1094,11 @@ function cozyRemoveFavItem(productId) {
         if (!isUltraActive || !ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.strokeStyle = 'rgba(215, 235, 240, 0.45)';
-        ctx.lineWidth = 1.2;
+        ctx.lineWidth = 2.2;
         ctx.lineCap = 'round';
         for (var i = 0; i < drops.length; i++) {
             var d = drops[i];
+            ctx.strokeStyle = 'rgba(100, 155, 170, ' + d.o + ')';
             ctx.beginPath();
             ctx.moveTo(d.x, d.y);
             ctx.lineTo(d.x + d.xs, d.y + d.l);
@@ -1106,7 +1106,7 @@ function cozyRemoveFavItem(productId) {
             d.x += d.xs;
             d.y += d.ys;
             if (d.y > canvas.height) {
-                d.y = -20;
+                d.y = -30;
                 d.x = Math.random() * canvas.width;
             }
         }
