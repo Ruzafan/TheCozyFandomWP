@@ -206,19 +206,26 @@ $cozy_cats = [
 <!-- ============================================================ -->
 <!--  TOP SELLS SECTION (products tagged "top-sell")               -->
 <!-- ============================================================ -->
-<section id="top-ventas" class="bg-cozy-coffee py-16 px-6 md:px-12 relative rounded-[32px]" style="max-width: 80rem !important;margin: 20px auto 0;">
-    <div class="max-w-7xl mx-auto">
+<section id="top-ventas" class="relative overflow-hidden bg-gradient-to-br from-cozy-mintLight/80 via-cozy-cream to-cozy-sand/50 py-16 px-6 md:px-12 rounded-[32px] border border-cozy-mint/30 shadow-sm" style="max-width: 80rem !important;margin: 20px auto 0;">
+
+    <!-- Decorative ambient glowing blobs -->
+    <div class="absolute -top-20 -right-20 w-72 h-72 bg-cozy-mint/25 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute -bottom-20 -left-20 w-72 h-72 bg-cozy-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-                <span class="text-xs font-bold text-cozy-accent uppercase tracking-widest block mb-2">Los Más Buscados</span>
-                <h2 class="font-serif text-3xl md:text-4xl font-bold text-white">Top ventas de la comunidad</h2>
-                <p class="text-sm text-white/60 mt-2">Los favoritos indiscutibles de nuestros fans cozy.</p>
+                <span class="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-cozy-accent text-xs font-bold px-3.5 py-1 rounded-full border border-cozy-accent/20 shadow-xs mb-3">
+                    🔥 Los Más Buscados
+                </span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee">Top ventas de la comunidad</h2>
+                <p class="text-sm text-cozy-coffee/75 mt-2">Los favoritos indiscutibles de nuestros fans cozy.</p>
             </div>
             <?php if ( class_exists( 'WooCommerce' ) ) : ?>
             <div class="mt-4 md:mt-0">
                 <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
-                   class="bg-transparent hover:bg-white/10 text-white px-5 py-2 rounded-full text-xs font-medium border border-white/30 transition-colors">
+                   class="inline-flex items-center bg-white hover:bg-cozy-mintLight text-cozy-coffee px-5 py-2.5 rounded-full text-xs font-semibold border border-cozy-sand shadow-sm hover:border-cozy-mint transition-all duration-200">
                     Ver todos los productos →
                 </a>
             </div>
@@ -226,7 +233,7 @@ $cozy_cats = [
         </div>
 
         <!-- Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
         <?php
         $top_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
             'limit'   => 4,
@@ -244,12 +251,12 @@ $cozy_cats = [
             }
         else : ?>
             <div class="col-span-4 text-center py-16">
-                <?php echo cozy_icon( 'fire', '48', 'text-white/20 block mb-4' ); ?>
-                <p class="text-white/60 text-sm">Aún no hay productos marcados como "Top Venta".</p>
+                <?php echo cozy_icon( 'fire', '48', 'text-cozy-coffee/20 block mb-4' ); ?>
+                <p class="text-cozy-coffee/70 text-sm font-medium">Aún no hay productos marcados como "Top Venta".</p>
                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
-                <p class="text-white/40 text-xs mt-2">Añade la etiqueta <code>top-sell</code> a tus productos más vendidos desde Productos → Editar producto → Etiquetas del producto.</p>
+                <p class="text-cozy-coffee/50 text-xs mt-2">Añade la etiqueta <code>top-sell</code> a tus productos más vendidos desde Productos → Editar producto → Etiquetas del producto.</p>
                 <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>"
-                   class="inline-block mt-4 bg-cozy-mint text-cozy-coffee px-6 py-2 rounded-xl text-sm font-bold">
+                   class="inline-block mt-4 bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors">
                     Gestionar productos
                 </a>
                 <?php endif; ?>
