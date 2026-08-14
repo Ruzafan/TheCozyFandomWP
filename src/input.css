@@ -3099,6 +3099,7 @@ body.single-post .ast-archive-description { display: none !important; }
 }
 .hostinger-reach-block-subscription-form-wrapper button.hostinger-reach-block-submit {
   order: 3 !important;
+  text-align: center !important;
 }
 /* Visible label styled to match the site's typography design system */
 .hostinger-reach-block-subscription-form-wrapper .hostinger-reach-block-form-field:not(.cozy-reach-consent) > label {
@@ -3115,7 +3116,6 @@ body.single-post .ast-archive-description { display: none !important; }
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   font-size: 0.75rem !important;
   font-weight: 700 !important;
-  text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
   color: #3A3128 !important;
   text-align: left !important;
@@ -3258,4 +3258,4 @@ body.cozy-ultra-mode #cozy-rain-canvas {
 @keyframes cozySparkleFade {
   0% { transform: scale(1) translateY(0); opacity: 1; }
   100% { transform: scale(0.2) translateY(-20px); opacity: 0; }
-}
+}
