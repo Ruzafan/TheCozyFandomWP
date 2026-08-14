@@ -75,7 +75,7 @@ function cozy_render_coming_soon_page() {
         [ 'img' => 'harry_potter.webp',  'label' => 'Harry Potter' ],
         [ 'img' => 'stitch.webp',        'label' => 'Disney' ],
         [ 'img' => 'pokemon.webp',        'label' => 'Pokemon' ],
-        [ 'img' => 'pusheen.webp',        'label' => 'Disney' ],
+        [ 'img' => 'pusheen.webp',        'label' => 'Pusheen' ],
     ];
     ?>
 
