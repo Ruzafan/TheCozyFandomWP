@@ -56,7 +56,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
             Envíos gratis en pedidos de más de <strong>60 €</strong>
         </span>
-        <button type="button" data-action="open-tea-oracle" class="inline-flex items-center gap-1 bg-white/30 hover:bg-white/60 text-cozy-coffee text-[11px] font-bold px-3 py-0.5 rounded-full border border-cozy-coffee/20 transition-all cursor-pointer">
+        <button id="tea-oracle-btn" type="button" data-action="open-tea-oracle" class="inline-flex items-center gap-1 bg-white/30 hover:bg-white/60 text-cozy-coffee text-[11px] font-bold px-3 py-0.5 rounded-full border border-cozy-coffee/20 transition-all cursor-pointer">
             ✨ Mensaje Cozy del Día 🫖
         </button>
     </div>

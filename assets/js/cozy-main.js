@@ -1357,17 +1357,18 @@ function cozyRemoveFavItem(productId) {
             var cb = document.getElementById(id);
             if (cb) cb.checked = isUltraActive;
         });
-
-        var weatherSel = document.getElementById('cozy-weather-selector');
-        if (weatherSel) {
-            if (isUltraActive) {
-                weatherSel.classList.remove('hidden');
-                weatherSel.classList.add('flex');
-            } else {
-                weatherSel.classList.add('hidden');
-                weatherSel.classList.remove('flex');
+        ['cozy-drink-btn','cozy-weather-selector','tea-oracle-btn'].forEach(function(id) {
+            var weatherSel = document.getElementById(id);
+            if (weatherSel) {
+                if (isUltraActive) {
+                    weatherSel.classList.remove('hidden');
+                    weatherSel.classList.add('flex');
+                } else {
+                    weatherSel.classList.add('hidden');
+                    weatherSel.classList.remove('flex');
+                }
             }
-        }
+        });
 
         try {
             localStorage.setItem('cozy_ultra_mode', isUltraActive ? 'active' : 'inactive');
