@@ -1357,7 +1357,7 @@ function cozyRemoveFavItem(productId) {
             var cb = document.getElementById(id);
             if (cb) cb.checked = isUltraActive;
         });
-        ['cozy-drink-btn','cozy-weather-selector','tea-oracle-btn'].forEach(function(id) {
+        ['cozy-drink-btn','cozy-drink-widget','cozy-weather-selector','tea-oracle-btn'].forEach(function(id) {
             var weatherSel = document.getElementById(id);
             if (weatherSel) {
                 if (isUltraActive) {
