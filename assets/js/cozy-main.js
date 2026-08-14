@@ -1324,7 +1324,7 @@ function cozyRemoveFavItem(productId) {
     }
 
     function setAudioState(active) {
-        if (active) {
+        if (active && currentWeather !== 'none') {
             initAudio();
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -1393,11 +1393,16 @@ function cozyRemoveFavItem(productId) {
     };
 
     window.cozySetWeather = function(mode) {
-        currentWeather = mode || 'rain';
+        currentWeather = mode || 'none';
         populateParticles();
         setAudioState(isUltraActive);
 
+        try {
+            localStorage.setItem('cozy_weather', currentWeather);
+        } catch(e) {}
+
         var labels = {
+            none: '✨ Modo Despejado (Sin efectos en pantalla)',
             rain: '🌧️ Clima: Lluvia & Chimenea',
             autumn: '🍂 Clima: Otoño Dorado',
             snow: '❄️ Clima: Nieve Silenciosa',
@@ -1497,6 +1502,10 @@ function cozyRemoveFavItem(productId) {
         var saved = false;
         try {
             saved = localStorage.getItem('cozy_ultra_mode') === 'active';
+            var savedWeather = localStorage.getItem('cozy_weather');
+            if (savedWeather) {
+                currentWeather = savedWeather;
+            }
             var savedIcon = localStorage.getItem('cozy_drink_icon');
             var savedName = localStorage.getItem('cozy_drink_name');
             if (savedIcon && savedName) {

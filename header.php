@@ -507,6 +507,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <div id="cozy-weather-selector" class="hidden fixed bottom-6 left-52 z-[998] items-center gap-1 bg-white/90 backdrop-blur-md border border-cozy-sand rounded-full p-1.5 shadow-md text-xs">
+    <button type="button" data-action="set-weather" data-weather="none" title="Despejado (Sin efectos en pantalla)" class="px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer">✨</button>
     <button type="button" data-action="set-weather" data-weather="rain" title="Lluvia & Chimenea" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">🌧️</button>
     <button type="button" data-action="set-weather" data-weather="autumn" title="Otoño Dorado" class="px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer">🍂</button>
     <button type="button" data-action="set-weather" data-weather="snow" title="Nieve Silenciosa" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">❄️</button>
