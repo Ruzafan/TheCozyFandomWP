@@ -60,9 +60,7 @@ function cozy_render_coming_soon_page() {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title><?php bloginfo( 'name' ); ?> &mdash; Muy pronto</title>
-<link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() . '/style.css' ); ?>">
-<link rel="stylesheet" href="<?php echo esc_url( get_stylesheet_directory_uri() . '/style.css' ); ?>">
-<link rel="stylesheet" href="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/css/main.css' ); ?>">
+<link rel="stylesheet" href="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/css/main.min.css' ); ?>">
 </head>
 <body class="bg-cozy-cream">
     <?php

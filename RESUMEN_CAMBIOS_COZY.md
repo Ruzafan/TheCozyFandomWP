@@ -74,6 +74,6 @@ Este documento contiene el desglose detallado de todos los cambios, mejoras de d
 ---
 
 ## 🛠 Herramientas y Compilación
-- **Compilador CSS**: Tailwind CSS compilado mediante `cmd /c npm run build` (`src/input.css` ➔ `assets/css/main.css`).
+- **Compilador CSS**: Tailwind CSS compilado mediante `cmd /c npm run build` (`src/input.css` ➔ `assets/css/main.min.css`).
 - **Sincronización Local**: Sincronizado automáticamente a la carpeta activa de LocalWP:
   `C:\Users\marcr\Local Sites\thecozyfandom\app\public\wp-content\themes\the-cozy-fandom`

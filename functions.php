@@ -311,21 +311,13 @@ add_filter( 'pre_option_comment_registration', '__return_one' ); // WP: login re
 function cozy_fandom_enqueue_styles() {
     /* Google Fonts removed — now self-hosted via @font-face in input.css */
     /* Font Awesome removed — replaced by inline SVGs (inc/cozy-icons.php) */
-
-    wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
-
-    wp_enqueue_style(
-        'child-style',
-        get_stylesheet_directory_uri() . '/style.css',
-        [ 'parent-style' ],
-        filemtime( get_stylesheet_directory() . '/style.css' )
-    );
+    /* style.css is kept only as WordPress theme header metadata, no HTTP request needed */
 
     wp_enqueue_style(
-        'cozy-tailwind',
-        get_stylesheet_directory_uri() . '/assets/css/main.css',
-        [ 'child-style' ],
-        filemtime( get_stylesheet_directory() . '/assets/css/main.css' )
+        'cozy-main-style',
+        get_stylesheet_directory_uri() . '/assets/css/main.min.css',
+        [],
+        filemtime( get_stylesheet_directory() . '/assets/css/main.min.css' )
     );
 }
 add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_styles' );
