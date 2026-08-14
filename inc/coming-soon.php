@@ -137,9 +137,9 @@ function cozy_render_coming_soon_page() {
                 <div class="flex items-center justify-center gap-8 sm:gap-12">
                     <?php foreach ( $teasers as $teaser ) : ?>
                     <div class="flex flex-col items-center gap-3">
-                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white border border-cozy-sand shadow-sm flex items-center justify-center overflow-hidden">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border border-cozy-sand shadow-sm flex items-center justify-center overflow-hidden">
                             <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $teaser['img'] ); ?>"
-                                 alt="" aria-hidden="true" loading="lazy" class="w-full h-full object-contain p-1.5 opacity-90">
+                                 alt="" aria-hidden="true" loading="lazy" class="w-full h-full opacity-90">
                         </div>
                         <span class="text-[10px] font-bold text-cozy-coffee/50 uppercase tracking-wide"><?php echo esc_html( $teaser['label'] ); ?></span>
                     </div>
