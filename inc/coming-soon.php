@@ -50,8 +50,7 @@ add_action( 'template_redirect', function () {
 } );
 
 function cozy_render_coming_soon_page() {
-    status_header( 503 );
-    header( 'Retry-After: 3600' );
+    status_header( 200 );
     nocache_headers();
     ?>
 <!DOCTYPE html>
