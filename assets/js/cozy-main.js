@@ -1427,6 +1427,29 @@ function cozyRemoveFavItem(productId) {
         window.cozyShowToast(icon + ' Disfrutando de tu ' + name + ' 💖');
     };
 
+    var oracleQuotes = [
+        "Tómate un respiro: las cosas más bonitas florecen despacio.",
+        "Una taza de té caliente y un buen momento tienen el poder de reconfortar cualquier día.",
+        "No hay prisa en este rincón del mundo. Respira hondo y disfruta del presente.",
+        "El secreto de la calma está en encontrar alegría en los pequeños detalles cotidianos.",
+        "Tu propio ritmo es el correcto; no necesitas correr para llegar donde mereces estar.",
+        "Envuelve tu corazón en una manta suave y date permiso para descansar.",
+        "Un sorbo a la vez, una sonrisa a la vez, un instante de paz a la vez.",
+        "Hoy es un día perfecto para mimarte con una bebida calentita y tranquilidad.",
+        "La paz interior es el regalo más acogedor que te puedes conceder hoy.",
+        "Deja que la lluvia se lleve las prisas y que el calor del hogar te abrace.",
+        "Un rincón cómodo, tu bebida favorita y un momento para ti: la combinación perfecta.",
+        "Haz una pausa, cierra los ojos un segundo y siente la gratitud del momento.",
+        "Recuerda que descansar también es una forma maravillosa de avanzar.",
+        "Las pequeñas alegrías de hoy son los recuerdos más acogedores de mañana.",
+        "Que tu día sea tan cálido y reconfortante como tu primera taza de la mañana.",
+        "Permítete disfrutar de la lentitud: la vida sabe mejor a fuego lento.",
+        "Enciende una velita, respira suave y recuerda lo lejos que has llegado.",
+        "Cada día tiene su propio encanto cuando decides mirarlo con calma.",
+        "El autocuidado no es un lujo, es tu refugio más cálido y necesario.",
+        "Abraza el silencio, saborea tu tiempo y déjate cuidar por la calma."
+    ];
+
     window.cozyOpenOracle = function() {
         window.cozyRefreshOracle();
         var modal = document.getElementById('cozy-oracle-modal');
