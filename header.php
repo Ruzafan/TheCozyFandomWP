@@ -195,7 +195,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <input type="checkbox" id="cozy-ultra-checkbox-mobile" data-action="toggle-ultra-cozy" class="sr-only peer">
                     <div class="w-9 h-5 bg-cozy-sand peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cozy-sand after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cozy-mint shadow-inner"></div>
                 </label>
-                <span class="cozy-mobile-nav-action-label text-[10px]">Modo Cozy</span>
+                <span class="cozy-mobile-nav-action-label text-[10px] text-center">Modo Cozy</span>
             </div>
         </div>
 
