@@ -561,12 +561,6 @@ document.addEventListener('click', function (e) {
         case 'toggle-ultra-cozy':
             window.toggleUltraCozy();
             break;
-        case 'toggle-drink-menu':
-            if (window.cozyToggleDrinkMenu) window.cozyToggleDrinkMenu();
-            break;
-        case 'select-drink':
-            if (window.cozySelectDrink) window.cozySelectDrink(el.getAttribute('data-icon'), el.getAttribute('data-name'));
-            break;
         case 'set-weather':
             if (window.cozySetWeather) window.cozySetWeather(el.getAttribute('data-weather'));
             break;
@@ -1409,28 +1403,7 @@ function cozyRemoveFavItem(productId) {
             sakura: '🌸 Clima: Primavera Sakura'
         };
         window.cozyShowToast(labels[currentWeather] || 'Clima actualizado');
-    };
-
-    window.cozyToggleDrinkMenu = function() {
-        var menu = document.getElementById('cozy-drink-menu');
-        if (menu) menu.classList.toggle('hidden');
-    };
-
-    window.cozySelectDrink = function(icon, name) {
-        var iconEl = document.getElementById('cozy-drink-icon');
-        var labelEl = document.getElementById('cozy-drink-label');
-        if (iconEl) iconEl.textContent = icon;
-        if (labelEl) labelEl.textContent = name;
-        var menu = document.getElementById('cozy-drink-menu');
-        if (menu) menu.classList.add('hidden');
-
-        try {
-            localStorage.setItem('cozy_drink_icon', icon);
-            localStorage.setItem('cozy_drink_name', name);
-        } catch(e) {}
-
-        window.cozyShowToast(icon + ' Disfrutando de tu ' + name + ' 💖');
-    };
+    }; 
 
     var oracleQuotes = [
         "Tómate un respiro: las cosas más bonitas florecen despacio.",
@@ -1505,14 +1478,6 @@ function cozyRemoveFavItem(productId) {
             var savedWeather = localStorage.getItem('cozy_weather');
             if (savedWeather) {
                 currentWeather = savedWeather;
-            }
-            var savedIcon = localStorage.getItem('cozy_drink_icon');
-            var savedName = localStorage.getItem('cozy_drink_name');
-            if (savedIcon && savedName) {
-                var iconEl = document.getElementById('cozy-drink-icon');
-                var labelEl = document.getElementById('cozy-drink-label');
-                if (iconEl) iconEl.textContent = savedIcon;
-                if (labelEl) labelEl.textContent = savedName;
             }
         } catch(e) {}
 

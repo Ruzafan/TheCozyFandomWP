@@ -480,33 +480,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================ -->
 <!-- FLOATING DRINK COMPANION & WEATHER SELECTOR WIDGETS           -->
 <!-- ============================================================ -->
-<div id="cozy-drink-widget" class="fixed bottom-6 left-6 z-[998] flex items-center hidden">
-    <button type="button" id="cozy-drink-btn" data-action="toggle-drink-menu" class="bg-white/90 backdrop-blur-md border border-cozy-sand shadow-lg hover:shadow-xl rounded-full p-2.5 px-4 flex items-center gap-2 text-xs font-bold text-cozy-coffee transition-all hover:scale-105" title="Tu bebida cozy virtual">
-        <span class="cozy-steam-wrap relative flex items-center">
-            <span class="cozy-steam-icon absolute -top-3 left-1/2 -translate-x-1/2 text-xs opacity-70 animate-bounce">♨️</span>
-            <span id="cozy-drink-icon" class="text-base">🍵</span>
-        </span>
-        <span id="cozy-drink-label" class="hidden sm:inline">Matcha Latte</span>
-    </button>
-
-    <div id="cozy-drink-menu" class="hidden absolute bottom-14 left-0 bg-white/95 backdrop-blur-md border border-cozy-sand rounded-2xl p-3 shadow-2xl space-y-1.5 min-w-[210px] text-xs">
-        <p class="text-[10px] font-bold text-cozy-coffee/50 uppercase tracking-wider px-2 mb-1">Escoge tu bebida cozy</p>
-        <button type="button" data-action="select-drink" data-icon="🍵" data-name="Matcha Latte" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-mintLight flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
-            <span>🍵</span> Matcha Latte 🌿
-        </button>
-        <button type="button" data-action="select-drink" data-icon="☕" data-name="Café con Canela" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-sand/50 flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
-            <span>☕</span> Café con Canela 🤎
-        </button>
-        <button type="button" data-action="select-drink" data-icon="🫖" data-name="Té Chai Especiado" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-sand/50 flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
-            <span>🫖</span> Té Chai Especiado 🍂
-        </button>
-        <button type="button" data-action="select-drink" data-icon="🍫" data-name="Chocolate con Nubes" class="w-full text-left px-3 py-2 rounded-xl hover:bg-cozy-sand/50 flex items-center gap-2 text-cozy-coffee font-semibold border-0 bg-transparent cursor-pointer">
-            <span>🍫</span> Chocolate con Nubes ☁️
-        </button>
-    </div>
-</div>
-
-<div id="cozy-weather-selector" class="hidden fixed bottom-6 left-52 z-[998] items-center gap-1 bg-white/90 backdrop-blur-md border border-cozy-sand rounded-full p-1.5 shadow-md text-xs">
+<div id="cozy-weather-selector" class="hidden fixed bottom-6 left-6 z-[998] items-center gap-1 bg-white/90 backdrop-blur-md border border-cozy-sand rounded-full p-1.5 shadow-md text-xs">
     <button type="button" data-action="set-weather" data-weather="none" title="Despejado (Sin efectos en pantalla)" class="px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer">✨</button>
     <button type="button" data-action="set-weather" data-weather="rain" title="Lluvia & Chimenea" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">🌧️</button>
     <button type="button" data-action="set-weather" data-weather="autumn" title="Otoño Dorado" class="px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer">🍂</button>
