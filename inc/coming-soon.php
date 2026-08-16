@@ -29,7 +29,7 @@ add_action( 'admin_init', function () {
         'Modo tienda privada ("Próximamente")',
         function () {
             $val = get_option( 'cozy_coming_soon_mode' );
-            echo '<label><input type="checkbox" name="cozy_coming_soon_mode" value="1" ' . checked( $val, true, false ) . '> Mostrar solo un formulario de aviso por email; oculta toda la tienda a quien no sea administrador.</label>';
+            echo '<label><input type="checkbox" name="cozy_coming_soon_mode" value="1" ' . checked( $val, true, false ) . '> Mostrar solo un formulario de aviso por email; oculta toda la tienda a usuarios que no hayan iniciado sesión.</label>';
         },
         'general'
     );
@@ -42,7 +42,7 @@ add_action( 'template_redirect', function () {
     if ( ! get_option( 'cozy_coming_soon_mode' ) ) {
         return;
     }
-    if ( current_user_can( 'manage_options' ) ) {
+    if ( is_user_logged_in() ) {
         return;
     }
     cozy_render_coming_soon_page();
@@ -168,7 +168,7 @@ function cozy_coming_soon_notify() {
     }
 
     $user = get_user_by( 'email', $email );
-    if ( $user && user_can( $user, 'manage_options' ) ) {
+    if ( $user ) {
         wp_send_json_success( [ 'redirect' => wp_login_url() ] );
     }
 
