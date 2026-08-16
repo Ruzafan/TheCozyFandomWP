@@ -1,0 +1,56 @@
+:root {
+  --cozy-cream: #FAF6EE;
+  --cozy-sand: #F2E6D5;
+  --cozy-coffee: #3A3128;
+  --cozy-mint: #88C4B5;
+  --cozy-mint-dark: #72b0a2;
+  --cozy-mint-light: #EAF6F3;
+  --cozy-accent: #D4A373;
+}
+
+body {
+  background-color: var(--cozy-cream);
+  color: var(--cozy-coffee);
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: "Playfair Display", serif;
+}
+
+.cozy-announcement-bar {
+  background: linear-gradient(90deg, var(--cozy-sand) 0%, var(--cozy-mint-light) 100%);
+  color: var(--cozy-coffee);
+  font-size: 12px;
+}
+
+.cozy-fav-btn.is-favorited .cozy-fav-heart {
+  fill: #f87171;
+  stroke: #f87171;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cozy-sand);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cozy-mint);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cozy-mint-dark);
+}
+
+/* z-index scale: 997 ambient canvas, 998 floating widgets,
+   1000-1001 drawers, 2000 modals, 3000 cookie banner, 4000 toast */
