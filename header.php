@@ -352,21 +352,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <?php cozy_render_mini_cart(); ?>
 
     <div class="p-6 border-t border-cozy-sand bg-white space-y-3 mt-auto">
-        <!-- Kraft Gift Note -->
-        <div class="cozy-gift-note-wrap border-b border-cozy-sand/60 pb-3 mb-2">
-            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cozy-coffee select-none">
-                <input type="checkbox" id="cozy-gift-checkbox" data-action="toggle-gift-note" class="accent-cozy-mint w-4 h-4 rounded">
-                <span>🎁 ¿Es un regalo? Añadir nota manuscrita</span>
-            </label>
-            <div id="cozy-gift-field" class="hidden mt-2.5 p-3 bg-[#F5ECE0] border border-[#D8C6B0] rounded-2xl shadow-inner relative">
-                <div class="flex items-center justify-between mb-1.5">
-                    <span class="text-[10px] font-bold text-cozy-coffee/70 uppercase tracking-wider">🎀 Nota Kraft Vintage</span>
-                    <span class="text-[10px] text-cozy-mint font-bold uppercase">Gratis</span>
-                </div>
-                <textarea id="cozy-gift-text" rows="2" placeholder="Escribe aquí tu mensaje especial..." class="w-full bg-transparent border-0 text-xs text-cozy-coffee focus:ring-0 p-0 placeholder-cozy-coffee/40 resize-none font-serif italic"></textarea>
-            </div>
-        </div>
-
         <div class="flex items-center justify-between text-sm font-medium text-cozy-coffee/70">
             <span>Subtotal</span>
             <?php if ( class_exists( 'WooCommerce' ) && WC()->cart ) : ?>

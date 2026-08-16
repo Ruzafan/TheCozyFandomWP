@@ -573,9 +573,6 @@ document.addEventListener('click', function (e) {
         case 'close-oracle':
             if (window.cozyCloseOracle) window.cozyCloseOracle();
             break;
-        case 'toggle-gift-note':
-            if (window.cozyToggleGiftNote) window.cozyToggleGiftNote(el);
-            break;
         case 'begin-checkout':
             if (typeof gtag === 'function') {
                 gtag('event', 'begin_checkout', {
@@ -1444,17 +1441,6 @@ function cozyRemoveFavItem(productId) {
     window.cozyCloseOracle = function() {
         var modal = document.getElementById('cozy-oracle-modal');
         if (modal) modal.classList.add('hidden');
-    };
-
-    window.cozyToggleGiftNote = function(checkbox) {
-        var field = document.getElementById('cozy-gift-field');
-        if (field) {
-            if (checkbox.checked) {
-                field.classList.remove('hidden');
-            } else {
-                field.classList.add('hidden');
-            }
-        }
     };
 
     document.addEventListener('mousemove', function(e) {
