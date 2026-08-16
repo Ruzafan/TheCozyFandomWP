@@ -1,0 +1,112 @@
+{%- comment -%}
+  Product Card Snippet — The Cozy Fandom Style
+  Usage: {% render 'product-card', product: product, badge_text: 'Nuevo', rank: 1 %}
+{%- endcomment -%}
+
+{%- if product != blank -%}
+  {%- assign first_variant = product.selected_or_first_available_variant -%}
+  {%- assign is_on_sale = false -%}
+  {%- if product.compare_at_price > product.price -%}
+    {%- assign is_on_sale = true -%}
+  {%- endif -%}
+
+  <div class="bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col relative group h-full">
+
+    <!-- Top Badges and Favorite Button -->
+    <div class="relative w-full bg-white">
+      <a href="{{ product.url }}" class="block no-underline">
+        <div class="bg-white h-44 sm:h-52 lg:h-64 overflow-hidden flex items-center justify-center p-4">
+          {%- if product.featured_image -%}
+            <img src="{{ product.featured_image | image_url: width: 450 }}"
+                 alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                 loading="lazy"
+                 class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+          {%- else -%}
+            <div class="w-full h-full flex items-center justify-center bg-cozy-cream text-3xl">🧸</div>
+          {%- endif -%}
+        </div>
+      </a>
+
+      <!-- Badges -->
+      <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10 pointer-events-none">
+        {%- if rank != blank -%}
+          <span class="bg-cozy-accent text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+            #{{ rank }} Top
+          </span>
+        {%- elsif badge_text != blank -%}
+          <span class="bg-cozy-mintLight text-cozy-mint border border-cozy-mint/30 text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+            {{ badge_text }}
+          </span>
+        {%- elsif is_on_sale -%}
+          <span class="bg-cozy-mint text-cozy-coffee text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
+            Oferta
+          </span>
+        {%- elsif product.available == false -%}
+          <span class="bg-cozy-sand text-cozy-coffee/70 text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+            Agotado
+          </span>
+        {%- endif -%}
+      </div>
+
+      <!-- Favorite Button -->
+      <button type="button" data-action="toggle-favorite"
+              class="cozy-fav-btn cozy-fav-icon absolute top-2.5 right-2.5 z-10 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm border-0 cursor-pointer transition-all"
+              data-product-id="{{ product.id }}"
+              data-product-title="{{ product.title | escape }}"
+              data-product-price="{{ product.price | money }}"
+              data-product-image="{{ product.featured_image | image_url: width: 120 }}"
+              data-product-url="{{ product.url }}"
+              aria-label="Guardar en favoritos">
+        <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </div>
+
+    <!-- Details and Action -->
+    <div class="p-3.5 sm:p-4 flex flex-col gap-2 flex-grow justify-between bg-white">
+      <div>
+        <h3 class="font-bold text-xs sm:text-[13px] text-cozy-coffee/80 uppercase leading-snug line-clamp-2 m-0">
+          <a href="{{ product.url }}" class="hover:text-cozy-mint transition-colors no-underline text-inherit">
+            {{ product.title }}
+          </a>
+        </h3>
+      </div>
+
+      <div class="flex items-center justify-between gap-1.5 pt-2.5 border-t border-cozy-sand/50 mt-2">
+        <div class="flex flex-col">
+          <span class="text-sm sm:text-base font-bold text-cozy-coffee shrink-0">
+            {{ product.price | money }}
+          </span>
+          {%- if is_on_sale -%}
+            <del class="text-[11px] text-cozy-coffee/40 font-normal">
+              {{ product.compare_at_price | money }}
+            </del>
+          {%- endif -%}
+        </div>
+
+        {%- if product.available -%}
+          {%- if product.has_only_default_variant -%}
+            <button type="button"
+                    data-action="quick-add"
+                    data-variant-id="{{ first_variant.id }}"
+                    class="bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee px-3.5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 border-0 cursor-pointer shadow-sm hover:shadow active:scale-95 shrink-0">
+              {% render 'cozy-icons', name: 'basket-shopping', size: 13 %}
+              <span class="hidden sm:inline">Añadir</span>
+              <span class="sm:hidden">+</span>
+            </button>
+          {%- else -%}
+            <a href="{{ product.url }}"
+               class="bg-cozy-cream hover:bg-cozy-sand text-cozy-coffee px-3.5 py-2 rounded-full text-xs font-bold transition-colors flex items-center gap-1.5 no-underline shrink-0 border border-cozy-sand">
+              <span class="hidden sm:inline">Ver opciones</span>
+              <span class="sm:hidden">Ver</span>
+            </a>
+          {%- endif -%}
+        {%- else -%}
+          <span class="bg-cozy-sand text-cozy-coffee/60 px-3 py-1.5 rounded-full text-xs font-bold pointer-events-none shrink-0">
+            Agotado
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+{%- endif -%}
