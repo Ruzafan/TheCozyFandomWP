@@ -742,6 +742,12 @@
                 toggleMobileMenu();
                 break;
 
+            case 'toggle-dropdown':
+                e.preventDefault();
+                var dropdown = target.parentElement.querySelector('.cozy-nav-dropdown');
+                if (dropdown) dropdown.classList.toggle('hidden');
+                break;
+
             case 'close-mobile-menu':
                 e.preventDefault();
                 closeMobileMenu();

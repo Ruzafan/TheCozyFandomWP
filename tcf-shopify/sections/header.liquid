@@ -1,209 +1,164 @@
-<header id="masthead" class="site-header sticky top-0 z-[999] bg-[#f6eee1] transition-shadow duration-300 border-b border-cozy-sand/70">
+{%- comment -%}
+  Cozy Fandom Header — announcement bar, logo/search/icons row, category nav row.
+{%- endcomment -%}
 
-    <!-- ── Row 1: Logo · Search · Icons ───────────────────────── -->
-    <div class="ast-primary-header-bar">
-        <div class="cozy-hdr-inner max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+<div class="cozy-announcement-bar flex items-center justify-center gap-4 flex-wrap px-4 py-2">
+  <span class="inline-flex items-center gap-1.5">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    {{ section.settings.shipping_text | default: 'Envíos gratis en pedidos de más de 60 €' }}
+  </span>
+  <button id="tea-oracle-btn" type="button" data-action="open-tea-oracle" class="hidden inline-flex items-center gap-1 bg-white/30 hover:bg-white/60 text-cozy-coffee text-[11px] font-bold px-3 py-0.5 rounded-full border border-cozy-coffee/20 transition-all cursor-pointer">
+    ✨ Mensaje Cozy del Día 🫖
+  </button>
+</div>
 
-            <!-- Logo -->
-            <a href="/" class="cozy-hdr-logo flex items-center gap-3 no-underline shrink-0" aria-label="{{ shop.name }}">
-                {%- if section.settings.logo != blank -%}
-                    <img src="{{ section.settings.logo | image_url: width: 160 }}" alt="{{ shop.name }}" class="h-10 w-auto object-contain">
-                {%- elsif section.settings.logo_image_asset != blank -%}
-                    <img src="{{ section.settings.logo_image_asset | asset_url }}" alt="{{ shop.name }}" class="h-10 w-auto object-contain">
-                {%- endif -%}
-                <div class="cozy-hdr-logo__text-wrap flex flex-col">
-                    <span class="cozy-hdr-logo__name font-serif text-xl sm:text-2xl font-bold text-cozy-coffee tracking-tight">{{ section.settings.logo_text | default: shop.name }}</span>
-                    {%- if section.settings.tagline != blank -%}
-                        <span class="cozy-hdr-logo__tagline text-[10px] uppercase tracking-wider font-semibold text-cozy-coffee/50">{{ section.settings.tagline }}</span>
-                    {%- endif -%}
-                </div>
-            </a>
+<header id="masthead" class="site-header bg-cozy-cream border-b border-cozy-sand">
+  <div class="cozy-hdr-inner max-w-[1400px] mx-auto flex items-center gap-4 px-4 py-3">
 
-            <!-- Live Search -->
-            <div class="cozy-hdr-search-wrap relative flex-1 max-w-md hidden sm:block">
-                <form action="/search" method="get" role="search" class="cozy-hdr-search flex items-center bg-white rounded-2xl border-2 border-cozy-sand overflow-hidden focus-within:border-cozy-mint transition-colors">
-                    <input type="search" name="q" placeholder="Buscar tesoros, tazas, papelería..." class="cozy-hdr-search__input flex-1 px-4 py-2 text-xs text-cozy-coffee bg-transparent border-0 outline-none placeholder-cozy-coffee/40" autocomplete="off">
-                    <input type="hidden" name="type" value="product">
-                    <button type="submit" class="cozy-hdr-search__btn px-4 py-2.5 bg-cozy-mint hover:bg-cozy-mintDark text-white border-0 cursor-pointer flex items-center justify-center transition-colors" aria-label="Buscar">
-                        {% render 'cozy-icons', name: 'search', size: 16 %}
-                    </button>
-                </form>
-                <div id="cozy-search-suggestions" class="cozy-search-suggestions hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border-2 border-cozy-sand rounded-2xl shadow-xl z-50 max-h-80 overflow-y-auto"></div>
-            </div>
+    <a href="{{ routes.root_url }}" class="cozy-hdr-logo flex items-center gap-2 shrink-0 no-underline" aria-label="{{ shop.name }}">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | image_url: width: 160 }}" alt="{{ shop.name }}" width="40" height="40" class="rounded-2xl">
+      {%- endif -%}
+      <div class="flex flex-col leading-tight">
+        <span class="font-serif font-bold text-cozy-coffee text-lg">{{ shop.name }}</span>
+        {%- if section.settings.tagline != blank -%}
+          <span class="text-[11px] text-cozy-coffee/60">{{ section.settings.tagline }}</span>
+        {%- endif -%}
+      </div>
+    </a>
 
-            <!-- Header Action Icons -->
-            <div class="cozy-hdr-actions flex items-center gap-2">
-
-                <div class="cozy-hdr-actions-icons flex items-center gap-2">
-                    <!-- Customer Account -->
-                    <a href="{% if customer %}/account{% else %}/account/login{% endif %}" class="cozy-hdr-icon w-10 h-10 rounded-full flex items-center justify-center text-cozy-coffee hover:bg-cozy-sand transition-colors no-underline hidden md:flex" aria-label="Mi cuenta">
-                        {% render 'cozy-icons', name: 'account', size: 19 %}
-                    </a>
-
-                    <!-- Favorites -->
-                    <button type="button" data-action="open-favorites" class="cozy-hdr-icon relative w-10 h-10 rounded-full flex items-center justify-center text-cozy-coffee hover:bg-cozy-sand transition-colors border-0 bg-transparent cursor-pointer" aria-label="Mis favoritos">
-                        {% render 'cozy-icons', name: 'heart', size: 19 %}
-                        <span id="fav-badge" class="hidden absolute -top-0.5 -right-0.5 bg-red-400 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-xs">0</span>
-                    </button>
-
-                    <!-- Cart -->
-                    <button type="button" data-action="open-cart" class="cozy-hdr-icon cozy-hdr-cart relative w-10 h-10 rounded-full flex items-center justify-center text-cozy-coffee hover:bg-cozy-sand transition-colors border-0 bg-transparent cursor-pointer" aria-label="Carrito">
-                        {% render 'cozy-icons', name: 'cart', size: 19 %}
-                        <span id="cart-badge" class="{% if cart.item_count == 0 %}hidden{% endif %} absolute -top-0.5 -right-0.5 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-xs">
-                            {{ cart.item_count }}
-                        </span>
-                    </button>
-
-                    <!-- Ultra Cozy Toggle -->
-                    {%- if section.settings.enable_ultra_cozy -%}
-                    <div class="cozy-hdr-switch-wrap flex items-center gap-2 border-l border-cozy-sand/80 pl-3 ml-1 hidden lg:flex">
-                        <span class="text-[11px] font-bold text-cozy-coffee uppercase tracking-wider">Modo Cozy</span>
-                        <label class="relative inline-flex items-center cursor-pointer select-none" title="Activar Modo Cozy (Lluvia & Sonido)">
-                            <input type="checkbox" id="cozy-ultra-checkbox" data-action="toggle-ultra-cozy" class="sr-only peer">
-                            <div class="w-10 h-5 bg-cozy-sand peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cozy-sand after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cozy-mint shadow-inner"></div>
-                        </label>
-                    </div>
-                    {%- endif -%}
-                </div>
-
-                <!-- Mobile Hamburger -->
-                <button type="button" data-action="toggle-mobile-menu" class="cozy-hdr-icon cozy-hdr-hamburger md:hidden w-10 h-10 rounded-full flex items-center justify-center text-cozy-coffee hover:bg-cozy-sand transition-colors border-0 bg-transparent cursor-pointer" aria-label="Abrir Menú">
-                    {% render 'cozy-icons', name: 'menu', size: 20 %}
-                </button>
-            </div>
-
-        </div>
+    <div class="cozy-hdr-search-wrap relative flex-1 min-w-0">
+      <form role="search" method="get" action="{{ routes.search_url }}" class="cozy-hdr-search flex items-center bg-white border border-cozy-sand rounded-full px-3 py-1.5">
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Buscar productos..." autocomplete="off"
+               class="cozy-hdr-search__input flex-1 bg-transparent border-0 text-sm text-cozy-coffee focus:outline-none focus:ring-0">
+        <input type="hidden" name="type" value="product">
+        <button type="submit" class="cozy-hdr-search__btn text-cozy-coffee/70 hover:text-cozy-mint bg-transparent border-0 cursor-pointer" aria-label="Buscar">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+      </form>
+      <div id="cozy-search-suggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-cozy-sand rounded-2xl shadow-lg z-[999] max-h-96 overflow-y-auto"></div>
     </div>
 
+    <div class="cozy-hdr-actions flex items-center gap-3 shrink-0">
+      <div class="cozy-hdr-actions-icons hidden md:flex items-center gap-3">
+        <a href="{{ routes.account_url }}" class="cozy-hdr-icon text-cozy-coffee/80 hover:text-cozy-mint" aria-label="Mi cuenta">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+
+        <button type="button" data-action="open-favorites" class="cozy-hdr-icon relative text-cozy-coffee/80 hover:text-cozy-mint bg-transparent border-0 cursor-pointer" aria-label="Mis favoritos">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span id="fav-badge" class="hidden absolute -top-0.5 -right-0.5 bg-red-400 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">0</span>
+        </button>
+
+        <button type="button" data-action="open-cart" class="cozy-hdr-icon relative text-cozy-coffee/80 hover:text-cozy-mint bg-transparent border-0 cursor-pointer" aria-label="Carrito">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span id="cart-badge" class="{% if cart.item_count == 0 %}hidden {% endif %}absolute -top-0.5 -right-0.5 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">{{ cart.item_count }}</span>
+        </button>
+
+        <div class="cozy-hdr-switch-wrap flex items-center gap-2 border-l border-cozy-sand/80 pl-3 ml-1">
+          <span class="text-[11px] font-bold text-cozy-coffee uppercase tracking-wider hidden xl:inline">Modo Cozy</span>
+          <label class="relative inline-flex items-center cursor-pointer select-none" title="Activar Modo Cozy">
+            <input type="checkbox" id="cozy-ultra-checkbox" data-action="toggle-ultra-cozy" class="sr-only peer">
+            <div class="w-10 h-5 bg-cozy-sand peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cozy-sand after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cozy-mint shadow-inner"></div>
+          </label>
+        </div>
+      </div>
+
+      <button type="button" data-action="toggle-mobile-menu" class="cozy-hdr-hamburger text-cozy-coffee bg-transparent border-0 cursor-pointer" aria-label="Menú" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
 </header>
 
-<!-- ── Row 2: Category navigation bar (Desktop) & Mobile drawer ── -->
-<div class="cozy-hdr-nav-row bg-[#f6eee1] border-b border-cozy-sand/60 hidden md:block" id="cozy-nav-desktop">
-    <div class="max-w-7xl mx-auto px-4 md:px-8">
-        <nav class="cozy-hdr-nav flex items-center gap-1 py-1.5 overflow-x-auto" aria-label="Navegación principal">
-            <a href="/" class="cozy-nav-link text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors no-underline">
-                Inicio
-            </a>
-            <a href="/collections/all" class="cozy-nav-link text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors no-underline">
-                Boutique
-            </a>
-
-            {%- if section.settings.menu != blank -%}
-                {%- for link in linklists[section.settings.menu].links -%}
-                    {%- if link.links != blank -%}
-                        <div class="cozy-nav-item relative group">
-                            <button type="button" class="cozy-nav-link flex items-center gap-1 text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors bg-transparent border-0 cursor-pointer">
-                                {{ link.title }}
-                                {% render 'cozy-icons', name: 'chevron-down', size: 10 %}
-                            </button>
-                            <div class="cozy-nav-dropdown hidden group-hover:block absolute top-full left-0 bg-white border border-cozy-sand rounded-2xl shadow-xl p-2 min-w-[180px] z-50 space-y-1">
-                                {%- for child_link in link.links -%}
-                                    <a href="{{ child_link.url }}" class="block px-3 py-1.5 text-xs text-cozy-coffee/80 hover:text-cozy-coffee hover:bg-cozy-mintLight rounded-xl transition-colors no-underline">
-                                        {{ child_link.title }}
-                                    </a>
-                                {%- endfor -%}
-                            </div>
-                        </div>
-                    {%- else -%}
-                        <a href="{{ link.url }}" class="cozy-nav-link text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors no-underline">
-                            {{ link.title }}
-                        </a>
-                    {%- endif -%}
-                {%- endfor -%}
-            {%- else -%}
-                <!-- Default Fandom Categories if menu not assigned -->
-                <a href="/collections/snoopy" class="cozy-nav-link text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors no-underline">Snoopy 🐾</a>
-                <a href="/collections/harry-potter" class="cozy-nav-link text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors no-underline">Harry Potter ⚡</a>
-                <a href="/collections/disney" class="cozy-nav-link text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors no-underline">Disney ✨</a>
-                <a href="/collections/pokemon" class="cozy-nav-link text-xs font-bold text-cozy-coffee/80 hover:text-cozy-coffee px-3 py-1.5 rounded-xl hover:bg-cozy-mint/15 transition-colors no-underline">Pokémon ⚡</a>
-            {%- endif -%}
-        </nav>
-    </div>
+<!-- Category nav row / mobile sidebar -->
+<div class="cozy-hdr-nav-row hidden md:block bg-cozy-cream border-b border-cozy-sand" id="cozy-nav-row">
+  <nav class="cozy-hdr-nav max-w-[1400px] mx-auto flex items-center gap-5 px-4 py-2 text-xs font-bold uppercase tracking-wide text-cozy-coffee/80" aria-label="Navegación principal">
+    <a href="{{ routes.all_products_collection_url }}" class="hover:text-cozy-mint no-underline text-inherit">Tienda</a>
+    {%- for link in linklists[section.settings.menu].links -%}
+      {%- if link.links != blank -%}
+        <div class="cozy-nav-item cozy-nav-has-dropdown relative group">
+          <button class="cozy-nav-link cozy-nav-link--has-arrow inline-flex items-center gap-1 bg-transparent border-0 cursor-pointer uppercase text-xs font-bold text-cozy-coffee/80 hover:text-cozy-mint" aria-haspopup="true" aria-expanded="false">
+            {{ link.title }}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="cozy-nav-dropdown hidden group-hover:block absolute top-full left-0 mt-1 bg-white border border-cozy-sand rounded-2xl shadow-lg py-2 min-w-[180px] z-[100]" role="menu">
+            {%- for child in link.links -%}
+              <a href="{{ child.url }}" class="cozy-nav-dropdown__link block px-4 py-2 text-xs font-semibold normal-case text-cozy-coffee hover:bg-cozy-mintLight no-underline{% if child.active %} is-active{% endif %}" role="menuitem">
+                {{ child.title }}
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- else -%}
+        <a href="{{ link.url }}" class="cozy-nav-link hover:text-cozy-mint no-underline text-inherit{% if link.active %} cozy-nav-link--active{% endif %}">{{ link.title }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+  </nav>
 </div>
 
-<!-- Mobile Nav Drawer -->
-<div id="cozy-nav-sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#f6eee1] z-[1200] transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col md:hidden">
-    <div class="p-4 border-b border-cozy-sand/80 flex items-center justify-between">
-        <span class="font-serif font-bold text-lg text-cozy-coffee">Menú</span>
-        <button type="button" data-action="close-mobile-menu" class="w-8 h-8 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee border-0 cursor-pointer" aria-label="Cerrar">
-            {% render 'cozy-icons', name: 'close', size: 14 %}
-        </button>
-    </div>
+<!-- Mobile sidebar menu -->
+<div class="cozy-hdr-nav-row md:hidden fixed inset-y-0 left-0 -translate-x-full w-full max-w-xs bg-white z-[1001] shadow-2xl transition-transform duration-300" id="cozy-nav-sidebar">
+  <div class="cozy-mobile-nav-header flex items-center justify-between p-5 border-b border-cozy-sand">
+    <span class="cozy-mobile-nav-title font-serif font-bold text-cozy-coffee">Menú</span>
+    <button type="button" data-action="close-mobile-menu" class="cozy-mobile-nav-close bg-transparent border-0 cursor-pointer text-cozy-coffee" aria-label="Cerrar menú">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
 
-    <!-- Quick mobile actions -->
-    <div class="p-3 border-b border-cozy-sand/80 grid grid-cols-3 gap-2">
-        <a href="{% if customer %}/account{% else %}/account/login{% endif %}" class="flex flex-col items-center p-2 rounded-xl bg-white text-cozy-coffee text-center no-underline text-[10px] font-bold">
-            {% render 'cozy-icons', name: 'account', size: 18 %}
-            <span class="mt-1">Cuenta</span>
-        </a>
-        <button type="button" data-action="close-mobile-menu-open-favorites" class="flex flex-col items-center p-2 rounded-xl bg-white text-cozy-coffee text-center border-0 cursor-pointer text-[10px] font-bold">
-            {% render 'cozy-icons', name: 'heart', size: 18 %}
-            <span class="mt-1">Favoritos</span>
-        </button>
-        <button type="button" data-action="close-mobile-menu-open-cart" class="flex flex-col items-center p-2 rounded-xl bg-white text-cozy-coffee text-center border-0 cursor-pointer text-[10px] font-bold">
-            {% render 'cozy-icons', name: 'cart', size: 18 %}
-            <span class="mt-1">Carrito</span>
-        </button>
+  <div class="cozy-mobile-nav-actions grid grid-cols-4 gap-2 p-4 border-b border-cozy-sand">
+    <a href="{{ routes.account_url }}" class="cozy-mobile-nav-action-btn flex flex-col items-center gap-1 text-cozy-coffee no-underline" aria-label="Mi cuenta">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="text-[10px] font-semibold">Cuenta</span>
+    </a>
+    <button type="button" data-action="close-mobile-menu-open-favorites" class="cozy-mobile-nav-action-btn flex flex-col items-center gap-1 text-cozy-coffee bg-transparent border-0 cursor-pointer" aria-label="Mis favoritos">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="text-[10px] font-semibold">Favoritos</span>
+    </button>
+    <button type="button" data-action="close-mobile-menu-open-cart" class="cozy-mobile-nav-action-btn flex flex-col items-center gap-1 text-cozy-coffee bg-transparent border-0 cursor-pointer" aria-label="Carrito">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="text-[10px] font-semibold">Carrito</span>
+    </button>
+    <div class="cozy-mobile-nav-action-btn flex flex-col items-center gap-1 cursor-pointer" title="Activar Modo Cozy">
+      <label class="relative inline-flex items-center cursor-pointer select-none">
+        <input type="checkbox" id="cozy-ultra-checkbox-mobile" data-action="toggle-ultra-cozy" class="sr-only peer">
+        <div class="w-9 h-5 bg-cozy-sand peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cozy-sand after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cozy-mint shadow-inner"></div>
+      </label>
+      <span class="text-[10px] font-semibold text-center">Modo Cozy</span>
     </div>
+  </div>
 
-    <div class="p-4 overflow-y-auto flex-grow space-y-1">
-        <a href="/" class="block px-3 py-2 text-sm font-bold text-cozy-coffee hover:bg-white rounded-xl no-underline">Inicio</a>
-        <a href="/collections/all" class="block px-3 py-2 text-sm font-bold text-cozy-coffee hover:bg-white rounded-xl no-underline">Boutique Completa</a>
-        <a href="/collections/snoopy" class="block px-3 py-2 text-sm font-bold text-cozy-coffee hover:bg-white rounded-xl no-underline">Snoopy 🐾</a>
-        <a href="/collections/harry-potter" class="block px-3 py-2 text-sm font-bold text-cozy-coffee hover:bg-white rounded-xl no-underline">Harry Potter ⚡</a>
-        <a href="/collections/disney" class="block px-3 py-2 text-sm font-bold text-cozy-coffee hover:bg-white rounded-xl no-underline">Disney ✨</a>
-        <a href="/collections/pokemon" class="block px-3 py-2 text-sm font-bold text-cozy-coffee hover:bg-white rounded-xl no-underline">Pokémon ⚡</a>
-    </div>
-
-    <!-- Mobile Ultra Cozy Toggle -->
-    <div class="p-4 border-t border-cozy-sand/80 bg-white/50 flex items-center justify-between">
-        <span class="text-xs font-bold text-cozy-coffee">Modo Ultra-Cozy</span>
-        <label class="relative inline-flex items-center cursor-pointer select-none">
-            <input type="checkbox" id="cozy-ultra-checkbox-mobile" data-action="toggle-ultra-cozy" class="sr-only peer">
-            <div class="w-9 h-5 bg-cozy-sand peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cozy-sand after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cozy-mint shadow-inner"></div>
-        </label>
-    </div>
+  <nav id="mobile-menu" class="cozy-hdr-nav flex flex-col p-4 gap-1" aria-label="Navegación móvil">
+    <a href="{{ routes.all_products_collection_url }}" class="cozy-nav-link block py-2.5 px-2 text-sm font-bold text-cozy-coffee no-underline">Tienda</a>
+    {%- for link in linklists[section.settings.menu].links -%}
+      {%- if link.links != blank -%}
+        <div class="cozy-nav-item cozy-nav-has-dropdown">
+          <button class="cozy-nav-link cozy-nav-link--has-arrow flex items-center justify-between w-full py-2.5 px-2 text-sm font-bold text-cozy-coffee bg-transparent border-0 cursor-pointer" data-action="toggle-dropdown">
+            {{ link.title }}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="cozy-nav-dropdown pl-4">
+            {%- for child in link.links -%}
+              <a href="{{ child.url }}" class="cozy-nav-dropdown__link block py-2 px-2 text-xs font-semibold text-cozy-coffee/80 no-underline">{{ child.title }}</a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- else -%}
+        <a href="{{ link.url }}" class="cozy-nav-link block py-2.5 px-2 text-sm font-bold text-cozy-coffee no-underline">{{ link.title }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+  </nav>
 </div>
-<div id="mobile-menu-overlay" data-action="close-mobile-menu" class="hidden fixed inset-0 bg-cozy-coffee/40 z-[1199] backdrop-blur-sm"></div>
+<div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000]" data-action="close-mobile-menu" aria-hidden="true"></div>
 
 {% schema %}
 {
-  "name": "Cabecera",
+  "name": "Header",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo de la tienda"
-    },
-    {
-      "type": "text",
-      "id": "logo_image_asset",
-      "label": "O nombre del archivo en assets (ej: logo.webp)",
-      "default": "logo.webp"
-    },
-    {
-      "type": "text",
-      "id": "logo_text",
-      "label": "Texto del logo",
-      "default": "The Cozy Fandom"
-    },
-    {
-      "type": "text",
-      "id": "tagline",
-      "label": "Subtítulo del logo",
-      "default": "Boutique & Coleccionables"
-    },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menú principal"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_ultra_cozy",
-      "label": "Habilitar interruptor Modo Cozy",
-      "default": true
-    }
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "text", "id": "tagline", "label": "Eslogan" },
+    { "type": "text", "id": "shipping_text", "label": "Texto barra de anuncios", "default": "Envíos gratis en pedidos de más de 60 €" },
+    { "type": "link_list", "id": "menu", "label": "Menú de categorías", "default": "main-menu" }
   ]
 }
 {% endschema %}
