@@ -1376,11 +1376,6 @@ function cozyRemoveFavItem(productId) {
         }
 
         setAudioState(isUltraActive);
-
-        var msg = isUltraActive
-            ? '🌧️ Modo Ultra-Cozy activado: Lluvia, chimenea y tu bebida calentita 🍵'
-            : '☀️ Modo normal restaurado';
-        window.cozyShowToast(msg);
     };
 
     window.cozySetWeather = function(mode) {
@@ -1391,15 +1386,6 @@ function cozyRemoveFavItem(productId) {
         try {
             localStorage.setItem('cozy_weather', currentWeather);
         } catch(e) {}
-
-        var labels = {
-            none: '✨ Modo Despejado (Sin efectos en pantalla)',
-            rain: '🌧️ Clima: Lluvia & Chimenea',
-            autumn: '🍂 Clima: Otoño Dorado',
-            snow: '❄️ Clima: Nieve Silenciosa',
-            sakura: '🌸 Clima: Primavera Sakura'
-        };
-        window.cozyShowToast(labels[currentWeather] || 'Clima actualizado');
     }; 
 
     var oracleQuotes = [
@@ -1473,24 +1459,4 @@ function cozyRemoveFavItem(productId) {
     });
 
 })();
-
-window.cozyShowToast = function(message) {
-    var toast = document.getElementById('cozy-toast');
-    if (toast) toast.remove();
-
-    toast = document.createElement('div');
-    toast.id = 'cozy-toast';
-    toast.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[3000] bg-cozy-coffee/90 text-white text-xs font-bold px-6 py-3 rounded-full shadow-2xl backdrop-blur-md transition-all duration-300 opacity-0 translate-y-4 flex items-center gap-2 border border-cozy-mint/30';
-    toast.innerHTML = message;
-    document.body.appendChild(toast);
-
-    setTimeout(function() {
-        toast.classList.remove('opacity-0', 'translate-y-4');
-    }, 20);
-
-    setTimeout(function() {
-        toast.classList.add('opacity-0', 'translate-y-4');
-        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
-    }, 3500);
-};
 
