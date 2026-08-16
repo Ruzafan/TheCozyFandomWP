@@ -431,6 +431,9 @@
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
+    {% render 'cart-drawer' %}
+    {% render 'favorites-drawer' %}
+
     <script src="{{ 'cozy-main.js' | asset_url }}" defer></script>
     {% render 'cookie-banner' %}
     {% render 'cozy-ambient' %}

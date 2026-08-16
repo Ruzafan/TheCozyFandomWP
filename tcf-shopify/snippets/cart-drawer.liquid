@@ -1,0 +1,92 @@
+{%- comment -%}
+  Cozy Cart Drawer with Kraft Gift Note
+{%- endcomment -%}
+<div id="cart-overlay"
+     class="hidden fixed inset-0 bg-cozy-coffee/30 z-[1000] backdrop-blur-sm"
+     data-action="close-cart" aria-hidden="true"></div>
+
+<div id="cart-drawer"
+     class="translate-x-full fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[1001] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out"
+     role="dialog" aria-modal="true" aria-label="Carrito de compra">
+
+    <div class="flex items-center justify-between p-6 border-b border-cozy-sand">
+        <h2 class="font-serif text-xl font-bold text-cozy-coffee m-0">Tu carrito</h2>
+        <button type="button" data-action="close-cart"
+                class="w-9 h-9 rounded-full bg-cozy-cream hover:bg-cozy-sand flex items-center justify-center text-cozy-coffee transition-colors border-0 cursor-pointer"
+                aria-label="Cerrar carrito">
+            {% render 'cozy-icons', name: 'close', size: 16 %}
+        </button>
+    </div>
+
+    <!-- Items container: dynamically populated and synced via JS /cart.js -->
+    <div id="cart-drawer-items" class="p-6 overflow-y-auto flex-grow space-y-4">
+        {%- if cart.item_count > 0 -%}
+            {%- for item in cart.items -%}
+                <div class="flex items-center gap-4 py-3 border-b border-cozy-sand/40 last:border-none" data-line-key="{{ item.key }}">
+                    <a href="{{ item.url }}" class="shrink-0 w-16 h-16 rounded-xl bg-cozy-cream overflow-hidden border border-cozy-sand/60">
+                        {% if item.image %}
+                            <img src="{{ item.image | image_url: width: 120 }}" alt="{{ item.title | escape }}" class="w-full h-full object-contain">
+                        {% endif %}
+                    </a>
+                    <div class="flex-1 min-w-0">
+                        <a href="{{ item.url }}" class="text-xs font-bold text-cozy-coffee hover:text-cozy-mint block truncate no-underline">
+                            {{ item.product.title }}
+                        </a>
+                        {%- unless item.product.has_only_default_variant -%}
+                            <span class="text-[11px] text-cozy-coffee/50 block">{{ item.variant.title }}</span>
+                        {%- endunless -%}
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xs font-bold text-cozy-coffee">{{ item.price | money }}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-cozy-coffee/60">x{{ item.quantity }}</span>
+                                <button type="button" data-action="remove-cart-item" data-line-key="{{ item.key }}" class="text-[11px] text-red-400 hover:text-red-600 bg-transparent border-0 cursor-pointer p-0 ml-2">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%- endfor -%}
+        {%- else -%}
+            <div id="cart-empty-msg" class="text-center py-12 space-y-3">
+                <div class="text-4xl">🧺</div>
+                <p class="text-sm text-cozy-coffee/60">Tu carrito está vacío.</p>
+                <button type="button" data-action="close-cart" class="text-xs font-bold text-cozy-mint hover:underline bg-transparent border-0 cursor-pointer">
+                    ¡Explorar la boutique!
+                </button>
+            </div>
+        {%- endif -%}
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="p-6 border-t border-cozy-sand bg-white space-y-3 mt-auto">
+        <!-- Kraft Gift Note -->
+        <div class="cozy-gift-note-wrap border-b border-cozy-sand/60 pb-3 mb-2">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cozy-coffee select-none">
+                <input type="checkbox" id="cozy-gift-checkbox" data-action="toggle-gift-note" class="accent-cozy-mint w-4 h-4 rounded" {% if cart.attributes['Nota de regalo'] != blank %}checked{% endif %}>
+                <span>🎁 ¿Es un regalo? Añadir nota manuscrita</span>
+            </label>
+            <div id="cozy-gift-field" class="{% unless cart.attributes['Nota de regalo'] != blank %}hidden{% endunless %} mt-2.5 p-3 bg-[#F5ECE0] border border-[#D8C6B0] rounded-2xl shadow-inner relative">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[10px] font-bold text-cozy-coffee/70 uppercase tracking-wider">🎀 Nota Kraft Vintage</span>
+                    <span class="text-[10px] text-cozy-mint font-bold uppercase">Gratis</span>
+                </div>
+                <textarea id="cozy-gift-text" rows="2" placeholder="Escribe aquí tu mensaje especial..." class="w-full bg-transparent border-0 text-xs text-cozy-coffee focus:ring-0 p-0 placeholder-cozy-coffee/40 resize-none font-serif italic">{{ cart.attributes['Nota de regalo'] }}</textarea>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between text-sm font-medium text-cozy-coffee/70">
+            <span>Subtotal</span>
+            <span id="cart-drawer-total" class="text-lg font-bold text-cozy-coffee">{{ cart.total_price | money }}</span>
+        </div>
+
+        <a href="/checkout"
+           class="block w-full text-center bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-bold py-3.5 rounded-2xl transition-colors text-sm no-underline shadow-md">
+            Finalizar pedido
+        </a>
+        <a href="/cart"
+           class="block w-full text-center border border-cozy-sand hover:border-cozy-coffee text-cozy-coffee font-medium py-3 rounded-2xl transition-colors text-sm no-underline">
+            Ver carrito completo
+        </a>
+    </div>
+</div>
