@@ -1,0 +1,89 @@
+<section id="top-ventas" class="relative overflow-hidden bg-gradient-to-br from-cozy-mintLight/80 via-cozy-cream to-cozy-sand/50 py-12 md:py-16 px-6 md:px-12 rounded-[32px] border border-cozy-mint/30 shadow-sm max-w-7xl mx-auto my-8">
+
+    <!-- Decorative ambient glowing blobs -->
+    <div class="absolute -top-20 -right-20 w-72 h-72 bg-cozy-mint/25 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute -bottom-20 -left-20 w-72 h-72 bg-cozy-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12">
+            <div>
+                <span class="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-cozy-accent text-xs font-bold px-3.5 py-1 rounded-full border border-cozy-accent/20 shadow-xs mb-3">
+                    {{ section.settings.badge | default: '🔥 Los Más Buscados' }}
+                </span>
+                <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-cozy-coffee m-0">{{ section.settings.title | default: 'Top ventas de la comunidad' }}</h2>
+                <p class="text-xs sm:text-sm text-cozy-coffee/75 mt-2 mb-0">{{ section.settings.text | default: 'Los favoritos indiscutibles de nuestros fans cozy.' }}</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <a href="{{ section.settings.collection.url | default: '/collections/all' }}"
+                   class="inline-flex items-center bg-white hover:bg-cozy-mintLight text-cozy-coffee px-5 py-2.5 rounded-full text-xs font-semibold border border-cozy-sand shadow-xs hover:border-cozy-mint transition-all duration-200 no-underline">
+                    Ver todos los productos →
+                </a>
+            </div>
+        </div>
+
+        <!-- Products Grid with Top Ranking Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {%- assign collection = collections[section.settings.collection] | default: collections.all -%}
+            {%- assign rank = 0 -%}
+            {%- for product in collection.products limit: section.settings.products_to_show -%}
+                {%- assign rank = rank | plus: 1 -%}
+                {% render 'product-card', product: product, rank: rank %}
+            {%- else -%}
+                {%- for i in (1..4) -%}
+                    <div class="bg-white rounded-[24px] p-6 border border-cozy-sand text-center space-y-3">
+                        <div class="h-44 bg-cozy-cream rounded-2xl flex items-center justify-center text-3xl">🔥</div>
+                        <p class="text-xs font-bold text-cozy-coffee">Top Producto #{{ i }}</p>
+                        <p class="text-sm font-bold text-cozy-mint">24,95 €</p>
+                    </div>
+                {%- endfor -%}
+            {%- endfor -%}
+        </div>
+
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Top Ventas",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Píldora / Insignia",
+      "default": "🔥 Los Más Buscados"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Top ventas de la comunidad"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Descripción",
+      "default": "Los favoritos indiscutibles de nuestros fans cozy."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Colección a destacar"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 2,
+      "default": 4,
+      "label": "Cantidad de productos"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Top Ventas"
+    }
+  ]
+}
+{% endschema %}

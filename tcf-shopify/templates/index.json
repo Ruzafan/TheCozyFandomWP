@@ -1,0 +1,64 @@
+{
+  "sections": {
+    "hero_banner": {
+      "type": "hero-banner",
+      "settings": {}
+    },
+    "featured_collections": {
+      "type": "featured-collections",
+      "settings": {},
+      "blocks": {
+        "fandom_card_1": {
+          "type": "fandom_card",
+          "settings": {
+            "title": "El Rincón de Snoopy",
+            "description": "El beagle más adorable del mundo en tazas, figuras, papelería y mucho más.",
+            "link_text": "Ver colección Snoopy",
+            "image_asset": "snoopy-heart.webp",
+            "icon": "paw",
+            "bg_color": "bg-white",
+            "icon_bg": "bg-cozy-mintLight",
+            "icon_color": "text-cozy-mint"
+          }
+        },
+        "fandom_card_2": {
+          "type": "fandom_card",
+          "settings": {
+            "title": "Escoge tu Casa",
+            "description": "Gryffindor, Slytherin, Hufflepuff o Ravenclaw. Llena tu rincón de magia con Harry Potter.",
+            "link_text": "Entrar al castillo",
+            "image_asset": "harry-potter.webp",
+            "icon": "hat-wizard",
+            "bg_color": "bg-cozy-sand",
+            "icon_bg": "bg-white",
+            "icon_color": "text-cozy-accent"
+          }
+        },
+        "fandom_card_3": {
+          "type": "fandom_card",
+          "settings": {
+            "title": "La Magia de Disney",
+            "description": "Princesas, clásicos y villanos de ensueño. Objetos coleccionables y detalles mágicos.",
+            "link_text": "Explorar Disney",
+            "image_asset": "disney.webp",
+            "icon": "star",
+            "bg_color": "bg-white",
+            "icon_bg": "bg-cozy-mintLight",
+            "icon_color": "text-cozy-mint"
+          }
+        }
+      },
+      "block_order": ["fandom_card_1", "fandom_card_2", "fandom_card_3"]
+    },
+    "featured_products": {
+      "type": "featured-products",
+      "settings": {
+        "badge": "🔥 Los Más Buscados",
+        "title": "Top ventas de la comunidad",
+        "text": "Los favoritos indiscutibles de nuestros fans cozy.",
+        "products_to_show": 8
+      }
+    }
+  },
+  "order": ["hero_banner", "featured_collections", "featured_products"]
+}

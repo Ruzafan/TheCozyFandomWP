@@ -1,0 +1,206 @@
+<section id="categorias" class="py-12 md:py-16 px-6 md:px-12 max-w-7xl mx-auto rounded-[32px]">
+
+    <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+        <span class="text-xs font-bold text-cozy-mint uppercase tracking-widest block mb-2">{{ section.settings.subtitle | default: 'Universos Favoritos' }}</span>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-cozy-coffee m-0">{{ section.settings.title | default: 'Elige tu fandom' }}</h2>
+        <p class="text-xs sm:text-sm text-cozy-coffee/70 mt-3 mb-0">{{ section.settings.text | default: 'Sumérgete en el universo que más te llama. Colecciones pensadas para los fans de verdad.' }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {%- for block in section.blocks -%}
+            <a href="{{ block.settings.link | default: '/collections/all' }}" class="group {{ block.settings.bg_color }} rounded-[32px] p-8 border border-cozy-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden no-underline">
+
+                {%- if block.settings.image != blank -%}
+                    <img src="{{ block.settings.image | image_url: width: 400 }}"
+                         alt="{{ block.settings.title | escape }}"
+                         loading="lazy"
+                         class="absolute object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500 z-0"
+                         style="width:200px;height:200px;bottom:-8px;right:-8px;">
+                {%- elsif block.settings.image_asset != blank -%}
+                    <img src="{{ block.settings.image_asset | asset_url }}"
+                         alt="{{ block.settings.title | escape }}"
+                         loading="lazy"
+                         class="absolute object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500 z-0"
+                         style="width:200px;height:200px;bottom:-8px;right:-8px;">
+                {%- endif -%}
+
+                <div class="relative z-10" style="max-width:55%">
+                    <div class="w-12 h-12 rounded-2xl {{ block.settings.icon_bg }} flex items-center justify-center {{ block.settings.icon_color }} text-lg mb-6 shadow-xs">
+                        {% render 'cozy-icons', name: block.settings.icon, size: 20 %}
+                    </div>
+                    <h3 class="font-serif text-xl sm:text-2xl font-bold text-cozy-coffee mb-2 m-0">{{ block.settings.title }}</h3>
+                    <p class="text-xs text-cozy-coffee/70 leading-relaxed max-w-[170px] mt-2 mb-0">{{ block.settings.description }}</p>
+                </div>
+
+                <div class="pt-6 z-10">
+                    <span class="inline-flex items-center gap-2 text-xs font-bold text-cozy-coffee group-hover:text-cozy-mint transition-colors">
+                        {{ block.settings.link_text | default: 'Ver colección' }}
+                        {% render 'cozy-icons', name: 'arrow-right', size: 12, class: 'group-hover:translate-x-1 transition-transform' %}
+                    </span>
+                </div>
+            </a>
+        {%- endfor -%}
+    </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "Colecciones Fandom",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Universos Favoritos"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Elige tu fandom"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Descripción",
+      "default": "Sumérgete en el universo que más te llama. Colecciones pensadas para los fans de verdad."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "fandom_card",
+      "name": "Tarjeta Fandom",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "El Rincón de Snoopy"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descripción",
+          "default": "El beagle más adorable del mundo en tazas, figuras, papelería y mucho más."
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Texto del enlace",
+          "default": "Ver colección Snoopy"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Ilustración / Foto"
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "O archivo en assets (ej: snoopy-heart.webp)",
+          "default": "snoopy-heart.webp"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icono",
+          "options": [
+            { "value": "paw", "label": "Huella (Snoopy / Mascotas)" },
+            { "value": "hat-wizard", "label": "Sombrero Mágico (Harry Potter)" },
+            { "value": "star", "label": "Estrella Mágica (Disney)" },
+            { "value": "heart", "label": "Corazón" }
+          ],
+          "default": "paw"
+        },
+        {
+          "type": "select",
+          "id": "bg_color",
+          "label": "Fondo de la tarjeta",
+          "options": [
+            { "value": "bg-white", "label": "Blanco" },
+            { "value": "bg-cozy-sand", "label": "Arena Cálido" },
+            { "value": "bg-cozy-mintLight", "label": "Menta Suave" }
+          ],
+          "default": "bg-white"
+        },
+        {
+          "type": "select",
+          "id": "icon_bg",
+          "label": "Fondo del icono",
+          "options": [
+            { "value": "bg-cozy-mintLight", "label": "Menta Claro" },
+            { "value": "bg-white", "label": "Blanco" },
+            { "value": "bg-cozy-sand", "label": "Arena" }
+          ],
+          "default": "bg-cozy-mintLight"
+        },
+        {
+          "type": "select",
+          "id": "icon_color",
+          "label": "Color del icono",
+          "options": [
+            { "value": "text-cozy-mint", "label": "Menta" },
+            { "value": "text-cozy-accent", "label": "Acento Dorado" },
+            { "value": "text-cozy-coffee", "label": "Café" }
+          ],
+          "default": "text-cozy-mint"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "fandom_card",
+        "settings": {
+          "title": "El Rincón de Snoopy",
+          "description": "El beagle más adorable del mundo en tazas, figuras, papelería y mucho más.",
+          "link_text": "Ver colección Snoopy",
+          "image_asset": "snoopy-heart.webp",
+          "icon": "paw",
+          "bg_color": "bg-white",
+          "icon_bg": "bg-cozy-mintLight",
+          "icon_color": "text-cozy-mint"
+        }
+      },
+      {
+        "type": "fandom_card",
+        "settings": {
+          "title": "Escoge tu Casa",
+          "description": "Gryffindor, Slytherin, Hufflepuff o Ravenclaw. Llena tu rincón de magia con Harry Potter.",
+          "link_text": "Entrar al castillo",
+          "image_asset": "harry-potter.webp",
+          "icon": "hat-wizard",
+          "bg_color": "bg-cozy-sand",
+          "icon_bg": "bg-white",
+          "icon_color": "text-cozy-accent"
+        }
+      },
+      {
+        "type": "fandom_card",
+        "settings": {
+          "title": "La Magia de Disney",
+          "description": "Princesas, clásicos y villanos de ensueño. Objetos coleccionables y detalles mágicos.",
+          "link_text": "Explorar Disney",
+          "image_asset": "disney.webp",
+          "icon": "star",
+          "bg_color": "bg-white",
+          "icon_bg": "bg-cozy-mintLight",
+          "icon_color": "text-cozy-mint"
+        }
+      }
+    ]
+  },
+  "presets": [
+    {
+      "name": "Colecciones Fandom"
+    }
+  ]
+}
+{% endschema %}
