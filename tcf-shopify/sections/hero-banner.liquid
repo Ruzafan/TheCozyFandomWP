@@ -1,85 +1,84 @@
-<section id="home" class="relative overflow-hidden">
+{%- comment -%}
+  Cozy Fandom Hero Banner — full-bleed image with glass copy card + trust badges.
+{%- endcomment -%}
 
-    <!-- Banner image with overlay copy -->
-    <div class="relative w-full h-[60vh] md:h-[80vh] min-h-[480px]">
+<section class="relative overflow-hidden">
+  <div class="relative w-full h-[60vh] md:h-[80vh]">
+    {%- if section.settings.image != blank -%}
+      <img src="{{ section.settings.image | image_url: width: 1920 }}" alt="" aria-hidden="true" loading="eager"
+           class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
+    {%- endif -%}
 
-        {%- if section.settings.image != blank -%}
-            <img src="{{ section.settings.image | image_url: width: 1800 }}"
-                 alt="{{ section.settings.title | escape }}"
-                 class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
-        {%- elsif section.settings.image_asset != blank -%}
-            <img src="{{ section.settings.image_asset | asset_url }}"
-                 alt="{{ section.settings.title | escape }}"
-                 class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
-        {%- endif -%}
-
-        <!-- Copy: glass card -->
-        <div class="relative z-10 h-full flex items-center">
-            <div class="w-full max-w-7xl mx-auto px-6 md:px-16">
-                <div class="rounded-[28px] p-8 md:p-10 max-w-[480px] shadow-lg border border-white/50"
-                     style="background:rgba(255,255,255,0.78); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);">
-
-                    <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-cozy-coffee m-0 p-0">
-                        {{ section.settings.title }}
-                    </h1>
-                    <p class="text-xs sm:text-sm md:text-base text-cozy-coffee/80 leading-relaxed mt-4 mb-6">
-                        {{ section.settings.text }}
-                    </p>
-
-                    <a href="{{ section.settings.button_link | default: '/collections/all' }}"
-                       class="inline-flex items-center gap-2 bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 no-underline">
-                        {{ section.settings.button_label | default: 'Ver la Colección' }}
-                        {% render 'cozy-icons', name: 'arrow-right', size: 14 %}
-                    </a>
-                </div>
-            </div>
+    <div class="relative z-10 h-full flex items-center">
+      <div class="w-full max-w-7xl mx-auto px-6 md:px-16">
+        <div class="rounded-[28px] p-8 md:p-10 max-w-[460px] shadow-sm bg-white/76 backdrop-blur-md">
+          <h1 class="font-serif text-4xl md:text-5xl font-semibold leading-tight text-cozy-coffee m-0">
+            {{ section.settings.heading | default: 'Tu rincón friki más acogedor' }}
+          </h1>
+          <p class="text-sm md:text-base text-cozy-coffee/80 leading-relaxed mt-4 mb-6 max-w-sm">
+            {{ section.settings.subheading | default: 'Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado.' }}
+          </p>
+          <a href="{{ section.settings.button_url | default: routes.all_products_collection_url }}"
+             class="inline-flex items-center gap-2 bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 no-underline">
+            {{ section.settings.button_text | default: 'Ver la Colección' }}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
-
+      </div>
     </div>
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+  <div class="px-6 md:px-16 py-8 md:py-10">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-[24px] px-6 md:px-10 shadow-sm bg-white/76 backdrop-blur-md">
+        {%- for block in section.blocks -%}
+          <div class="flex items-center gap-3 py-4 md:py-5{% unless forloop.last %} border-b md:border-b-0 md:border-r border-cozy-sand/60{% endunless %}" {{ block.shopify_attributes }}>
+            <div class="w-10 h-10 rounded-xl bg-cozy-mintLight flex items-center justify-center shrink-0 text-lg">
+              {{ block.settings.icon | default: '✨' }}
+            </div>
+            <div>
+              <p class="text-sm font-bold text-cozy-coffee m-0">{{ block.settings.title }}</p>
+              <p class="text-xs text-cozy-coffee/70 m-0">{{ block.settings.description }}</p>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
 </section>
 
 {% schema %}
 {
-  "name": "Banner Principal (Hero)",
+  "name": "Hero Banner",
   "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen de fondo" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Tu rincón friki más acogedor" },
+    { "type": "textarea", "id": "subheading", "label": "Subtítulo" },
+    { "type": "text", "id": "button_text", "label": "Texto del botón", "default": "Ver la Colección" },
+    { "type": "url", "id": "button_url", "label": "Enlace del botón" }
+  ],
+  "blocks": [
     {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Imagen de fondo"
-    },
-    {
-      "type": "text",
-      "id": "image_asset",
-      "label": "O nombre del archivo en assets",
-      "default": "banner.webp"
-    },
-    {
-      "type": "html",
-      "id": "title",
-      "label": "Título",
-      "default": "Tu rincón friki <span class='italic text-cozy-mint font-normal block md:inline'>más acogedor</span>"
-    },
-    {
-      "type": "textarea",
-      "id": "text",
-      "label": "Texto descriptivo",
-      "default": "Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado. Merchandising oficial seleccionado con un toque cálido y sofisticado."
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Texto del botón",
-      "default": "Ver la Colección"
-    },
-    {
-      "type": "url",
-      "id": "button_link",
-      "label": "Enlace del botón"
+      "type": "trust_badge",
+      "name": "Insignia de confianza",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icono (emoji)", "default": "✨" },
+        { "type": "text", "id": "title", "label": "Título" },
+        { "type": "text", "id": "description", "label": "Descripción" }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Banner Principal (Hero)"
+      "name": "Hero Banner",
+      "blocks": [
+        { "type": "trust_badge", "settings": { "icon": "🚚", "title": "Envío rápido", "description": "En 24-48h laborables" } },
+        { "type": "trust_badge", "settings": { "icon": "🔒", "title": "Pago seguro", "description": "100% protegido" } },
+        { "type": "trust_badge", "settings": { "icon": "🏷️", "title": "Producto oficial", "description": "Licencias verificadas" } },
+        { "type": "trust_badge", "settings": { "icon": "💬", "title": "Atención cercana", "description": "Te ayudamos siempre" } }
+      ]
     }
   ]
 }
