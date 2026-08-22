@@ -40,10 +40,11 @@ $total = count( $all_ids );
                 if ( ! $alt ) $alt = $product->get_name();
             ?>
             <div class="cozy-gallery__slide cursor-zoom-in" data-action="gallery-open" data-index="<?php echo absint( $i ); ?>" aria-hidden="<?php echo $i > 0 ? 'true' : 'false'; ?>">
-                <?php echo wp_get_attachment_image( $image_id, 'woocommerce_single', false, [
+                <?php echo wp_get_attachment_image( $image_id, 'full', false, [
                     'class'   => 'cozy-gallery__img',
                     'loading' => $i === 0 ? 'eager' : 'lazy',
                     'alt'     => esc_attr( $alt ),
+                    'sizes'   => '(min-width: 1024px) 550px, (min-width: 768px) 850px, 100vw',
                 ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </div>
             <?php endforeach; ?>
