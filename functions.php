@@ -1096,49 +1096,67 @@ function cozy_ajax_search() {
 add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
     if ( isset( $fields['billing']['billing_phone'] ) ) {
         $fields['billing']['billing_phone']['required'] = true;
+        $fields['billing']['billing_phone']['label'] = 'Teléfono *';
+    }
+    if ( isset( $fields['shipping']['shipping_phone'] ) ) {
+        $fields['shipping']['shipping_phone']['required'] = true;
+        $fields['shipping']['shipping_phone']['label'] = 'Teléfono *';
     }
     return $fields;
-} );
+}, 9999 );
 
 add_filter( 'woocommerce_billing_fields', function ( $fields ) {
     if ( isset( $fields['billing_phone'] ) ) {
         $fields['billing_phone']['required'] = true;
     }
     return $fields;
-}, 20 );
+}, 9999 );
 
 add_filter( 'woocommerce_shipping_fields', function ( $fields ) {
     if ( ! isset( $fields['shipping_phone'] ) ) {
         $fields['shipping_phone'] = [
-            'label'       => 'Teléfono',
-            'required'    => true,
-            'type'        => 'tel',
-            'class'       => [ 'form-row-wide' ],
-            'priority'    => 25,
+            'label'        => __( 'Teléfono', 'woocommerce' ),
+            'required'     => true,
+            'type'         => 'tel',
+            'class'        => [ 'form-row-wide' ],
+            'priority'     => 25,
+            'validate'     => [ 'phone' ],
+            'autocomplete' => 'tel',
         ];
     } else {
         $fields['shipping_phone']['required'] = true;
     }
     return $fields;
-}, 20 );
+}, 9999 );
 
 /* Validación en servidor: bloquea el pedido si falta el teléfono,
    sea cual sea el checkout usado (clásico shortcode o bloques Gutenberg).
    Los filtros de arriba solo cambian el HTML del formulario; esto es lo
    que realmente lo hace obligatorio a nivel de pedido. */
 add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors ) {
-    if ( empty( $data['billing_phone'] ) ) {
+    $billing_phone  = ! empty( $data['billing_phone'] ) ? trim( $data['billing_phone'] ) : '';
+    $shipping_phone = ! empty( $data['shipping_phone'] ) ? trim( $data['shipping_phone'] ) : '';
+
+    if ( empty( $billing_phone ) && empty( $shipping_phone ) ) {
         $errors->add( 'billing_phone', 'Por favor introduce un número de teléfono — es necesario para la entrega.' );
     }
 }, 10, 2 );
 
 add_action( 'woocommerce_store_api_checkout_update_order_from_request', function ( $order, $request ) {
-    if ( ! $order->get_billing_phone() ) {
+    $phone = $order->get_billing_phone() ?: $order->get_shipping_phone();
+    if ( ! $phone ) {
         throw new Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
             'cozy_phone_required',
             'Por favor introduce un número de teléfono — es necesario para la entrega.',
             400
         );
+    }
+    // Aseguramos que el teléfono quede guardado tanto en facturación como en envío para las agencias de transporte
+    if ( ! $order->get_billing_phone() && $phone ) {
+        $order->set_billing_phone( $phone );
+    }
+    if ( ! $order->get_shipping_phone() && $phone ) {
+        $order->set_shipping_phone( $phone );
     }
 }, 10, 2 );
 
