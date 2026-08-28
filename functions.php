@@ -7,6 +7,21 @@ require_once get_stylesheet_directory() . '/inc/cozy-icons.php';
 require_once get_stylesheet_directory() . '/inc/coming-soon.php';
 
 /* ------------------------------------------------------------------ */
+/*  RESOURCE PRELOADS (Critical Fonts & LCP Hero Banner)              */
+/* ------------------------------------------------------------------ */
+add_action( 'wp_head', function() {
+    $font_dir = get_stylesheet_directory_uri() . '/assets/fonts/';
+    ?>
+    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlusJakartaSans-Regular.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlusJakartaSans-Bold.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlayfairDisplay-SemiBold.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+    <?php if ( is_front_page() ) : ?>
+    <link rel="preload" as="image" href="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>" fetchpriority="high">
+    <?php endif; ?>
+    <?php
+}, 0 );
+
+/* ------------------------------------------------------------------ */
 /*  GOOGLE ANALYTICS (GA4) — gated behind cookie consent                */
 /* ------------------------------------------------------------------ */
 /* No analytics cookie or network request happens until the visitor accepts
@@ -55,7 +70,7 @@ add_action( 'wp_footer', function() {
          role="dialog" aria-label="Aviso de cookies">
         <p class="text-xs md:text-[13px] leading-relaxed m-0 flex-1">
             Usamos cookies analíticas para entender cómo usas la tienda y mejorarla. No se activan hasta que las aceptas.
-            <a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-privacidad' ) ); ?>" class="underline hover:text-cozy-mint">Más información</a>.
+            <a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-cookies' ) ); ?>" class="underline hover:text-cozy-mint">Más información</a>.
         </p>
         <div class="flex items-center gap-3 shrink-0">
             <button type="button" data-action="consent-reject"
@@ -323,7 +338,7 @@ function cozy_fandom_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_styles' );
 
 /* ------------------------------------------------------------------ */
-/*  SCRIPTS                                                             */
+/*  SCRIPTS & PERFORMANCE                                              */
 /* ------------------------------------------------------------------ */
 function cozy_fandom_enqueue_scripts() {
     wp_enqueue_script(
@@ -347,15 +362,170 @@ function cozy_fandom_enqueue_scripts() {
         'loginUrl'   => class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : wp_login_url(),
     ] );
 
-    /* Only pages that can actually add to cart / show cart contents need
-       jQuery + wc-cart-fragments' background AJAX refresh — everything else
-       (blog, legal pages, my account…) was loading it for nothing. */
+    /* Only load wc-add-to-cart for AJAX buttons on shop/catalog/front pages.
+       We intentionally avoid wc-cart-fragments on general browsing to eliminate
+       the blocking /?wc-ajax=get_refreshed_fragments background AJAX request. */
     if ( class_exists( 'WooCommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_front_page() ) ) {
         wp_enqueue_script( 'wc-add-to-cart' );
-        wp_enqueue_script( 'wc-cart-fragments' );
     }
 }
 add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_scripts', 20 );
+
+// Defer cozy-main.js to avoid render-blocking
+add_filter( 'script_loader_tag', function( $tag, $handle ) {
+    if ( 'cozy-main' === $handle && false === strpos( $tag, 'defer' ) ) {
+        return str_replace( '<script ', '<script defer ', $tag );
+    }
+    return $tag;
+}, 10, 2 );
+
+// Disable cart fragments on catalog/content pages to eliminate slow AJAX polling
+add_action( 'wp_enqueue_scripts', function() {
+    if ( ! is_cart() && ! is_checkout() ) {
+        wp_dequeue_script( 'wc-cart-fragments' );
+    }
+}, 99 );
+
+/* ------------------------------------------------------------------ */
+/*  PERFORMANCE TRANSIENTS (Nav Menu & Front Page Queries)            */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Returns cached header navigation (categories + licenses).
+ * Eliminates 10-15 SQL queries on every single page load.
+ */
+function cozy_get_header_nav_data() {
+    $cached = get_transient( 'cozy_header_nav_data' );
+    if ( false !== $cached && is_array( $cached ) ) {
+        return $cached;
+    }
+
+    $uncategorised_id = absint( get_option( 'default_product_cat' ) );
+    $nav_cats_raw = get_terms( [
+        'taxonomy'   => 'product_cat',
+        'hide_empty' => true,
+        'exclude'    => $uncategorised_id ? [ $uncategorised_id ] : [],
+        'parent'     => 0,
+        'orderby'    => 'count',
+        'order'      => 'DESC',
+        'number'     => 10,
+    ] );
+
+    $nav_cats = [];
+    if ( ! is_wp_error( $nav_cats_raw ) && ! empty( $nav_cats_raw ) ) {
+        foreach ( $nav_cats_raw as $cat ) {
+            $cat_url = get_term_link( $cat );
+            if ( is_wp_error( $cat_url ) ) continue;
+
+            $children_raw = get_terms( [
+                'taxonomy'   => 'product_cat',
+                'hide_empty' => true,
+                'parent'     => $cat->term_id,
+                'orderby'    => 'name',
+                'order'      => 'ASC',
+            ] );
+
+            $children = [];
+            if ( ! is_wp_error( $children_raw ) && ! empty( $children_raw ) ) {
+                foreach ( $children_raw as $child ) {
+                    $child_url = get_term_link( $child );
+                    if ( is_wp_error( $child_url ) ) continue;
+                    $children[] = [
+                        'term_id' => $child->term_id,
+                        'name'    => $child->name,
+                        'url'     => $child_url,
+                    ];
+                }
+            }
+
+            $nav_cats[] = [
+                'term_id'  => $cat->term_id,
+                'name'     => $cat->name,
+                'url'      => $cat_url,
+                'children' => $children,
+            ];
+        }
+    }
+
+    $nav_licenses_raw = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => false ] );
+    $nav_licenses = [];
+    if ( ! is_wp_error( $nav_licenses_raw ) && ! empty( $nav_licenses_raw ) ) {
+        foreach ( $nav_licenses_raw as $lic ) {
+            $nav_licenses[] = [
+                'term_id' => $lic->term_id,
+                'name'    => $lic->name,
+                'slug'    => $lic->slug,
+            ];
+        }
+    }
+
+    $data = [
+        'cats'     => $nav_cats,
+        'licenses' => $nav_licenses,
+    ];
+
+    set_transient( 'cozy_header_nav_data', $data, 12 * HOUR_IN_SECONDS );
+    return $data;
+}
+
+/**
+ * Returns cached product IDs for the front page "Nuevos" section.
+ */
+function cozy_get_home_new_product_ids() {
+    $cached = get_transient( 'cozy_home_new_pids' );
+    if ( false !== $cached && is_array( $cached ) ) {
+        return $cached;
+    }
+
+    $products = function_exists( 'wc_get_products' ) ? wc_get_products( [
+        'limit'   => 4,
+        'status'  => 'publish',
+        'orderby' => 'date',
+        'order'   => 'DESC',
+        'return'  => 'ids',
+    ] ) : [];
+
+    set_transient( 'cozy_home_new_pids', $products, 6 * HOUR_IN_SECONDS );
+    return $products;
+}
+
+/**
+ * Returns cached product IDs for the front page "Top Ventas" section.
+ */
+function cozy_get_home_top_product_ids() {
+    $cached = get_transient( 'cozy_home_top_pids' );
+    if ( false !== $cached && is_array( $cached ) ) {
+        return $cached;
+    }
+
+    $products = function_exists( 'wc_get_products' ) ? wc_get_products( [
+        'limit'   => 4,
+        'status'  => 'publish',
+        'tag'     => [ 'top-sell' ],
+        'orderby' => 'date',
+        'order'   => 'DESC',
+        'return'  => 'ids',
+    ] ) : [];
+
+    set_transient( 'cozy_home_top_pids', $products, 6 * HOUR_IN_SECONDS );
+    return $products;
+}
+
+/**
+ * Invalidate navigation & home product transients on changes.
+ */
+function cozy_clear_performance_transients() {
+    delete_transient( 'cozy_header_nav_data' );
+    delete_transient( 'cozy_home_new_pids' );
+    delete_transient( 'cozy_home_top_pids' );
+}
+add_action( 'created_product_cat',   'cozy_clear_performance_transients' );
+add_action( 'edited_product_cat',    'cozy_clear_performance_transients' );
+add_action( 'delete_product_cat',    'cozy_clear_performance_transients' );
+add_action( 'created_product_brand', 'cozy_clear_performance_transients' );
+add_action( 'edited_product_brand',  'cozy_clear_performance_transients' );
+add_action( 'delete_product_brand',  'cozy_clear_performance_transients' );
+add_action( 'save_post_product',     'cozy_clear_performance_transients' );
 
 /* ------------------------------------------------------------------ */
 /*  NEWSLETTER — Hostinger Reach subscription block                    */
@@ -832,6 +1002,7 @@ function cozy_fandom_render_footer() {
                     <ul class="space-y-2.5 text-xs">
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'envios-y-devoluciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Envíos y devoluciones</a></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-privacidad' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de privacidad</a></li>
+                        <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-cookies' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de cookies</a></li>
                         <li><button type="button" data-action="open-cookie-settings" class="hover:text-cozy-mint transition-colors bg-transparent border-0 p-0 m-0 cursor-pointer text-left font-inherit">Cambiar mi decisión sobre cookies</button></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'terminos-y-condiciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Términos y condiciones</a></li>
                         <li><a href="<?php echo esc_url( home_url( '/mapa-del-sitio/' ) ); ?>" class="hover:text-cozy-mint transition-colors">Mapa del sitio</a></li>

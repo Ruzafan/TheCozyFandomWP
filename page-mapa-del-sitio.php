@@ -105,6 +105,7 @@ get_header( 'shop' );
         cozy_sitemap_section( 'Información', 'circle-info', [
             'Envíos y devoluciones' => cozy_sitemap_legal_link( 'envios-y-devoluciones' ),
             'Política de privacidad' => cozy_sitemap_legal_link( 'politica-de-privacidad' ),
+            'Política de cookies' => cozy_sitemap_legal_link( 'politica-de-cookies' ),
             'Términos y condiciones' => cozy_sitemap_legal_link( 'terminos-y-condiciones' ),
         ] );
 

@@ -210,35 +210,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     Tienda
                 </a>
                 <?php
-                $uncategorised_id = absint( get_option( 'default_product_cat' ) );
-                $nav_cats = get_terms( [
-                    'taxonomy'   => 'product_cat',
-                    'hide_empty' => true,
-                    'exclude'    => $uncategorised_id ? [ $uncategorised_id ] : [],
-                    'parent'     => 0,
-                    'orderby'    => 'count',
-                    'order'      => 'DESC',
-                    'number'     => 10,
-                ] );
+                $nav_data    = function_exists( 'cozy_get_header_nav_data' ) ? cozy_get_header_nav_data() : [ 'cats' => [], 'licenses' => [] ];
+                $nav_cats    = $nav_data['cats'];
                 $current_cat = is_product_category() ? get_queried_object() : null;
 
-                if ( ! is_wp_error( $nav_cats ) ) :
+                if ( ! empty( $nav_cats ) ) :
                     foreach ( $nav_cats as $cat ) :
-                        $cat_url = get_term_link( $cat );
-                        if ( is_wp_error( $cat_url ) ) continue;
-
-                        $children = get_terms( [
-                            'taxonomy'   => 'product_cat',
-                            'hide_empty' => true,
-                            'parent'     => $cat->term_id,
-                            'orderby'    => 'name',
-                            'order'      => 'ASC',
-                        ] );
-                        $has_children = ! is_wp_error( $children ) && ! empty( $children );
+                        $cat_url      = $cat['url'];
+                        $children     = $cat['children'];
+                        $has_children = ! empty( $children );
 
                         $is_active = $current_cat && (
-                            $current_cat->term_id === $cat->term_id ||
-                            $current_cat->parent  === $cat->term_id
+                            $current_cat->term_id === $cat['term_id'] ||
+                            $current_cat->parent  === $cat['term_id']
                         );
 
                         if ( $has_children ) : ?>
@@ -246,20 +230,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <button class="cozy-nav-link cozy-nav-link--has-arrow<?php echo $is_active ? ' cozy-nav-link--active' : ''; ?>"
                                     aria-haspopup="true" aria-expanded="false"
                                     data-action="toggle-dropdown">
-                                <?php echo esc_html( $cat->name ); ?>
+                                <?php echo esc_html( $cat['name'] ); ?>
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                             </button>
                             <div class="cozy-nav-dropdown" role="menu">
                                 <a href="<?php echo esc_url( $cat_url ); ?>"
-                                   class="cozy-nav-dropdown__link cozy-nav-dropdown__link--all<?php echo ( $current_cat && $current_cat->term_id === $cat->term_id ) ? ' is-active' : ''; ?>"
+                                   class="cozy-nav-dropdown__link cozy-nav-dropdown__link--all<?php echo ( $current_cat && $current_cat->term_id === $cat['term_id'] ) ? ' is-active' : ''; ?>"
                                    role="menuitem">
                                     Ver todos
                                 </a>
                                 <div class="cozy-nav-dropdown__divider"></div>
                                 <?php foreach ( $children as $child ) :
-                                    $child_url = get_term_link( $child );
-                                    if ( is_wp_error( $child_url ) ) continue;
-                                    $is_child_active = $current_cat && $current_cat->term_id === $child->term_id;
+                                    $child_url       = $child['url'];
+                                    $is_child_active = $current_cat && $current_cat->term_id === $child['term_id'];
                                 ?>
                                 <a href="<?php echo esc_url( $child_url ); ?>"
                                    class="cozy-nav-dropdown__link<?php echo $is_child_active ? ' is-active' : ''; ?>"
@@ -269,25 +252,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
                                     </span>
                                     <?php endif; ?>
-                                    <?php echo esc_html( $child->name ); ?>
+                                    <?php echo esc_html( $child['name'] ); ?>
                                 </a>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                         <?php else :
-                            $is_active_plain = $current_cat && $current_cat->term_id === $cat->term_id;
+                            $is_active_plain = $current_cat && $current_cat->term_id === $cat['term_id'];
                         ?>
                         <a href="<?php echo esc_url( $cat_url ); ?>"
                            class="cozy-nav-link<?php echo $is_active_plain ? ' cozy-nav-link--active' : ''; ?>">
-                            <?php echo esc_html( $cat->name ); ?>
+                            <?php echo esc_html( $cat['name'] ); ?>
                         </a>
                         <?php endif;
                     endforeach;
                 endif;
 
                 // Licencias dropdown
-                $nav_licenses = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => false ] );
-                if ( ! is_wp_error( $nav_licenses ) && ! empty( $nav_licenses ) ) :
+                $nav_licenses = $nav_data['licenses'];
+                if ( ! empty( $nav_licenses ) ) :
                     $raw_lic     = isset( $_GET['licencia'] ) ? sanitize_text_field( wp_unslash( $_GET['licencia'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
                     $active_lics = $raw_lic ? array_filter( array_map( 'sanitize_title', explode( ',', $raw_lic ) ) ) : [];
                     $has_act_lic = ! empty( $active_lics );
@@ -301,10 +284,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </button>
                         <div class="cozy-nav-dropdown" role="menu">
                             <?php foreach ( $nav_licenses as $lic ) :
-                                $is_lic_active = in_array( $lic->slug, $active_lics, true );
+                                $is_lic_active = in_array( $lic['slug'], $active_lics, true );
                                 $lic_href      = $is_lic_active
                                     ? remove_query_arg( 'licencia', $shop_url )
-                                    : add_query_arg( 'licencia', $lic->slug, remove_query_arg( 'licencia', $shop_url ) );
+                                    : add_query_arg( 'licencia', $lic['slug'], remove_query_arg( 'licencia', $shop_url ) );
                             ?>
                             <a href="<?php echo esc_url( $lic_href ); ?>"
                                class="cozy-nav-dropdown__link<?php echo $is_lic_active ? ' is-active' : ''; ?>"
@@ -314,7 +297,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 5 3.8 7.5 8.5 2.5"/></svg>
                                 </span>
                                 <?php endif; ?>
-                                <?php echo esc_html( $lic->name ); ?>
+                                <?php echo esc_html( $lic['name'] ); ?>
                             </a>
                             <?php endforeach; ?>
                         </div>

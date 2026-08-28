@@ -59,7 +59,8 @@ $cozy_cats = [
     <div class="relative w-full h-[60vh] md:h-[80vh]">
 
         <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>"
-             alt="" aria-hidden="true" loading="eager"
+             alt="" aria-hidden="true" loading="eager" fetchpriority="high"
+             width="1920" height="800"
              class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
 
         <!-- Copy: glass card aligned within max-w-7xl -->
@@ -130,12 +131,16 @@ $cozy_cats = [
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <?php
-        $new_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
-            'limit'   => 4,
-            'status'  => 'publish',
-            'orderby' => 'date',
-            'order'   => 'DESC',
-        ] ) : [];
+        $new_pids     = function_exists( 'cozy_get_home_new_product_ids' ) ? cozy_get_home_new_product_ids() : [];
+        $new_products = [];
+        if ( ! empty( $new_pids ) && function_exists( 'wc_get_product' ) ) {
+            foreach ( $new_pids as $pid ) {
+                $p = wc_get_product( $pid );
+                if ( $p && $p->is_visible() ) {
+                    $new_products[] = $p;
+                }
+            }
+        }
 
         if ( $new_products ) :
             foreach ( $new_products as $product ) {
@@ -181,7 +186,7 @@ $cozy_cats = [
             <?php endif; ?>
             <?php if ( ! empty( $cat['image'] ) ) : ?>
             <img src="<?php echo esc_url( $cat['image'] ); ?>"
-                 alt="" aria-hidden="true" loading="lazy"
+                 alt="" aria-hidden="true" loading="lazy" width="200" height="200"
                  class="absolute object-contain object-bottom pointer-events-none select-none group-hover:scale-105 transition-transform duration-500 z-0"
                  style="width:200px;height:200px;bottom:-8px;right:-8px;">
             <?php endif; ?>
@@ -235,13 +240,16 @@ $cozy_cats = [
         <!-- Products Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
         <?php
-        $top_products = function_exists( 'wc_get_products' ) ? wc_get_products( [
-            'limit'   => 4,
-            'status'  => 'publish',
-            'tag'     => [ 'top-sell' ],
-            'orderby' => 'date',
-            'order'   => 'DESC',
-        ] ) : [];
+        $top_pids     = function_exists( 'cozy_get_home_top_product_ids' ) ? cozy_get_home_top_product_ids() : [];
+        $top_products = [];
+        if ( ! empty( $top_pids ) && function_exists( 'wc_get_product' ) ) {
+            foreach ( $top_pids as $pid ) {
+                $p = wc_get_product( $pid );
+                if ( $p && $p->is_visible() ) {
+                    $top_products[] = $p;
+                }
+            }
+        }
 
         if ( $top_products ) :
             $rank = 0;
