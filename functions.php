@@ -1373,4 +1373,59 @@ add_action( 'pre_get_posts', function( $query ) {
     $query->set( 'meta_query', $meta_query );
 } );
 
+/* ------------------------------------------------------------------ */
+/*  ADMIN — Filtro "Sin marca / Sin licencia" en listado de Productos  */
+/* ------------------------------------------------------------------ */
+/* 1. Añade la opción "— Sin marca —" dentro del desplegable de marcas
+   existente en la pantalla de Productos de wp-admin. */
+add_filter( 'wp_dropdown_cats', function( $output, $r ) {
+    global $pagenow, $post_type;
+    if ( ! is_admin() || 'edit.php' !== $pagenow || 'product' !== $post_type ) {
+        return $output;
+    }
+
+    if ( isset( $r['taxonomy'] ) && 'product_brand' === $r['taxonomy'] ) {
+        $selected = isset( $_GET['product_brand'] ) ? sanitize_text_field( wp_unslash( $_GET['product_brand'] ) ) : '';
+        $is_selected = in_array( $selected, [ 'no_brand', 'cozy_no_brand', 'none', 'sin-marca' ], true );
+        $no_brand_option = '<option value="no_brand"' . ( $is_selected ? ' selected="selected"' : '' ) . '>— Sin marca / Sin licencia —</option>';
+
+        // Insertar justo después de la primera opción ("Filtrar por marca")
+        $pos = strpos( $output, '</option>' );
+        if ( false !== $pos ) {
+            $output = substr_replace( $output, '</option>' . "\n\t" . $no_brand_option, $pos, 9 );
+        }
+    }
+    return $output;
+}, 10, 2 );
+
+/* 2. Modifica la consulta para buscar productos sin ninguna marca asignada (NOT EXISTS). */
+add_action( 'pre_get_posts', function( $query ) {
+    if ( ! is_admin() || ! $query->is_main_query() ) return;
+    if ( 'product' !== $query->get( 'post_type' ) ) return;
+
+    $brand = isset( $_GET['product_brand'] ) ? sanitize_text_field( wp_unslash( $_GET['product_brand'] ) ) : '';
+    if ( in_array( $brand, [ 'no_brand', 'cozy_no_brand', 'none', 'sin-marca' ], true ) ) {
+        // Limpiar el query var para evitar que WP intente buscar un término con slug 'no_brand'
+        unset( $query->query_vars['product_brand'], $query->query['product_brand'] );
+
+        $tax_query = (array) $query->get( 'tax_query' );
+        // Eliminar cualquier condición previa sobre product_brand
+        $tax_query = array_filter( $tax_query, function( $clause ) {
+            if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'product_brand' === $clause['taxonomy'] ) {
+                return false;
+            }
+            return true;
+        } );
+
+        // Añadir la condición NOT EXISTS para filtrar productos sin marca
+        $tax_query[] = [
+            'taxonomy' => 'product_brand',
+            'operator' => 'NOT EXISTS',
+        ];
+
+        $query->set( 'tax_query', $tax_query );
+    }
+}, 5 );
+
+
 
