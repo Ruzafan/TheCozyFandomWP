@@ -448,12 +448,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================ -->
 <!-- FLOATING DRINK COMPANION & WEATHER SELECTOR WIDGETS           -->
 <!-- ============================================================ -->
-<div id="cozy-weather-selector" class="hidden fixed bottom-6 left-6 z-[998] items-center gap-1 bg-white/90 backdrop-blur-md border border-cozy-sand rounded-full p-1.5 shadow-md text-xs">
-    <button type="button" data-action="set-weather" data-weather="none" title="Despejado (Sin efectos en pantalla)" class="px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer">✨</button>
-    <button type="button" data-action="set-weather" data-weather="rain" title="Lluvia & Chimenea" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">🌧️</button>
-    <button type="button" data-action="set-weather" data-weather="autumn" title="Otoño Dorado" class="px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer">🍂</button>
-    <button type="button" data-action="set-weather" data-weather="snow" title="Nieve Silenciosa" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">❄️</button>
-    <button type="button" data-action="set-weather" data-weather="sakura" title="Primavera Sakura" class="px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer">🌸</button>
+<!-- FLOATING WEATHER SELECTOR & FIRST-TIME ONBOARDING GUIDE      -->
+<!-- ============================================================ -->
+<div id="cozy-weather-container" class="fixed bottom-6 left-4 sm:left-6 z-[998] flex flex-col items-start gap-2.5 pointer-events-none">
+
+    <!-- Subtle Onboarding Guide Tooltip (First-time highlight) -->
+    <div id="cozy-weather-guide" class="hidden pointer-events-auto max-w-[280px] sm:max-w-xs bg-white/95 backdrop-blur-md border-2 border-cozy-mint/50 rounded-[22px] p-4 shadow-xl text-cozy-coffee transition-all duration-300 transform translate-y-2 opacity-0 relative">
+        <div class="flex items-start justify-between gap-2 mb-1.5">
+            <span class="inline-flex items-center gap-1 bg-cozy-mintLight text-cozy-mint text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                ✨ Personaliza tu clima
+            </span>
+            <button type="button" data-action="close-weather-guide" class="text-cozy-coffee/40 hover:text-cozy-coffee text-sm p-0.5 leading-none border-0 bg-transparent cursor-pointer" aria-label="Cerrar guía">
+                ✕
+            </button>
+        </div>
+        <p class="text-xs text-cozy-coffee/80 leading-relaxed mb-3">
+            ¡Puedes cambiar el ambiente en cualquier momento! Elige entre <strong>lluvia con chimenea</strong>, <strong>otoño</strong>, <strong>nieve</strong> o <strong>sakura</strong>.
+        </p>
+        <div class="flex items-center justify-between gap-2">
+            <span class="text-[10px] text-cozy-coffee/50 font-medium">👇 Prueba uno aquí</span>
+            <button type="button" data-action="close-weather-guide" class="bg-cozy-mint hover:bg-cozy-mintDark text-white text-[11px] font-bold px-3 py-1 rounded-full transition-colors border-0 cursor-pointer shadow-sm">
+                ¡Entendido! ☕
+            </button>
+        </div>
+        <!-- Arrow pointer pointing down to selector -->
+        <div class="w-3 h-3 bg-white border-b-2 border-r-2 border-cozy-mint/50 transform rotate-45 absolute -bottom-1.5 left-7"></div>
+    </div>
+
+    <!-- Weather Selector Pill -->
+    <div id="cozy-weather-selector" class="hidden pointer-events-auto items-center gap-1 bg-white/95 backdrop-blur-md border border-cozy-sand rounded-full p-1.5 shadow-md text-xs transition-all duration-300">
+        <button type="button" data-action="set-weather" data-weather="none" title="Despejado (Sin efectos en pantalla)" class="cozy-weather-btn px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer transition-all">✨</button>
+        <button type="button" data-action="set-weather" data-weather="rain" title="Lluvia & Chimenea" class="cozy-weather-btn px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer transition-all">🌧️</button>
+        <button type="button" data-action="set-weather" data-weather="autumn" title="Otoño Dorado" class="cozy-weather-btn px-2.5 py-1 rounded-full hover:bg-cozy-sand/50 font-bold border-0 bg-transparent cursor-pointer transition-all">🍂</button>
+        <button type="button" data-action="set-weather" data-weather="snow" title="Nieve Silenciosa" class="cozy-weather-btn px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer transition-all">❄️</button>
+        <button type="button" data-action="set-weather" data-weather="sakura" title="Primavera Sakura" class="cozy-weather-btn px-2.5 py-1 rounded-full hover:bg-cozy-mintLight font-bold border-0 bg-transparent cursor-pointer transition-all">🌸</button>
+    </div>
+
 </div>
 
 <!-- TEA ORACLE MODAL -->

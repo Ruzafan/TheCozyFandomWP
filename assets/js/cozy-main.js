@@ -564,6 +564,9 @@ document.addEventListener('click', function (e) {
         case 'set-weather':
             if (window.cozySetWeather) window.cozySetWeather(el.getAttribute('data-weather'));
             break;
+        case 'close-weather-guide':
+            if (window.closeWeatherGuide) window.closeWeatherGuide();
+            break;
         case 'open-tea-oracle':
             if (window.cozyOpenOracle) window.cozyOpenOracle();
             break;
@@ -1367,8 +1370,18 @@ function cozyRemoveFavItem(productId) {
 
         initCanvas();
         if (isUltraActive) {
+            updateWeatherButtons(currentWeather);
+            checkAndShowWeatherGuide();
             if (!animFrameId) renderCanvas();
         } else {
+            var guide = document.getElementById('cozy-weather-guide');
+            if (guide) {
+                guide.classList.add('hidden', 'translate-y-2', 'opacity-0');
+                guide.classList.remove('translate-y-0', 'opacity-100');
+            }
+            var selector = document.getElementById('cozy-weather-selector');
+            if (selector) selector.classList.remove('cozy-weather-pulse');
+
             if (animFrameId) {
                 cancelAnimationFrame(animFrameId);
                 animFrameId = null;
@@ -1378,8 +1391,72 @@ function cozyRemoveFavItem(productId) {
         setAudioState(isUltraActive);
     };
 
+    function updateWeatherButtons(mode) {
+        var btns = document.querySelectorAll('#cozy-weather-selector .cozy-weather-btn');
+        btns.forEach(function(btn) {
+            if (btn.getAttribute('data-weather') === mode) {
+                btn.classList.add('is-active');
+            } else {
+                btn.classList.remove('is-active');
+            }
+        });
+    }
+
+    var guideTimeoutId = null;
+
+    function checkAndShowWeatherGuide() {
+        var guideDismissed = false;
+        try {
+            guideDismissed = localStorage.getItem('cozy_weather_guide_dismissed') === 'true';
+        } catch(e) {}
+
+        if (guideDismissed) return;
+
+        var guide = document.getElementById('cozy-weather-guide');
+        var selector = document.getElementById('cozy-weather-selector');
+        if (!guide) return;
+
+        if (selector) selector.classList.add('cozy-weather-pulse');
+
+        setTimeout(function() {
+            if (!isUltraActive) return;
+            guide.classList.remove('hidden');
+            requestAnimationFrame(function() {
+                guide.classList.remove('translate-y-2', 'opacity-0');
+                guide.classList.add('translate-y-0', 'opacity-100');
+            });
+        }, 500);
+
+        if (guideTimeoutId) clearTimeout(guideTimeoutId);
+        guideTimeoutId = setTimeout(function() {
+            window.closeWeatherGuide();
+        }, 15000);
+    }
+
+    window.closeWeatherGuide = function() {
+        var guide = document.getElementById('cozy-weather-guide');
+        var selector = document.getElementById('cozy-weather-selector');
+        if (selector) selector.classList.remove('cozy-weather-pulse');
+        if (guide) {
+            guide.classList.remove('translate-y-0', 'opacity-100');
+            guide.classList.add('translate-y-2', 'opacity-0');
+            setTimeout(function() {
+                guide.classList.add('hidden');
+            }, 300);
+        }
+        if (guideTimeoutId) {
+            clearTimeout(guideTimeoutId);
+            guideTimeoutId = null;
+        }
+        try {
+            localStorage.setItem('cozy_weather_guide_dismissed', 'true');
+        } catch(e) {}
+    };
+
     window.cozySetWeather = function(mode) {
         currentWeather = mode || 'none';
+        updateWeatherButtons(currentWeather);
+        window.closeWeatherGuide();
         populateParticles();
         setAudioState(isUltraActive);
 
