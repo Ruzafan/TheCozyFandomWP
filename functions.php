@@ -1005,6 +1005,7 @@ function cozy_fandom_render_footer() {
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-cookies' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de cookies</a></li>
                         <li><button type="button" data-action="open-cookie-settings" class="hover:text-cozy-mint transition-colors bg-transparent border-0 p-0 m-0 cursor-pointer text-left font-inherit">Cambiar mi decisión sobre cookies</button></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'terminos-y-condiciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Términos y condiciones</a></li>
+                        <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'aviso-legal' ) ); ?>" class="hover:text-cozy-mint transition-colors">Aviso legal</a></li>
                         <li><a href="<?php echo esc_url( home_url( '/mapa-del-sitio/' ) ); ?>" class="hover:text-cozy-mint transition-colors">Mapa del sitio</a></li>
                     </ul>
                 </div>
