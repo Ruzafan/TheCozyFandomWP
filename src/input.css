@@ -3285,3 +3285,9 @@ body.cozy-ultra-mode #cozy-rain-canvas {
   transform: scale(1.1) !important;
 }
 
+.no-copy {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE / Edge */
+  user-select: none;         /* Estándar */
+}
