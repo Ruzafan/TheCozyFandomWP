@@ -554,51 +554,147 @@ function cozy_reach_subscription_form( $form_id ) {
         do_action( 'wp_enqueue_scripts' );
     }
 
-    echo do_blocks( '<!-- wp:hostinger-reach/subscription {"formId":"' . esc_attr( $form_id ) . '"} /-->' );
+    $block_html = do_blocks( '<!-- wp:hostinger-reach/subscription {"formId":"' . esc_attr( $form_id ) . '"} /-->' );
 
-    /* Print whatever ended up in the queue rather than looking up the block's
-     * declared style/script handles by name — an earlier version of this did
-     * that (via WP_Block_Type_Registry) and it silently printed nothing,
-     * because Reach's actual submit-handling script isn't necessarily
-     * registered against the block type itself (e.g. it can be a plugin-wide
-     * handle enqueued unconditionally on 'wp_enqueue_scripts', unrelated to
-     * this specific block's block.json). Printing the whole queue sidesteps
-     * having to guess Reach's internal handle names. On pages that already
-     * ran wp_head()/wp_footer() normally (front-page.php), everything queued
-     * there is already marked "done" and gets skipped here — this only ever
-     * prints what wasn't already printed. */
-    wp_print_styles();
-    wp_print_scripts();
+    // If Reach rendered a valid form, output it:
+    if ( ! empty( trim( $block_html ) ) && false !== strpos( $block_html, '<form' ) ) {
+        echo $block_html;
+        wp_print_styles();
+        wp_print_scripts();
+        return;
+    }
+
+    // Fallback: render native Cozy newsletter form with 1st layer legal information (RGPD/AEPD)
+    cozy_render_newsletter_form();
 }
 
 /**
- * Injects a mandatory GDPR/marketing-consent checkbox into the Reach
- * subscription block's rendered HTML.
+ * Generates the GDPR / AEPD 1st layer legal information and consent checkbox markup
+ * for newsletter capture forms in The Cozy Fandom.
  *
- * The form itself has a GDPR field configured in the Reach dashboard (the
- * standalone hosted version at reach-forms.hostingerusercontent.com renders
- * it), but the WordPress block's own PHP render + JS
- * (assets/dist/blocks/subscription-view.js) has no GDPR support at all —
- * checked its source directly, no reference to consent/gdpr anywhere in it.
- * So the block just never outputs the field, regardless of the form's config.
+ * Compliance: RGPD (Reglamento General de Protección de Datos) & LOPDGDD / AEPD.
+ * Structure:
+ * - Checkbox (mandatory, unchecked by default)
+ * - Collapsible "+ Info legal" layer containing:
+ *   - Responsable
+ *   - Finalidad
+ *   - Legitimación
+ *   - Destinatarios
+ *   - Derechos
+ *   - Información adicional / Más info (link to full Privacy Policy)
  *
- * Fixing it doesn't need touching Reach's JS: that script builds its POST
- * body from `new FormData(form)`, so any input we add inside the same
- * <form> — as long as it has a `name` — rides along automatically. Nesting
- * it under "metadata." matches the convention the block's own hidden fields
- * already use (metadata.plugin), so it lands in the same metadata object
- * Reach stores on the contact.
+ * @param string $input_name Form input name for consent (default 'metadata.marketing_consent' for Reach, 'marketing_consent' for native).
+ * @return string HTML markup.
+ */
+function cozy_get_newsletter_legal_layer_html( $input_name = 'metadata.marketing_consent' ) {
+    $privacy_url = cozy_fandom_legal_link( 'politica-de-privacidad' );
+    if ( '#' === $privacy_url || empty( $privacy_url ) ) {
+        $privacy_url = home_url( '/politica-de-privacidad/' );
+    }
+    $admin_email = get_option( 'admin_email', 'hola@thecozyfandom.com' );
+    $site_name   = get_bloginfo( 'name' ) ?: 'The Cozy Fandom';
+
+    ob_start();
+    ?>
+    <div class="hostinger-reach-block-form-field cozy-reach-consent">
+        <!-- Checkbox de consentimiento obligatorio (desmarcada por defecto) -->
+        <label class="cozy-reach-consent__label">
+            <input type="checkbox" name="<?php echo esc_attr( $input_name ); ?>" value="1" required>
+            <span>
+                Acepto recibir novedades y promociones de <?php echo esc_html( $site_name ); ?> y he leído la 
+                <a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank">Política de Privacidad</a>.
+            </span>
+        </label>
+
+        <!-- Desplegable discreto (+ Info legal) -->
+        <details class="cozy-reach-legal-details">
+            <summary class="cozy-reach-legal-summary">+ Info legal</summary>
+            <div class="cozy-reach-legal-content">
+                <strong>Responsable:</strong> <?php echo esc_html( $site_name ); ?><br>
+                <strong>Finalidad:</strong> Envío del descuento del 5% y comunicaciones comerciales.<br>
+                <strong>Legitimación:</strong> Consentimiento expreso.<br>
+                <strong>Destinatarios:</strong> Plataforma de email marketing (encargado de tratamiento). No se cederán datos a terceros salvo obligación legal.<br>
+                <strong>Derechos:</strong> Acceder, rectificar y suprimir datos en <a href="mailto:<?php echo esc_attr( $admin_email ); ?>"><?php echo esc_html( $admin_email ); ?></a>.<br>
+                <strong>Más info:</strong> Ver <a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank">Política de Privacidad</a> completa.
+            </div>
+        </details>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Injects mandatory GDPR marketing consent, 1st layer legal information (+ Info legal),
+ * button text ("Conseguir mi 5%"), and email placeholder ("Introduce tu email")
+ * into the Reach subscription block's rendered HTML.
  */
 add_filter( 'render_block_hostinger-reach/subscription', function ( $block_content ) {
-    $consent_field = '<div class="hostinger-reach-block-form-field cozy-reach-consent">'
-        . '<label class="cozy-reach-consent__label">'
-        . '<input type="checkbox" name="metadata.marketing_consent" value="1" required>'
-        . '<span>Acepto recibir comunicaciones de marketing de The Cozy Fandom.</span>'
-        . '</label>'
-        . '</div>';
+    // 1. Customize submit button text to "Conseguir mi 5%" unless in coming-soon mode
+    if ( ! get_option( 'cozy_coming_soon_mode' ) ) {
+        $block_content = preg_replace(
+            '/(<button[^>]*class="[^"]*hostinger-reach-block-submit[^"]*"[^>]*>)(.*?)(<\/button>)/is',
+            '$1<span>Conseguir mi 5%</span>$3',
+            $block_content
+        );
+    }
 
-    return str_replace( '<button', $consent_field . '<button', $block_content );
+    // 2. Customize email input placeholder to "Introduce tu email"
+    if ( preg_match( '/<input[^>]*type="email"/i', $block_content ) ) {
+        if ( preg_match( '/placeholder="[^"]*"/i', $block_content ) ) {
+            $block_content = preg_replace(
+                '/(<input[^>]*type="email"[^>]*?)placeholder="[^"]*"/i',
+                '$1placeholder="Introduce tu email"',
+                $block_content
+            );
+        } else {
+            $block_content = preg_replace(
+                '/(<input[^>]*type="email")/i',
+                '$1 placeholder="Introduce tu email"',
+                $block_content
+            );
+        }
+    }
+
+    // 3. Build GDPR legal layer (checkbox + details)
+    $consent_field = cozy_get_newsletter_legal_layer_html( 'metadata.marketing_consent' );
+
+    // Place after submit button: [ Input email ] -> [ Button: Conseguir mi 5% ] -> [ Consent Checkbox ] -> [ + Info legal ]
+    if ( false !== strpos( $block_content, '</button>' ) ) {
+        return preg_replace( '/(<\/button>)/i', '$1' . $consent_field, $block_content, 1 );
+    }
+
+    return str_replace( '</form>', $consent_field . '</form>', $block_content );
 }, 10, 1 );
+
+/**
+ * Renders the native Cozy newsletter form with the RGPD/AEPD 1st layer legal information.
+ * Used as a fallback whenever Reach block is unavailable.
+ */
+function cozy_render_newsletter_form() {
+    ?>
+    <form class="newsletter-form cozy-newsletter-form w-full flex flex-col gap-3" method="post" action="">
+        <?php wp_nonce_field( 'cozy_newsletter', 'nonce' ); ?>
+        
+        <!-- Campo de email y botón -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full">
+            <input type="email" name="email" placeholder="Introduce tu email" required
+                   class="cozy-newsletter-input flex-1 bg-white border-2 border-white rounded-2xl px-5 py-3.5 text-sm text-cozy-coffee placeholder-cozy-coffee/40 outline-none focus:border-cozy-mint transition-colors"
+                   style="border-radius:16px;">
+            <button type="submit"
+                    class="cozy-newsletter-submit shrink-0 bg-cozy-mint hover:bg-cozy-mintDark text-white font-bold px-7 py-3.5 rounded-2xl text-sm transition-all hover:-translate-y-0.5 hover:shadow-lg whitespace-nowrap cursor-pointer"
+                    style="border-radius:16px;">
+                Conseguir mi 5%
+            </button>
+        </div>
+
+        <!-- Checkbox de consentimiento obligatorio y desplegable legal -->
+        <?php echo cozy_get_newsletter_legal_layer_html( 'marketing_consent' ); ?>
+
+        <!-- Mensajes de estado -->
+        <div class="cozy-newsletter-status hidden text-center py-2 text-sm font-semibold"></div>
+    </form>
+    <?php
+}
 
 /* ------------------------------------------------------------------ */
 /*  NEWSLETTER — Mailchimp API subscription (legacy, unused by default) */

@@ -741,9 +741,64 @@ function cozyRemoveFavItem(productId) {
         }
     });
 
-    /* NEWSLETTER — now the native Hostinger Reach subscription block
-       (see cozy_reach_subscription_form() in functions.php), which handles
-       its own submission. No custom JS needed here anymore. */
+    /* NEWSLETTER — primary submission handled by Hostinger Reach subscription block.
+       Fallback AJAX submission handler for the native newsletter form when Reach is absent: */
+    var cozyNewsletterForm = document.querySelector('form.newsletter-form:not(.hostinger-reach-block-subscription-form-wrapper)');
+    if (cozyNewsletterForm) {
+        cozyNewsletterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var emailInput = cozyNewsletterForm.querySelector('input[type="email"]');
+            var consentInput = cozyNewsletterForm.querySelector('input[name="marketing_consent"]');
+            var statusBox = cozyNewsletterForm.querySelector('.cozy-newsletter-status');
+            var submitBtn = cozyNewsletterForm.querySelector('button[type="submit"]');
+
+            if (!consentInput || !consentInput.checked) {
+                if (statusBox) {
+                    statusBox.textContent = 'Debes aceptar la política de privacidad para continuar.';
+                    statusBox.className = 'cozy-newsletter-status text-center py-2 text-xs font-bold text-red-500';
+                }
+                return;
+            }
+
+            var email = emailInput ? emailInput.value.trim() : '';
+            if (!email) return;
+
+            if (submitBtn) submitBtn.disabled = true;
+
+            var fd = new FormData();
+            fd.append('action', 'cozy_newsletter_subscribe');
+            fd.append('email', email);
+            var nonce = cozyNewsletterForm.querySelector('input[name="nonce"]');
+            if (nonce) fd.append('nonce', nonce.value);
+
+            fetch(typeof cozyAjax !== 'undefined' ? cozyAjax.url : '/wp-admin/admin-ajax.php', {
+                method: 'POST',
+                body: fd
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (statusBox) {
+                    if (res.success) {
+                        statusBox.textContent = '🌿 ¡Bienvenida/o al Cozy Club! Te hemos enviado tu 5% de descuento.';
+                        statusBox.className = 'cozy-newsletter-status text-center py-2 text-xs font-bold text-cozy-mint';
+                        if (emailInput) emailInput.value = '';
+                    } else {
+                        statusBox.textContent = (res.data && res.data.message) || 'Ha ocurrido un error. Inténtalo de nuevo.';
+                        statusBox.className = 'cozy-newsletter-status text-center py-2 text-xs font-bold text-red-500';
+                    }
+                }
+            })
+            .catch(function () {
+                if (statusBox) {
+                    statusBox.textContent = 'Error de conexión. Inténtalo de nuevo más tarde.';
+                    statusBox.className = 'cozy-newsletter-status text-center py-2 text-xs font-bold text-red-500';
+                }
+            })
+            .finally(function () {
+                if (submitBtn) submitBtn.disabled = false;
+            });
+        });
+    }
 
     /* ---------- LIVE SEARCH SUGGESTIONS ---------- */
     var searchInput = document.querySelector('.cozy-hdr-search__input');
