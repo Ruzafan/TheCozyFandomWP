@@ -1733,6 +1733,14 @@ ul.wc-block-grid {
   background: #fff !important;
   border-radius: 24px !important;
 }
+
+/* Hide product description in checkout order summary */
+.woocommerce-checkout .wc-block-components-product-metadata__description,
+.wp-block-woocommerce-checkout .wc-block-components-product-metadata__description,
+.wc-block-checkout .wc-block-components-product-metadata__description,
+.wc-block-components-order-summary .wc-block-components-product-metadata__description {
+  display: none !important;
+}
 /* WC collapses empty totals rows (no shipping chosen yet, no discount, etc.)
    via :empty with no !important — our card styling above was overriding that
    and leaving blank white boxes. Restore the collapse, with higher specificity. */
@@ -1767,6 +1775,225 @@ ul.wc-block-grid {
   background: #72b0a2 !important;
   border-color: #72b0a2 !important;
   color: #fff !important;
+}
+
+/* ─── Order Received (Thank You) page ───────────────────────── */
+.woocommerce-order-received .entry-title,
+.woocommerce-order-received header.entry-header,
+.woocommerce-order-received .ast-archive-description {
+  display: none !important;
+}
+
+.woocommerce-order-received .ast-container,
+.woocommerce-order-received #primary,
+body.woocommerce-order-received #primary {
+  max-width: 56rem !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Hide raw fallback overview / notice when handled by cozy template */
+.cozy-thankyou .woocommerce-order > p.woocommerce-thankyou-order-received,
+.cozy-thankyou .woocommerce-order > ul.woocommerce-order-overview {
+  display: none !important;
+}
+
+/* Order Details Table */
+.woocommerce-order-details {
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+.woocommerce-order-details__title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.4rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-bottom: 1.25rem !important;
+}
+.woocommerce-order table.woocommerce-table--order-details,
+.woocommerce-order table.shop_table.order_details {
+  width: 100% !important;
+  background: #fff !important;
+  border-radius: 24px !important;
+  border: 1px solid #F5EDE0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 4px rgba(74,63,53,0.04) !important;
+  font-size: 0.875rem !important;
+}
+.woocommerce-order table.shop_table thead th {
+  background: #FAF6EE !important;
+  color: #3A3128 !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  padding: 14px 20px !important;
+  border: none !important;
+  border-bottom: 1px solid #F5EDE0 !important;
+}
+.woocommerce-order table.shop_table thead th:last-child {
+  text-align: right !important;
+}
+.woocommerce-order table.shop_table tbody td {
+  padding: 14px 20px !important;
+  border-bottom: 1px solid #F5EDE0 !important;
+  color: #3A3128 !important;
+  vertical-align: middle !important;
+}
+.woocommerce-order table.shop_table tbody td.product-total,
+.woocommerce-order table.shop_table tbody td:last-child {
+  text-align: right !important;
+  font-weight: 700 !important;
+}
+.woocommerce-order table.shop_table tbody td a {
+  color: #3A3128 !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  transition: color 0.2s !important;
+}
+.woocommerce-order table.shop_table tbody td a:hover {
+  color: #88C4B5 !important;
+}
+.woocommerce-order table.shop_table tbody .product-quantity {
+  font-weight: 700 !important;
+  color: rgba(58,49,40,0.6) !important;
+}
+.woocommerce-order table.shop_table tfoot th,
+.woocommerce-order table.shop_table tfoot td {
+  padding: 12px 20px !important;
+  border-top: 1px solid #F5EDE0 !important;
+  color: #3A3128 !important;
+}
+.woocommerce-order table.shop_table tfoot th {
+  font-weight: 600 !important;
+  color: rgba(58,49,40,0.7) !important;
+  text-align: left !important;
+}
+.woocommerce-order table.shop_table tfoot td {
+  text-align: right !important;
+  font-weight: 700 !important;
+}
+.woocommerce-order table.shop_table tfoot tr:last-child th,
+.woocommerce-order table.shop_table tfoot tr:last-child td {
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  background: #FAF6EE !important;
+}
+.woocommerce-order table.shop_table tfoot tr:last-child th {
+  border-bottom-left-radius: 24px !important;
+}
+.woocommerce-order table.shop_table tfoot tr:last-child td {
+  border-bottom-right-radius: 24px !important;
+}
+
+/* Customer Details & Addresses */
+.woocommerce-customer-details {
+  margin-top: 2rem !important;
+}
+.woocommerce-customer-details .woocommerce-column__title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-bottom: 0.75rem !important;
+}
+.woocommerce-customer-details .woocommerce-columns--addresses {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1.5rem !important;
+}
+@media (min-width: 640px) {
+  .woocommerce-customer-details .woocommerce-columns--addresses {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+.woocommerce-customer-details .woocommerce-column {
+  background: #fff !important;
+  border-radius: 24px !important;
+  border: 1px solid #F5EDE0 !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 1px 4px rgba(74,63,53,0.04) !important;
+  float: none !important;
+  width: 100% !important;
+}
+.woocommerce-customer-details address {
+  font-style: normal !important;
+  font-size: 0.875rem !important;
+  line-height: 1.7 !important;
+  color: rgba(58,49,40,0.8) !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Bank transfer details (BACS) */
+.woocommerce-bacs-bank-details {
+  background: #fff !important;
+  border-radius: 24px !important;
+  border: 1px solid #F5EDE0 !important;
+  padding: 1.5rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 1px 4px rgba(74,63,53,0.04) !important;
+}
+.woocommerce-bacs-bank-details .wc-bacs-bank-details-heading {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-bottom: 1rem !important;
+}
+.woocommerce-bacs-bank-details ul.wc-bacs-bank-details {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 0.75rem !important;
+}
+.woocommerce-bacs-bank-details ul.wc-bacs-bank-details li {
+  background: #FAF6EE !important;
+  border: 1px solid #F5EDE0 !important;
+  border-radius: 14px !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.8rem !important;
+  color: rgba(58,49,40,0.7) !important;
+}
+.woocommerce-bacs-bank-details ul.wc-bacs-bank-details li strong {
+  display: block !important;
+  font-size: 0.875rem !important;
+  color: #3A3128 !important;
+  margin-top: 0.25rem !important;
+}
+
+/* WooCommerce Blocks — Order Confirmation */
+.wp-block-woocommerce-order-confirmation,
+.wc-block-order-confirmation {
+  max-width: 56rem !important;
+  margin: 0 auto !important;
+  padding: 2rem 1rem !important;
+}
+.wc-block-order-confirmation-status {
+  background: #fff !important;
+  border-radius: 28px !important;
+  border: 1px solid #F5EDE0 !important;
+  padding: 2rem !important;
+  text-align: center !important;
+  box-shadow: 0 1px 4px rgba(74,63,53,0.04) !important;
+  margin-bottom: 2rem !important;
+}
+.wc-block-order-confirmation-summary,
+.wc-block-order-confirmation-totals,
+.wc-block-order-confirmation-billing-address,
+.wc-block-order-confirmation-shipping-address {
+  background: #fff !important;
+  border-radius: 24px !important;
+  border: 1px solid #F5EDE0 !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 1px 4px rgba(74,63,53,0.04) !important;
+  margin-bottom: 1.5rem !important;
 }
 
 /* ─── Sticky header (two-row custom layout) ─────────────────── */

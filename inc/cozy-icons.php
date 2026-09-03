@@ -123,6 +123,12 @@ function cozy_icon_plus( $size = '16', $extra_class = '' ) {
         '</svg>';
 }
 
+function cozy_icon_check( $size = '16', $extra_class = '' ) {
+    return cozy_icon_svg_open( $size, $extra_class ) .
+        '<polyline points="20 6 9 17 4 12"/>' .
+        '</svg>';
+}
+
 function cozy_icon_eye( $size = '16', $extra_class = '' ) {
     return cozy_icon_svg_open( $size, $extra_class ) .
         '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>' .
