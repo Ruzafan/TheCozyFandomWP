@@ -3627,6 +3627,8 @@ body.cozy-ultra-mode #cozy-rain-canvas {
 }
 
 /* Anular completamente los flotados y flexbox horizontal heredados de WooCommerce/Astra en customer-details */
+.ast-separate-container .woocommerce-customer-details,
+body.ast-separate-container .woocommerce-customer-details,
 body .woocommerce-customer-details,
 #page .woocommerce-customer-details,
 .woocommerce-order-received .woocommerce-customer-details,
@@ -3639,6 +3641,8 @@ body .woocommerce-customer-details,
   clear: both !important;
   margin-top: 2rem !important;
 }
+.ast-separate-container .woocommerce-customer-details .woocommerce-column__title,
+body.ast-separate-container .woocommerce-customer-details .woocommerce-column__title,
 body .woocommerce-customer-details .woocommerce-column__title,
 #page .woocommerce-customer-details .woocommerce-column__title,
 .woocommerce-customer-details h2,
@@ -3650,6 +3654,7 @@ body .woocommerce-customer-details .woocommerce-column__title,
   margin-bottom: 1.25rem !important;
   clear: both !important;
 }
+.ast-separate-container .woocommerce-customer-details .woocommerce-columns,
 body .woocommerce-customer-details .woocommerce-columns,
 body .woocommerce-customer-details .col2-set,
 #page .woocommerce-customer-details > div {
@@ -3667,12 +3672,14 @@ body .woocommerce-customer-details .col2-set,
   width: 100% !important;
   max-width: 100% !important;
 }
+.ast-separate-container .woocommerce-customer-details div.grid,
 body .woocommerce-customer-details div.grid,
 #page .woocommerce-customer-details div.grid {
   width: 100% !important;
   max-width: 100% !important;
   display: grid !important;
 }
+
 
 
 
