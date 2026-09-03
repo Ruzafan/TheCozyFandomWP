@@ -1146,7 +1146,7 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
             <!-- Product Image -->
             <div class="bg-white rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
                 <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block w-full h-full no-underline">
-                    <?php echo $product->get_image( 'medium', [ 'class' => 'w-full h-full object-cover' ] ); // phpcs:ignore ?>
+                    <?php echo $product->get_image( 'woocommerce_thumbnail', [ 'class' => 'bg-white w-full h-full object-contain' ] ); // phpcs:ignore ?>
                 </a>
                 <?php if ( $rank > 0 ) : ?>
                 <div class="absolute top-3 left-3 w-8 h-8 bg-cozy-coffee rounded-[10px] flex items-center justify-center z-10 shadow-md">
