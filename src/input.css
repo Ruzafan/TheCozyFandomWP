@@ -3626,11 +3626,12 @@ body.cozy-ultra-mode #cozy-rain-canvas {
   }
 }
 
-/* Anular completamente los flotados heredados de WooCommerce en customer-details */
+/* Anular completamente los flotados y flexbox horizontal heredados de WooCommerce/Astra en customer-details */
 .woocommerce-order-received .woocommerce-customer-details,
 .woocommerce-order .woocommerce-customer-details,
 .woocommerce-customer-details {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
   width: 100% !important;
   float: none !important;
   clear: both !important;
@@ -3660,6 +3661,11 @@ body.cozy-ultra-mode #cozy-rain-canvas {
   width: 100% !important;
   max-width: 100% !important;
 }
+.woocommerce-customer-details > div.grid {
+  width: 100% !important;
+  display: grid !important;
+}
+
 
 /* Estilos de la tabla de resumen de pedido */
 .cozy-order-details-wrap table.shop_table {
