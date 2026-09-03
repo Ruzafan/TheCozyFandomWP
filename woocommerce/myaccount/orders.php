@@ -43,17 +43,17 @@ do_action( 'woocommerce_before_account_orders', $has_orders );
 					'cancelled'  => 'bg-red-50     text-red-500    border-red-100',
 					'refunded'   => 'bg-gray-50    text-gray-500   border-gray-100',
 					'on-hold'    => 'bg-orange-50  text-orange-500 border-orange-100',
-					'draft'      => 'bg-cozy-sand/60 text-cozy-coffee/70 border-cozy-sand/80',
+					'draft'      => 'bg-cozy-sand  text-cozy-coffee border-cozy-sand',
 				];
 				$badge = isset( $status_styles[ $status ] ) ? $status_styles[ $status ] : 'bg-cozy-sand text-cozy-coffee border-cozy-sand';
 				$actions = wc_get_account_orders_actions( $order );
 				?>
 
-				<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 rounded-2xl bg-white border border-cozy-sand/80 hover:border-cozy-mint shadow-xs hover:shadow-sm transition-all">
+				<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-cozy-cream border border-cozy-sand hover:border-cozy-mint transition-colors">
 					<!-- Order Info (Icon + Number + Date) -->
-					<div class="flex items-center gap-3.5">
-						<div class="w-10 h-10 shrink-0 rounded-xl bg-cozy-cream border border-cozy-sand/80 flex items-center justify-center text-cozy-coffee/40">
-							<?php echo cozy_icon( 'bag-shopping', '16' ); ?>
+					<div class="flex items-center gap-3">
+						<div class="w-9 h-9 shrink-0 rounded-xl bg-white border border-cozy-sand flex items-center justify-center text-cozy-coffee/40">
+							<?php echo cozy_icon( 'bag-shopping', '14' ); ?>
 						</div>
 						<div>
 							<span class="block text-sm font-bold text-cozy-coffee">
