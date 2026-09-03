@@ -52,17 +52,17 @@ if ( ! empty( $downloads ) ) {
 		<?php esc_html_e( 'Order details', 'woocommerce' ); ?>
 	</h2>
 
-	<div class="overflow-x-auto -mx-2 sm:mx-0">
-		<table class="woocommerce-table woocommerce-table--order-details shop_table order_details w-full">
+	<div class="overflow-x-auto">
+		<table class="woocommerce-table woocommerce-table--order-details shop_table order_details w-full border-collapse">
 
 			<thead>
-				<tr>
-					<th class="woocommerce-table__product-name product-name"><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
-					<th class="woocommerce-table__product-table product-total text-right"><?php esc_html_e( 'Total', 'woocommerce' ); ?></th>
+				<tr class="bg-cozy-cream/70 border-b border-cozy-sand/80 text-xs font-bold uppercase tracking-wider text-cozy-coffee/60">
+					<th class="woocommerce-table__product-name product-name py-3 px-4 text-left rounded-l-xl"><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
+					<th class="woocommerce-table__product-table product-total py-3 px-4 text-right rounded-r-xl"><?php esc_html_e( 'Total', 'woocommerce' ); ?></th>
 				</tr>
 			</thead>
 
-			<tbody>
+			<tbody class="divide-y divide-cozy-sand/40">
 				<?php
 				do_action( 'woocommerce_order_details_before_order_table_items', $order );
 
@@ -89,8 +89,8 @@ if ( ! empty( $downloads ) ) {
 			<?php if ( ! empty( $actions ) ) : ?>
 			<tfoot>
 				<tr>
-					<th class="order-actions--heading"><?php esc_html_e( 'Actions', 'woocommerce' ); ?>:</th>
-					<td class="text-right">
+					<th class="order-actions--heading py-3 px-4 text-left text-xs uppercase font-bold text-cozy-coffee/50"><?php esc_html_e( 'Actions', 'woocommerce' ); ?>:</th>
+					<td class="text-right py-3 px-4">
 						<?php
 						$wp_button_class = wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '';
 						foreach ( $actions as $key => $action ) {
@@ -106,21 +106,22 @@ if ( ! empty( $downloads ) ) {
 			</tfoot>
 			<?php endif; ?>
 
-			<tfoot>
+			<tfoot class="bg-cozy-cream/40 border-t-2 border-cozy-sand/80">
 				<?php
 				foreach ( $order->get_order_item_totals() as $key => $total ) {
+					$is_total_row = ( 'order_total' === $key );
 					?>
-					<tr class="order-total-row-<?php echo esc_attr( $key ); ?>">
-						<th scope="row"><?php echo esc_html( $total['label'] ); ?></th>
-						<td class="text-right"><?php echo wp_kses_post( $total['value'] ); ?></td>
+					<tr class="order-total-row-<?php echo esc_attr( $key ); ?> <?php echo $is_total_row ? 'bg-cozy-mintLight/50 font-bold text-base text-cozy-coffee' : 'text-xs sm:text-sm text-cozy-coffee/80'; ?>">
+						<th scope="row" class="py-3 px-4 text-left border-b border-cozy-sand/40 font-semibold"><?php echo esc_html( $total['label'] ); ?></th>
+						<td class="text-right py-3 px-4 border-b border-cozy-sand/40 font-bold"><?php echo wp_kses_post( $total['value'] ); ?></td>
 					</tr>
 					<?php
 				}
 				?>
 				<?php if ( $order->get_customer_note() ) : ?>
 					<tr class="order-total-row-customer-note">
-						<th><?php esc_html_e( 'Note:', 'woocommerce' ); ?></th>
-						<td class="text-right">
+						<th class="py-3 px-4 text-left text-xs font-semibold text-cozy-coffee/70"><?php esc_html_e( 'Note:', 'woocommerce' ); ?></th>
+						<td class="text-right py-3 px-4 text-xs italic text-cozy-coffee/80">
 						<?php
 						$customer_note = wc_wptexturize_order_note( $order->get_customer_note() );
 						echo wp_kses( nl2br( $customer_note ), array( 'br' => array() ) );

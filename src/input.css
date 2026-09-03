@@ -3615,3 +3615,60 @@ body.cozy-ultra-mode #cozy-rain-canvas {
   -ms-user-select: none;     /* IE / Edge */
   user-select: none;         /* Estándar */
 }
+
+/* ─── Thank You Page & Order Details Overrides ───────────────────── */
+.cozy-thankyou {
+  margin-top: 1rem;
+}
+@media (min-width: 640px) {
+  .cozy-thankyou {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Anular completamente los flotados heredados de WooCommerce en customer-details */
+.woocommerce-order-received .woocommerce-customer-details,
+.woocommerce-order .woocommerce-customer-details,
+.woocommerce-customer-details {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  clear: both !important;
+  margin-top: 2rem !important;
+}
+.woocommerce-customer-details .woocommerce-column__title,
+.woocommerce-customer-details h2,
+.woocommerce-customer-details h3 {
+  float: none !important;
+  width: 100% !important;
+  display: flex !important;
+  margin-bottom: 1.25rem !important;
+  clear: both !important;
+}
+.woocommerce-customer-details .woocommerce-columns,
+.woocommerce-customer-details .col2-set {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  clear: both !important;
+}
+.woocommerce-customer-details .col-1,
+.woocommerce-customer-details .col-2,
+.woocommerce-column--billing-address,
+.woocommerce-column--shipping-address {
+  float: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Estilos de la tabla de resumen de pedido */
+.cozy-order-details-wrap table.shop_table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border: none !important;
+  width: 100% !important;
+}
+.cozy-order-details-wrap table.shop_table th,
+.cozy-order-details-wrap table.shop_table td {
+  border-color: #F5EDE0 !important;
+}
