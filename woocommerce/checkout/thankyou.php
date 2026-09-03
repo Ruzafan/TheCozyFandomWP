@@ -88,6 +88,13 @@ $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop
                     </p>
 
                     <!-- Overview key-values pills grid -->
+                    <?php
+                    $raw_payment_title   = $order->get_payment_method_title() ?: 'Confirmado';
+                    $clean_payment_title = trim( wp_strip_all_tags( $raw_payment_title ) );
+                    if ( empty( $clean_payment_title ) ) {
+                        $clean_payment_title = 'Confirmado';
+                    }
+                    ?>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
                         <div class="bg-cozy-cream/60 rounded-2xl p-3.5 sm:p-4 border border-cozy-sand/70">
                             <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-cozy-coffee/50 block mb-0.5">Nº de pedido</span>
@@ -103,8 +110,8 @@ $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop
                         </div>
                         <div class="bg-cozy-cream/60 rounded-2xl p-3.5 sm:p-4 border border-cozy-sand/70">
                             <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-cozy-coffee/50 block mb-0.5">Método de pago</span>
-                            <span class="font-bold text-sm sm:text-base text-cozy-coffee block truncate" title="<?php echo esc_attr( $order->get_payment_method_title() ); ?>">
-                                <?php echo esc_html( $order->get_payment_method_title() ?: 'Confirmado' ); ?>
+                            <span class="font-bold text-sm sm:text-base text-cozy-coffee block truncate" title="<?php echo esc_attr( $clean_payment_title ); ?>">
+                                <?php echo esc_html( $clean_payment_title ); ?>
                             </span>
                         </div>
                     </div>
@@ -113,8 +120,16 @@ $shop_url = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop
 
             <?php endif; ?>
 
-            <!-- Payment instructions (BACS, Cheque, etc.) -->
-            <?php do_action( 'woocommerce_thankyou_' . $order->get_payment_method(), $order->get_id() ); ?>
+            <!-- Payment instructions (BACS, Cheque, etc.) wrapped in card if present -->
+            <?php
+            ob_start();
+            do_action( 'woocommerce_thankyou_' . $order->get_payment_method(), $order->get_id() );
+            $gateway_output = ob_get_clean();
+            if ( ! empty( trim( $gateway_output ) ) ) : ?>
+                <div class="cozy-gateway-instructions bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 border border-cozy-sand shadow-sm mb-8">
+                    <?php echo $gateway_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                </div>
+            <?php endif; ?>
 
             <!-- Order Details Table & Customer Details -->
             <div class="cozy-order-details-wrap">
