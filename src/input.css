@@ -3760,14 +3760,17 @@ body table.woocommerce-table--order-details tfoot tr.order-total-row-order_total
   font-weight: 700 !important;
 }
 
-/* Ocultar la sección de información adicional por completo */
+/* Ocultar la sección de información adicional por completo y la clase shipped_via */
 .woocommerce-column--additional,
 .woocommerce-additional-fields,
 .woocommerce-order-details__additional-information,
 .cozy-thankyou .woocommerce-customer-details + *,
 .cozy-thankyou .woocommerce-column--additional,
 #page .woocommerce-order-received .woocommerce-column--additional,
-#page .woocommerce-order-details__additional-information {
+#page .woocommerce-order-details__additional-information,
+.shipped_via,
+small.shipped_via {
   display: none !important;
 }
+
 
