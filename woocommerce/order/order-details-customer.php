@@ -14,14 +14,14 @@ defined( 'ABSPATH' ) || exit;
 
 $show_shipping = ! wc_ship_to_billing_address_only() && $order->needs_shipping_address();
 ?>
-<section class="woocommerce-customer-details mb-8 clear-both w-full block">
+<section class="woocommerce-customer-details mb-8 clear-both w-full block" style="display: block !important; width: 100% !important; float: none !important; clear: both !important;">
 
-	<h2 class="woocommerce-column__title font-serif text-xl sm:text-2xl font-bold text-cozy-coffee mb-6 flex items-center gap-2 m-0 w-full block clear-both">
+	<h2 class="woocommerce-column__title font-serif text-xl sm:text-2xl font-bold text-cozy-coffee mb-6 flex items-center gap-2 m-0 w-full block clear-both" style="display: flex !important; width: 100% !important; max-width: 100% !important; float: none !important; clear: both !important; margin-bottom: 1.5rem !important;">
 		<?php echo cozy_icon( 'location-dot', '20', 'text-cozy-mint' ); ?>
 		<?php esc_html_e( 'Customer details', 'woocommerce' ); ?>
 	</h2>
 
-	<div class="grid grid-cols-1 <?php echo $show_shipping ? 'md:grid-cols-2' : ''; ?> gap-6 w-full clear-both">
+	<div class="grid grid-cols-1 <?php echo $show_shipping ? 'md:grid-cols-2' : ''; ?> gap-6 w-full clear-both" style="display: grid !important; width: 100% !important; max-width: 100% !important; float: none !important; clear: both !important;">
 
 		<!-- Billing Address -->
 		<div class="bg-white rounded-[28px] p-6 sm:p-8 border border-cozy-sand shadow-sm flex flex-col justify-between">
