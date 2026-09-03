@@ -1490,10 +1490,20 @@ ul.wc-block-grid {
 }
 .wc-block-cart-item__remove-link:hover { color: #ef4444 !important; }
 
-/* Sticky sidebar on desktop */
-.wc-block-components-sidebar {
-  position: sticky !important;
-  top: 9rem !important;
+/* Sticky sidebar on desktop only */
+@media (min-width: 768px) {
+  .wc-block-components-sidebar,
+  .wc-block-checkout__sidebar {
+    position: sticky !important;
+    top: 9rem !important;
+  }
+}
+@media (max-width: 767px) {
+  .wc-block-components-sidebar,
+  .wc-block-checkout__sidebar {
+    position: static !important;
+    top: auto !important;
+  }
 }
 
 /* Order summary / totals block */
