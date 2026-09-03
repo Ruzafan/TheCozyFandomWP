@@ -3683,14 +3683,91 @@ body .woocommerce-customer-details div.grid,
 
 
 
-/* Estilos de la tabla de resumen de pedido */
-.cozy-order-details-wrap table.shop_table {
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-  border: none !important;
-  width: 100% !important;
+/* ─── Cozy Order Details Card & Table Overrides ─────────────────── */
+.ast-separate-container .woocommerce-order-details,
+body .woocommerce-order-details,
+#page .woocommerce-order-details,
+.woocommerce-order-details {
+  background-color: #ffffff !important;
+  border: 1px solid #F2E6D5 !important;
+  border-radius: 28px !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 1px 3px rgba(58, 49, 40, 0.05) !important;
+  overflow: hidden !important;
 }
-.cozy-order-details-wrap table.shop_table th,
-.cozy-order-details-wrap table.shop_table td {
-  border-color: #F5EDE0 !important;
-}
+@media (min-width: 640px) {
+  .ast-separate-container .woocommerce-order-details,
+  body .woocommerce-order-details,
+  #page .woocommerce-order-details,
+  .woocommerce-order-details {
+    border-radius: 32px !important;
+    padding: 2rem !important;
+  }
+}
+
+/* Anular la caja contenedora independiente que Astra pone en el título */
+.ast-separate-container .woocommerce-order-details .woocommerce-order-details__title,
+body .woocommerce-order-details .woocommerce-order-details__title,
+#page .woocommerce-order-details .woocommerce-order-details__title,
+.woocommerce-order-details__title {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: none !important;
+}
+
+/* Forzar que la tabla y totales sean 100% blancos sin divisiones beige ni líneas verticales */
+.ast-separate-container table.shop_table.order_details,
+body table.woocommerce-table--order-details,
+#page table.woocommerce-table--order-details,
+table.woocommerce-table--order-details {
+  background-color: #ffffff !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.ast-separate-container table.shop_table.order_details tfoot,
+body table.woocommerce-table--order-details tfoot,
+#page table.woocommerce-table--order-details tfoot,
+table.woocommerce-table--order-details tfoot {
+  background-color: #ffffff !important;
+  border-top: 2px solid #F5EDE0 !important;
+}
+
+.ast-separate-container table.shop_table.order_details tfoot th,
+.ast-separate-container table.shop_table.order_details tfoot td,
+body table.woocommerce-table--order-details tfoot th,
+body table.woocommerce-table--order-details tfoot td,
+#page table.woocommerce-table--order-details tfoot th,
+#page table.woocommerce-table--order-details tfoot td {
+  background-color: #ffffff !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: 1px solid #F5EDE0 !important;
+}
+
+/* Destacar suavemente la fila del Total final */
+.ast-separate-container table.shop_table.order_details tfoot tr.order-total-row-order_total th,
+.ast-separate-container table.shop_table.order_details tfoot tr.order-total-row-order_total td,
+body table.woocommerce-table--order-details tfoot tr.order-total-row-order_total th,
+body table.woocommerce-table--order-details tfoot tr.order-total-row-order_total td {
+  background-color: #EAF6F3 !important;
+  color: #3A3128 !important;
+  font-weight: 700 !important;
+}
+
+/* Ocultar la sección de información adicional por completo */
+.woocommerce-column--additional,
+.woocommerce-additional-fields,
+.woocommerce-order-details__additional-information,
+.cozy-thankyou .woocommerce-customer-details + *,
+.cozy-thankyou .woocommerce-column--additional,
+#page .woocommerce-order-received .woocommerce-column--additional,
+#page .woocommerce-order-details__additional-information {
+  display: none !important;
+}
+

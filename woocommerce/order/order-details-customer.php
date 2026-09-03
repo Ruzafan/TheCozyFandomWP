@@ -80,6 +80,6 @@ $show_shipping = ! wc_ship_to_billing_address_only() && $order->needs_shipping_a
 
 	</div>
 
-	<?php do_action( 'woocommerce_order_details_after_customer_details', $order ); ?>
+	<?php // Ocultar información adicional a petición del diseño ?>
 
 </section>
