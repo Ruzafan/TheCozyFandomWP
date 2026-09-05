@@ -355,7 +355,7 @@ function cozy_fandom_enqueue_scripts() {
 
     $auto_open_cart = false;
     if ( class_exists( 'WooCommerce' ) && WC()->cart ) {
-        if ( isset( $_REQUEST['add-to-cart'] ) || ! empty( wc_get_notices( 'success' ) ) ) {
+        if ( isset( $_GET['add-to-cart'] ) || isset( $_POST['add-to-cart'] ) ) {
             $auto_open_cart = true;
         }
     }
