@@ -633,6 +633,11 @@ document.addEventListener('keydown', function (e) {
 function cozyUpdateFavBtns(productId, isFav) {
     document.querySelectorAll('.cozy-fav-btn[data-product-id="' + productId + '"]').forEach(function (btn) {
         btn.classList.toggle('is-favorited', isFav);
+        if (isFav) {
+            btn.classList.remove('cozy-heart-pop');
+            void btn.offsetWidth; // force reflow for animation restart
+            btn.classList.add('cozy-heart-pop');
+        }
         var label = btn.querySelector('.cozy-fav-label');
         if (label) label.textContent = isFav ? 'Guardado' : 'Guardar';
     });

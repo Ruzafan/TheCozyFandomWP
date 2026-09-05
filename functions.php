@@ -1080,7 +1080,28 @@ add_action( 'wp_ajax_nopriv_cozy_ajax_add_to_cart', 'cozy_ajax_add_to_cart' );
 /* ------------------------------------------------------------------ */
 function cozy_render_mini_cart() {
     if ( ! class_exists( 'WooCommerce' ) ) return;
+    $subtotal  = (float) WC()->cart->get_subtotal();
+    $threshold = 60;
+    $remaining = max( 0, $threshold - $subtotal );
+    $percent   = min( 100, max( 0, ( $subtotal / $threshold ) * 100 ) );
     ?>
+    <div id="cart-shipping-bar" class="px-5 py-3.5 bg-cozy-mintLight/40 border-b border-cozy-sand shrink-0">
+        <div class="flex items-center justify-between text-xs font-semibold text-cozy-coffee mb-1.5">
+            <?php if ( $subtotal >= $threshold ) : ?>
+                <span class="text-cozy-coffee font-bold flex items-center gap-1">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    ¡Enhorabuena! Tienes <strong class="text-cozy-mintDark">Envío GRATIS</strong>
+                </span>
+            <?php else : ?>
+                <span>Te faltan <strong class="text-cozy-mintDark"><?php echo wc_price( $remaining ); ?></strong> para <strong class="text-cozy-coffee">Envío GRATIS</strong></span>
+            <?php endif; ?>
+            <span class="text-[11px] text-cozy-coffee/60 font-bold ml-1"><?php echo round( $percent ); ?>%</span>
+        </div>
+        <div class="w-full h-2 bg-white rounded-full overflow-hidden border border-cozy-sand/60">
+            <div class="h-full bg-cozy-mint rounded-full transition-all duration-500 <?php echo $subtotal >= $threshold ? 'cozy-free-shipping-glow' : ''; ?>" style="width: <?php echo $percent; ?>%"></div>
+        </div>
+    </div>
+
     <div id="cart-items" class="p-6 overflow-y-auto flex-grow space-y-4">
     <?php if ( WC()->cart->is_empty() ) : ?>
         <div class="text-center py-12 space-y-4">

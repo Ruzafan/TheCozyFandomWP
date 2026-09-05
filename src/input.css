@@ -3848,5 +3848,31 @@ a.added_to_cart,
   100% { transform: rotate(360deg); }
 }
 
+/* Micro-interacción: Animación de pulso al guardar en favoritos */
+@keyframes cozyHeartPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35) rotate(-8deg); }
+  75% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+.cozy-fav-btn.is-favorited .cozy-fav-heart,
+.cozy-fav-btn.cozy-heart-pop .cozy-fav-heart,
+.cozy-fav-btn.cozy-heart-pop {
+  animation: cozyHeartPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Animación de brillo para la barra de Envío Gratis completada */
+@keyframes cozyMintGlow {
+  0%, 100% { box-shadow: 0 0 4px rgba(136, 196, 181, 0.6); }
+  50% { box-shadow: 0 0 12px rgba(136, 196, 181, 0.9); }
+}
+
+.cozy-free-shipping-glow {
+  animation: cozyMintGlow 2s infinite ease-in-out;
+  background-color: #88C4B5 !important;
+}
+
+
 
 
