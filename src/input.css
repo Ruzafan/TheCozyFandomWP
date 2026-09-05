@@ -3773,4 +3773,9 @@ small.shipped_via {
   display: none !important;
 }
 
+@keyframes cozySpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 

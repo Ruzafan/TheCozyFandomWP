@@ -344,7 +344,7 @@ function cozy_fandom_enqueue_scripts() {
     wp_enqueue_script(
         'cozy-main',
         get_stylesheet_directory_uri() . '/assets/js/cozy-main.js',
-        [],
+        [ 'jquery' ],
         filemtime( get_stylesheet_directory() . '/assets/js/cozy-main.js' ),
         true
     );
@@ -353,19 +353,26 @@ function cozy_fandom_enqueue_scripts() {
         ? array_values( array_filter( array_map( 'absint', (array) get_user_meta( get_current_user_id(), '_cozy_wishlist', true ) ) ) )
         : [];
 
+    $auto_open_cart = false;
+    if ( class_exists( 'WooCommerce' ) && WC()->cart ) {
+        if ( isset( $_REQUEST['add-to-cart'] ) || ! empty( wc_get_notices( 'success' ) ) ) {
+            $auto_open_cart = true;
+        }
+    }
+
     wp_localize_script( 'cozy-main', 'cozyAjax', [
-        'url'        => admin_url( 'admin-ajax.php' ),
-        'nonce'      => wp_create_nonce( 'cozy_newsletter' ),
-        'favNonce'   => wp_create_nonce( 'cozy_favorites' ),
-        'isLoggedIn' => is_user_logged_in(),
-        'favorites'  => $fav_ids,
-        'loginUrl'   => class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : wp_login_url(),
+        'url'          => admin_url( 'admin-ajax.php' ),
+        'nonce'        => wp_create_nonce( 'cozy_newsletter' ),
+        'favNonce'     => wp_create_nonce( 'cozy_favorites' ),
+        'cartNonce'    => wp_create_nonce( 'cozy_cart' ),
+        'isLoggedIn'   => is_user_logged_in(),
+        'favorites'    => $fav_ids,
+        'loginUrl'     => class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'myaccount' ) ) : wp_login_url(),
+        'autoOpenCart' => $auto_open_cart,
     ] );
 
-    /* Only load wc-add-to-cart for AJAX buttons on shop/catalog/front pages.
-       We intentionally avoid wc-cart-fragments on general browsing to eliminate
-       the blocking /?wc-ajax=get_refreshed_fragments background AJAX request. */
-    if ( class_exists( 'WooCommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_front_page() ) ) {
+    /* Only load wc-add-to-cart for AJAX buttons on shop/catalog/front/product pages. */
+    if ( class_exists( 'WooCommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_front_page() || is_product() ) ) {
         wp_enqueue_script( 'wc-add-to-cart' );
     }
 }
@@ -973,7 +980,7 @@ add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
     $count = WC()->cart->get_cart_contents_count();
 
     $fragments['#cart-badge'] = sprintf(
-        '<span id="cart-badge" data-cart-value="%s" class="%sabsolute -top-1 -right-1 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">%d</span>',
+        '<span id="cart-badge" data-cart-value="%s" class="%sabsolute -top-0.5 -right-0.5 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">%d</span>',
         esc_attr( WC()->cart->get_cart_contents_total() ),
         $count > 0 ? '' : 'hidden ',
         $count
@@ -987,6 +994,79 @@ add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
 
     return $fragments;
 } );
+
+/* ------------------------------------------------------------------ */
+/*  AJAX ADD TO CART HANDLER                                            */
+/* ------------------------------------------------------------------ */
+function cozy_ajax_add_to_cart() {
+    check_ajax_referer( 'cozy_cart', 'nonce' );
+
+    if ( ! class_exists( 'WooCommerce' ) || ! WC()->cart ) {
+        wp_send_json_error( [ 'message' => __( 'WooCommerce no está activo.', 'woocommerce' ) ] );
+    }
+
+    $product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+    if ( ! $product_id && isset( $_POST['add-to-cart'] ) ) {
+        $product_id = absint( $_POST['add-to-cart'] );
+    }
+
+    if ( ! $product_id ) {
+        wp_send_json_error( [ 'message' => __( 'Producto no encontrado.', 'woocommerce' ) ] );
+    }
+
+    $quantity     = isset( $_POST['quantity'] ) ? wc_stock_amount( wp_unslash( $_POST['quantity'] ) ) : 1;
+    $variation_id = isset( $_POST['variation_id'] ) ? absint( $_POST['variation_id'] ) : 0;
+    $variations   = [];
+
+    foreach ( $_POST as $key => $value ) {
+        if ( 0 === strpos( $key, 'attribute_' ) ) {
+            $variations[ $key ] = sanitize_text_field( wp_unslash( $value ) );
+        }
+    }
+
+    $passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variations );
+
+    if ( $passed_validation ) {
+        $cart_item_key = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variations );
+
+        if ( $cart_item_key ) {
+            do_action( 'woocommerce_ajax_added_to_cart', $product_id );
+
+            $count = WC()->cart->get_cart_contents_count();
+
+            $fragments = [
+                '#cart-badge' => sprintf(
+                    '<span id="cart-badge" data-cart-value="%s" class="%sabsolute -top-0.5 -right-0.5 bg-cozy-mint text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm">%d</span>',
+                    esc_attr( WC()->cart->get_cart_contents_total() ),
+                    $count > 0 ? '' : 'hidden ',
+                    $count
+                ),
+                '#cart-total' => '<span id="cart-total" class="text-lg text-cozy-coffee">' . WC()->cart->get_cart_total() . '</span>',
+            ];
+
+            ob_start();
+            cozy_render_mini_cart();
+            $fragments['#cart-items'] = ob_get_clean();
+
+            $fragments = apply_filters( 'woocommerce_add_to_cart_fragments', $fragments );
+
+            wp_send_json_success( [
+                'fragments' => $fragments,
+                'cart_hash' => WC()->cart->get_cart_hash(),
+            ] );
+        }
+    }
+
+    $notices = wc_get_notices( 'error' );
+    wc_clear_notices();
+    $message = ! empty( $notices ) && isset( $notices[0]['notice'] )
+        ? wp_strip_all_tags( $notices[0]['notice'] )
+        : __( 'No se pudo añadir el producto al carrito.', 'woocommerce' );
+
+    wp_send_json_error( [ 'message' => $message ] );
+}
+add_action( 'wp_ajax_cozy_ajax_add_to_cart',        'cozy_ajax_add_to_cart' );
+add_action( 'wp_ajax_nopriv_cozy_ajax_add_to_cart', 'cozy_ajax_add_to_cart' );
 
 /* ------------------------------------------------------------------ */
 /*  MINI CART RENDERER                                                  */

@@ -663,37 +663,58 @@ function cozyRemoveFavItem(productId) {
     }
 }
 
-/* ─── WooCommerce event listeners (vanilla JS, no jQuery) ───────── */
+function cozyReplaceFragments(fragments) {
+    if (!fragments) return;
+    Object.keys(fragments).forEach(function (selector) {
+        var el = document.querySelector(selector);
+        if (el) {
+            el.outerHTML = fragments[selector];
+        }
+    });
+}
+
+/* ─── WooCommerce event listeners & Cart Drawer Auto-Open ───────── */
 (function () {
     'use strict';
 
-    /* Open cart drawer after AJAX add-to-cart.
-       WooCommerce triggers 'added_to_cart' as a jQuery event on document.body.
-       Since WC itself loads jQuery, we can listen for it via the jQuery bridge
-       if jQuery is available, or fall back to a MutationObserver on cart-badge. */
-    if (typeof jQuery !== 'undefined') {
-        jQuery(document.body).on('added_to_cart', function (e, fragments, cart_hash, $button) {
-            window.openCart();
+    function initCartEvents() {
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document.body).off('added_to_cart.cozy').on('added_to_cart.cozy', function (e, fragments, cart_hash, $button) {
+                if (fragments) {
+                    cozyReplaceFragments(fragments);
+                }
+                window.openCart();
 
-            if (typeof gtag === 'function' && $button && $button.length) {
-                gtag('event', 'add_to_cart', {
-                    currency: 'EUR',
-                    value: parseFloat($button.data('product-price')) || 0,
-                    items: [{
-                        item_id:   String($button.data('product_id') || ''),
-                        item_name: $button.data('product-name') || '',
-                        price:     parseFloat($button.data('product-price')) || 0,
-                        quantity:  parseInt($button.data('quantity'), 10) || 1
-                    }]
-                });
-            }
-        });
-        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function () {
-            var badge = document.getElementById('cart-badge');
-            if (!badge) return;
-            var count = parseInt(badge.textContent.trim(), 10) || 0;
-            badge.classList.toggle('hidden', count === 0);
-        });
+                if (typeof gtag === 'function' && $button && $button.length) {
+                    gtag('event', 'add_to_cart', {
+                        currency: 'EUR',
+                        value: parseFloat($button.data('product-price')) || 0,
+                        items: [{
+                            item_id:   String($button.data('product_id') || ''),
+                            item_name: $button.data('product-name') || '',
+                            price:     parseFloat($button.data('product-price')) || 0,
+                            quantity:  parseInt($button.data('quantity'), 10) || 1
+                        }]
+                    });
+                }
+            });
+
+            jQuery(document.body).off('wc_fragments_refreshed.cozy wc_fragments_loaded.cozy').on('wc_fragments_refreshed.cozy wc_fragments_loaded.cozy', function (e, fragments) {
+                if (fragments) {
+                    cozyReplaceFragments(fragments);
+                }
+                var badge = document.getElementById('cart-badge');
+                if (!badge) return;
+                var count = parseInt(badge.textContent.trim(), 10) || 0;
+                badge.classList.toggle('hidden', count === 0);
+            });
+        }
+    }
+
+    if (typeof jQuery !== 'undefined') {
+        initCartEvents();
+    } else {
+        document.addEventListener('DOMContentLoaded', initCartEvents);
     }
 
     /* Mark already-favorited products on page load, and reconcile the
@@ -701,6 +722,81 @@ function cozyRemoveFavItem(productId) {
        right after login, or render it into the drawer for a logged-out visitor. */
     document.addEventListener('DOMContentLoaded', function () {
         if (typeof cozyAjax === 'undefined') return;
+
+        // Auto-open cart drawer on page load if product was added (e.g. from non-AJAX POST or query string)
+        if (cozyAjax.autoOpenCart) {
+            setTimeout(function () {
+                if (typeof window.openCart === 'function') {
+                    window.openCart();
+                }
+            }, 150);
+        }
+
+        // Intercept single product page add-to-cart form submission
+        document.addEventListener('submit', function (e) {
+            var form = e.target.closest('form.cart');
+            if (!form) return;
+            if (form.classList.contains('grouped_form')) return;
+            if (typeof cozyAjax === 'undefined' || !cozyAjax.cartNonce) return;
+
+            e.preventDefault();
+
+            var submitBtn = form.querySelector('button[type="submit"], input[type="submit"], .single_add_to_cart_button');
+            var originalBtnContent = submitBtn ? submitBtn.innerHTML : '';
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.75';
+                submitBtn.style.pointerEvents = 'none';
+                submitBtn.innerHTML = '<span style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:cozySpin 0.75s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"></circle></svg> Añadiendo...</span>';
+            }
+
+            var formData = new FormData(form);
+            formData.append('action', 'cozy_ajax_add_to_cart');
+            formData.append('nonce', cozyAjax.cartNonce);
+
+            var submitter = e.submitter;
+            if (submitter && submitter.name && submitter.value) {
+                formData.append(submitter.name, submitter.value);
+            }
+
+            fetch(cozyAjax.url, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '';
+                    submitBtn.style.pointerEvents = '';
+                    submitBtn.innerHTML = originalBtnContent;
+                }
+
+                if (res && res.success) {
+                    if (res.data && res.data.fragments) {
+                        cozyReplaceFragments(res.data.fragments);
+                    }
+                    if (typeof jQuery !== 'undefined') {
+                        jQuery(document.body).trigger('added_to_cart', [res.data ? res.data.fragments : null, res.data ? res.data.cart_hash : '', submitBtn ? jQuery(submitBtn) : null]);
+                    }
+                    window.openCart();
+                } else {
+                    var errorMsg = (res && res.data && res.data.message) ? res.data.message : 'No se pudo añadir el producto al carrito.';
+                    alert(errorMsg);
+                }
+            })
+            .catch(function () {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '';
+                    submitBtn.style.pointerEvents = '';
+                    submitBtn.innerHTML = originalBtnContent;
+                }
+                form.submit();
+            });
+        });
 
         if (cozyAjax.isLoggedIn) {
             (cozyAjax.favorites || []).forEach(function (id) {
