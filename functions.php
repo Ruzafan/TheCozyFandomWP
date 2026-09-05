@@ -257,6 +257,9 @@ add_filter( 'render_block', function( $block_content, $block ) {
 add_filter( 'the_content', function( $content ) {
     if ( ( is_cart() || is_page( 'cart' ) || is_page( 'carrito' ) ) ) {
         if ( class_exists( 'WooCommerce' ) && WC()->cart && WC()->cart->is_empty() ) {
+            if ( function_exists( 'wc_clear_notices' ) ) {
+                wc_clear_notices();
+            }
             $template = get_stylesheet_directory() . '/woocommerce/cart/cart-empty.php';
             if ( file_exists( $template ) ) {
                 ob_start();
@@ -376,6 +379,17 @@ function cozy_fandom_enqueue_styles() {
         [],
         filemtime( get_stylesheet_directory() . '/assets/css/main.min.css' )
     );
+
+    $custom_cart_css = "
+        .woocommerce-cart .woocommerce-info,
+        .woocommerce-cart .woocommerce-message,
+        .page-id-carrito .woocommerce-info,
+        .page-id-cart .woocommerce-info { display: none !important; }
+        .wc-block-cart__empty-image,
+        .wc-block-components-empty-cart__icon { display: none !important; }
+        .wp-block-woocommerce-cart, .wc-block-cart, .wc-block-cart.empty { display: block !important; width: 100% !important; max-width: 100% !important; }
+    ";
+    wp_add_inline_style( 'cozy-main-style', $custom_cart_css );
 }
 add_action( 'wp_enqueue_scripts', 'cozy_fandom_enqueue_styles' );
 

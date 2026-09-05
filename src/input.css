@@ -3897,6 +3897,15 @@ a.added_to_cart,
 .woocommerce-cart .entry-content,
 .woocommerce-cart .ast-container,
 .wp-block-woocommerce-cart,
+.woocommerce-cart .cart-empty.woocommerce-info,
+.page-id-carrito .cart-empty.woocommerce-info,
+.page-id-cart .cart-empty.woocommerce-info {
+  display: none !important;
+}
+
+.wp-block-woocommerce-cart,
+.wc-block-cart,
+.wc-block-cart.empty,
 .wp-block-woocommerce-cart.alignwide,
 .wp-block-woocommerce-empty-cart-block,
 .wc-block-cart--empty {
@@ -3907,6 +3916,12 @@ a.added_to_cart,
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+}
+
+.wc-block-cart__empty-image,
+.wc-block-components-empty-cart__icon,
+.wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-image {
+  display: none !important;
 }
 
 /* 3. Crear una tarjeta Cozy centrada para el aviso de carrito vacío */
