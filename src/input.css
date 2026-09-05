@@ -3874,9 +3874,29 @@ a.added_to_cart,
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Página de Carrito Vacío (Gutenberg Block & Template Standard)
+   Carrito Vacío — Rediseño Completo Cozy Fandom
    ═══════════════════════════════════════════════════════════════ */
-/* General Outer Container */
+
+/* 1. Ocultar POR COMPLETO el SVG de la carita triste de Gutenberg */
+.wc-block-cart__empty-cart__image,
+.wc-block-cart__empty-cart-image,
+.wc-block-grid__empty-cart-image,
+.wc-block-empty-cart__image,
+.wc-block-components-empty-cart-block__image,
+.wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-cart__image,
+.wp-block-woocommerce-empty-cart-block svg {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+/* 2. Forzar que los contenedores de Gutenberg ocupen el 100% del ancho sin encerrarse */
+.woocommerce-cart #primary,
+.woocommerce-cart .entry-content,
+.woocommerce-cart .ast-container,
+.wp-block-woocommerce-cart,
 .wp-block-woocommerce-cart.alignwide,
 .wp-block-woocommerce-empty-cart-block,
 .wc-block-cart--empty {
@@ -3889,33 +3909,32 @@ a.added_to_cart,
   box-shadow: none !important;
 }
 
-/* Hide Gutenberg Sad Face Icon */
-.wc-block-cart__empty-cart__image,
-.wc-block-grid__empty-cart-image,
-.wc-block-empty-cart__image,
-.wc-block-components-empty-cart-block__image,
-.wp-block-woocommerce-empty-cart-block > svg,
-.wp-block-woocommerce-cart.is-empty > svg,
-.wp-block-woocommerce-empty-cart-block ul:empty {
-  display: none !important;
+/* 3. Crear una tarjeta Cozy centrada para el aviso de carrito vacío */
+.wp-block-woocommerce-empty-cart-block {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
 }
 
-/* Styled Top Message Box (Centered Card) */
-.wp-block-woocommerce-cart.is-empty .wc-block-cart__empty-text,
+/* Envolver el aviso de "Tu carrito está actualmente vacío!" en una tarjeta preciosa */
 .wp-block-woocommerce-empty-cart-block > h2.wc-block-cart__empty-text,
-.wp-block-woocommerce-empty-cart-block > h2.wc-block-grid__title:first-of-type,
-.wc-block-grid__empty-cart-image + h2.wc-block-grid__title {
+.wp-block-woocommerce-empty-cart-block > h2.wc-block-grid__title:first-of-type {
+  background: #ffffff !important;
+  border: 1px solid #F2E6D5 !important;
+  border-radius: 32px 32px 0 0 !important;
+  padding: 3rem 2.5rem 1rem !important;
+  max-width: 36rem !important;
+  width: 100% !important;
+  margin: 2rem auto 0 !important;
   font-family: 'Playfair Display', Georgia, serif !important;
   font-size: 1.875rem !important;
   font-weight: 700 !important;
   color: #3A3128 !important;
-  margin: 1.5rem auto 1rem !important;
   text-align: center !important;
-  max-width: 36rem !important;
-  line-height: 1.25 !important;
+  box-shadow: 0 -4px 20px rgba(58, 49, 40, 0.03) !important;
 }
 
-/* Soft Mint Icon Box above Title */
+/* Icono lindo (Caja de regalo / Té) arriba del título */
 .wp-block-woocommerce-empty-cart-block > h2.wc-block-cart__empty-text::before,
 .wp-block-woocommerce-empty-cart-block > h2.wc-block-grid__title:first-of-type::before {
   content: "" !important;
@@ -3928,18 +3947,25 @@ a.added_to_cart,
   box-shadow: 0 4px 12px rgba(136, 196, 181, 0.2) !important;
 }
 
-/* Button Wrapper */
+/* Contenedor del botón "Volver a la tienda" */
 .wp-block-woocommerce-empty-cart-block > .wp-block-buttons {
+  background: #ffffff !important;
+  border-left: 1px solid #F2E6D5 !important;
+  border-right: 1px solid #F2E6D5 !important;
+  border-bottom: 1px solid #F2E6D5 !important;
+  border-radius: 0 0 32px 32px !important;
+  margin-top: 0 !important;
+  padding: 0 2.5rem 2.5rem !important;
+  max-width: 36rem !important;
+  width: 100% !important;
   display: flex !important;
   justify-content: center !important;
   margin-bottom: 3.5rem !important;
+  box-shadow: 0 4px 20px rgba(58, 49, 40, 0.04) !important;
 }
 
-/* Primary "Volver a la tienda" Button */
 .wp-block-woocommerce-empty-cart-block .wp-block-button__link,
-.wp-block-woocommerce-empty-cart-block .wp-element-button,
-.wc-block-cart__submit-button,
-.wc-block-empty-cart a.button {
+.wp-block-woocommerce-empty-cart-block .wp-element-button {
   background: #88C4B5 !important;
   color: #3A3128 !important;
   font-weight: 700 !important;
@@ -3957,25 +3983,27 @@ a.added_to_cart,
 }
 
 .wp-block-woocommerce-empty-cart-block .wp-block-button__link:hover,
-.wp-block-woocommerce-empty-cart-block .wp-element-button:hover,
-.wc-block-cart__submit-button:hover,
-.wc-block-empty-cart a.button:hover {
+.wp-block-woocommerce-empty-cart-block .wp-element-button:hover {
   background: #72B0A2 !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 14px rgba(136, 196, 181, 0.35) !important;
 }
 
-/* ─── Novedades en la tienda (Recommended Products Grid) ─────── */
+/* 4. REJILLA DE PRODUCTOS RECOMENDADOS ("Novedades en la tienda") EN ANCHO COMPLETO */
 .wp-block-woocommerce-empty-cart-block > h2.wc-block-grid__title {
   font-family: 'Playfair Display', Georgia, serif !important;
   font-size: 1.5rem !important;
   font-weight: 700 !important;
   color: #3A3128 !important;
   text-align: center !important;
-  margin-top: 2.5rem !important;
+  margin-top: 3rem !important;
   margin-bottom: 1.5rem !important;
   width: 100% !important;
   max-width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
 .wp-block-woocommerce-empty-cart-block ul.wc-block-grid__products {
@@ -3983,9 +4011,9 @@ a.added_to_cart,
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 1.25rem !important;
   width: 100% !important;
-  max-width: 80rem !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
+  max-width: 75rem !important;
+  margin: 0 auto 3rem !important;
+  padding: 0 1rem !important;
   list-style: none !important;
 }
 
@@ -3995,7 +4023,7 @@ a.added_to_cart,
   }
 }
 
-/* Individual Product Card in Grid */
+/* Tarjeta individual de cada producto en la rejilla */
 .wp-block-woocommerce-empty-cart-block li.wc-block-grid__product {
   background: #ffffff !important;
   border: 1px solid #F2E6D5 !important;
@@ -4041,7 +4069,7 @@ a.added_to_cart,
   margin-bottom: 0.75rem !important;
 }
 
-/* FIX BUTTON SQUASHING: Add to cart buttons inside grid */
+/* FIX DEFLEX / CORRECCIÓN DE BOTONES: Botón "Añadir al carrito" amplio y horizontal */
 .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-add-to-cart,
 .wp-block-woocommerce-empty-cart-block .wc-block-grid__product-add-to-cart a,
 .wp-block-woocommerce-empty-cart-block li.wc-block-grid__product .wp-block-button__link {

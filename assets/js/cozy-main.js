@@ -1705,6 +1705,36 @@ function cozyReplaceFragments(fragments) {
         if (saved) {
             window.toggleUltraCozy();
         }
+
+        // Cozy Empty Cart Enhancer for Gutenberg Block
+        function formatCozyEmptyCart() {
+            var sadImage = document.querySelector('.wc-block-grid__empty-cart-image, .wc-block-cart__empty-cart__image, .wc-block-cart__empty-cart-image');
+            if (sadImage) {
+                sadImage.style.display = 'none';
+            }
+            var emptyBlock = document.querySelector('.wp-block-woocommerce-empty-cart-block, .wc-block-cart--empty');
+            if (emptyBlock) {
+                var title = emptyBlock.querySelector('h2.wc-block-grid__title, h2.wc-block-cart__empty-text');
+                if (title && !title.dataset.cozyUpdated) {
+                    title.dataset.cozyUpdated = 'true';
+                    title.textContent = 'Tu carrito está vacío';
+                }
+                if (!emptyBlock.querySelector('.cozy-empty-cart-btn-wrap')) {
+                    var btnWrap = document.createElement('div');
+                    btnWrap.className = 'cozy-empty-cart-btn-wrap text-center my-6';
+                    btnWrap.innerHTML = '<a href="/es/tienda/" class="inline-flex items-center gap-2 bg-[#88C4B5] hover:bg-[#72B0A2] text-[#3A3128] font-bold px-8 py-3.5 rounded-2xl shadow-sm hover:shadow-md transition-all text-sm no-underline">Volver a la tienda</a>';
+                    if (title && title.nextSibling) {
+                        emptyBlock.insertBefore(btnWrap, title.nextSibling);
+                    } else {
+                        emptyBlock.appendChild(btnWrap);
+                    }
+                }
+            }
+        }
+
+        formatCozyEmptyCart();
+        setTimeout(formatCozyEmptyCart, 200);
+        setTimeout(formatCozyEmptyCart, 600);
     });
 
 })();
