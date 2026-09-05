@@ -1165,10 +1165,11 @@ add_action( 'wp_ajax_nopriv_cozy_ajax_add_to_cart', 'cozy_ajax_add_to_cart' );
 /* ------------------------------------------------------------------ */
 function cozy_render_mini_cart() {
     if ( ! class_exists( 'WooCommerce' ) ) return;
-    $subtotal  = (float) WC()->cart->get_subtotal();
-    $threshold = 60;
+    $threshold = 60.0;
+    // Total neto tras descuentos + impuestos del carrito
+    $subtotal = (float) WC()->cart->get_cart_contents_total() + (float) WC()->cart->get_cart_contents_tax();
     $remaining = max( 0, $threshold - $subtotal );
-    $percent   = min( 100, max( 0, ( $subtotal / $threshold ) * 100 ) );
+    $percent   = $threshold > 0 ? min( 100, max( 0, ( $subtotal / $threshold ) * 100 ) ) : 100;
     ?>
     <div id="cart-items" class="flex flex-col flex-grow min-h-0 overflow-hidden">
         <div id="cart-shipping-bar" class="px-5 py-3.5 bg-cozy-mintLight/40 border-b border-cozy-sand shrink-0">
@@ -1253,7 +1254,7 @@ function cozy_fandom_render_footer() {
                 <div class="space-y-4">
                     <span class="font-serif text-xl font-bold text-white block">🌿 The Cozy Fandom</span>
                     <p class="text-xs text-white/60 leading-relaxed max-w-xs">
-                        Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado.
+                        Coleccionables bonitos, esenciales aesthetic y detalles con alma para un hogar relajado.
                     </p>
                     <?php if ( ( ! empty( $instagram_url ) && $instagram_url !== '#' ) || ( ! empty( $tiktok_url ) && $tiktok_url !== '#' ) ) : ?>
                     <div class="flex items-center gap-3 pt-1">
@@ -1314,7 +1315,7 @@ function cozy_fandom_render_footer() {
 
             <div class="pt-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-white/40">
                 <span>&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> The Cozy Fandom. Todos los derechos reservados.</span>
-                <span>Hecho con 🌿 para fans cozy</span>
+                <span>Hecho con ❤️ para fans cozy</span>
             </div>
 
         </div>

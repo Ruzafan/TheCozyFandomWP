@@ -73,7 +73,7 @@ $cozy_cats = [
                     Tu rincón friki <span class="italic text-cozy-mint font-normal block md:inline">más acogedor</span>
                 </h1>
                 <p class="text-sm md:text-base text-cozy-coffee/80 leading-relaxed mt-4 mb-6 max-w-sm">
-                    Coleccionables bonitos, papelería aesthetic y detalles con alma para un hogar relajado. Merchandising oficial seleccionado con un toque cálido y sofisticado.
+                    Coleccionables bonitos, esenciales aesthetic y detalles con alma para un hogar relajado. Merchandising oficial seleccionado con un toque cálido y sofisticado.
                 </p>
 
                 <a href="<?php echo esc_url( $shop_url ); ?>"
