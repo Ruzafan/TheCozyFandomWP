@@ -1085,53 +1085,55 @@ function cozy_render_mini_cart() {
     $remaining = max( 0, $threshold - $subtotal );
     $percent   = min( 100, max( 0, ( $subtotal / $threshold ) * 100 ) );
     ?>
-    <div id="cart-shipping-bar" class="px-5 py-3.5 bg-cozy-mintLight/40 border-b border-cozy-sand shrink-0">
-        <div class="flex items-center justify-between text-xs font-semibold text-cozy-coffee mb-1.5">
-            <?php if ( $subtotal >= $threshold ) : ?>
-                <span class="text-cozy-coffee font-bold flex items-center gap-1">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    ¡Enhorabuena! Tienes <strong class="text-cozy-mintDark">Envío GRATIS</strong>
-                </span>
-            <?php else : ?>
-                <span>Te faltan <strong class="text-cozy-mintDark"><?php echo wc_price( $remaining ); ?></strong> para <strong class="text-cozy-coffee">Envío GRATIS</strong></span>
-            <?php endif; ?>
-            <span class="text-[11px] text-cozy-coffee/60 font-bold ml-1"><?php echo round( $percent ); ?>%</span>
-        </div>
-        <div class="w-full h-2 bg-white rounded-full overflow-hidden border border-cozy-sand/60">
-            <div class="h-full bg-cozy-mint rounded-full transition-all duration-500 <?php echo $subtotal >= $threshold ? 'cozy-free-shipping-glow' : ''; ?>" style="width: <?php echo $percent; ?>%"></div>
-        </div>
-    </div>
-
-    <div id="cart-items" class="p-6 overflow-y-auto flex-grow space-y-4">
-    <?php if ( WC()->cart->is_empty() ) : ?>
-        <div class="text-center py-12 space-y-4">
-            <?php echo cozy_icon( 'box-open', '48', 'text-cozy-coffee/20 block' ); ?>
-            <p class="text-sm text-cozy-coffee/60">Aún no hay tesoros en tu carrito.</p>
-            <button type="button" data-action="close-cart" class="text-xs font-bold text-cozy-mint hover:underline">¡Empezar a explorar!</button>
-        </div>
-    <?php else :
-        foreach ( WC()->cart->get_cart() as $key => $item ) :
-            $product    = $item['data'];
-            $name       = $product->get_name();
-            $qty        = $item['quantity'];
-            $price      = WC()->cart->get_product_price( $product );
-            $remove_url = wc_get_cart_remove_url( $key );
-            $thumb      = $product->get_image( 'thumbnail', [ 'class' => 'w-full h-full object-cover' ] );
-        ?>
-        <div class="flex items-center gap-3 py-3 border-b border-cozy-sand">
-            <div class="w-16 h-16 rounded-xl overflow-hidden bg-cozy-cream shrink-0"><?php echo $thumb; ?></div>
-            <div class="flex-1 min-w-0">
-                <h4 class="font-bold text-xs text-cozy-coffee line-clamp-2"><?php echo esc_html( $name ); ?></h4>
-                <p class="text-xs text-cozy-coffee/60 mt-0.5"><?php echo $price; ?> × <?php echo $qty; ?></p>
+    <div id="cart-items" class="flex flex-col flex-grow min-h-0 overflow-hidden">
+        <div id="cart-shipping-bar" class="px-5 py-3.5 bg-cozy-mintLight/40 border-b border-cozy-sand shrink-0">
+            <div class="flex items-center justify-between text-xs font-semibold text-cozy-coffee mb-1.5">
+                <?php if ( $subtotal >= $threshold ) : ?>
+                    <span class="text-cozy-coffee font-bold flex items-center gap-1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#88C4B5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        ¡Enhorabuena! Tienes <strong class="text-cozy-mintDark">Envío GRATIS</strong>
+                    </span>
+                <?php else : ?>
+                    <span>Te faltan <strong class="text-cozy-mintDark"><?php echo wc_price( $remaining ); ?></strong> para <strong class="text-cozy-coffee">Envío GRATIS</strong></span>
+                <?php endif; ?>
+                <span class="text-[11px] text-cozy-coffee/60 font-bold ml-1"><?php echo round( $percent ); ?>%</span>
             </div>
-            <a href="<?php echo esc_url( $remove_url ); ?>"
-               class="shrink-0 text-cozy-coffee/40 hover:text-red-400 transition-colors ml-2"
-               title="Eliminar">
-                <?php echo cozy_icon( 'xmark', '14' ); ?>
-            </a>
+            <div class="w-full h-2 bg-white rounded-full overflow-hidden border border-cozy-sand/60">
+                <div class="h-full bg-cozy-mint rounded-full transition-all duration-500 <?php echo $subtotal >= $threshold ? 'cozy-free-shipping-glow' : ''; ?>" style="width: <?php echo $percent; ?>%"></div>
+            </div>
         </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+
+        <div class="p-6 overflow-y-auto flex-grow space-y-4">
+        <?php if ( WC()->cart->is_empty() ) : ?>
+            <div class="text-center py-12 space-y-4">
+                <?php echo cozy_icon( 'box-open', '48', 'text-cozy-coffee/20 block' ); ?>
+                <p class="text-sm text-cozy-coffee/60">Aún no hay tesoros en tu carrito.</p>
+                <button type="button" data-action="close-cart" class="text-xs font-bold text-cozy-mint hover:underline">¡Empezar a explorar!</button>
+            </div>
+        <?php else :
+            foreach ( WC()->cart->get_cart() as $key => $item ) :
+                $product    = $item['data'];
+                $name       = $product->get_name();
+                $qty        = $item['quantity'];
+                $price      = WC()->cart->get_product_price( $product );
+                $remove_url = wc_get_cart_remove_url( $key );
+                $thumb      = $product->get_image( 'thumbnail', [ 'class' => 'w-full h-full object-cover' ] );
+            ?>
+            <div class="flex items-center gap-3 py-3 border-b border-cozy-sand">
+                <div class="w-16 h-16 rounded-xl overflow-hidden bg-cozy-cream shrink-0"><?php echo $thumb; ?></div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-xs text-cozy-coffee line-clamp-2"><?php echo esc_html( $name ); ?></h4>
+                    <p class="text-xs text-cozy-coffee/60 mt-0.5"><?php echo $price; ?> × <?php echo $qty; ?></p>
+                </div>
+                <a href="<?php echo esc_url( $remove_url ); ?>"
+                   class="shrink-0 text-cozy-coffee/40 hover:text-red-400 transition-colors ml-2"
+                   title="Eliminar">
+                    <?php echo cozy_icon( 'xmark', '14' ); ?>
+                </a>
+            </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        </div>
     </div>
     <?php
 }

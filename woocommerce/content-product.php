@@ -59,15 +59,16 @@ if ( empty( $product ) || ! $product->is_visible() ) {
         <?php
         $rating_count = $product->get_rating_count();
         $average      = $product->get_average_rating();
-        $rating_val   = $rating_count > 0 ? number_format( (float) $average, 1 ) : '5.0';
+        if ( $rating_count > 0 ) :
         ?>
         <div class="flex items-center gap-1 text-[11px] text-cozy-coffee/60 my-0.5">
             <span class="text-amber-400 flex items-center gap-0.5" aria-hidden="true">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" class="text-amber-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </span>
-            <span class="font-bold text-cozy-coffee/80"><?php echo esc_html( $rating_val ); ?></span>
-            <span class="text-cozy-coffee/40 text-[10px]">(<?php echo esc_html( $rating_count > 0 ? $rating_count : 'Cozy Choice' ); ?>)</span>
+            <span class="font-bold text-cozy-coffee/80"><?php echo esc_html( number_format( (float) $average, 1 ) ); ?></span>
+            <span class="text-cozy-coffee/40 text-[10px]">(<?php echo esc_html( $rating_count ); ?>)</span>
         </div>
+        <?php endif; ?>
 
         <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-cozy-sand/50">
             <span class="text-sm font-bold text-cozy-coffee shrink-0">
