@@ -685,6 +685,11 @@ function cozyReplaceFragments(fragments) {
                 }
                 window.openCart();
 
+                // Remove WooCommerce default "Ver carrito" link appended after button
+                document.querySelectorAll('.added_to_cart, a.added_to_cart').forEach(function (el) {
+                    el.remove();
+                });
+
                 if (typeof gtag === 'function' && $button && $button.length) {
                     gtag('event', 'add_to_cart', {
                         currency: 'EUR',

@@ -3773,9 +3773,17 @@ small.shipped_via {
   display: none !important;
 }
 
+/* Ocultar el enlace redundant "Ver carrito" que WooCommerce añade dinámicamente tras añadir al carrito */
+a.added_to_cart,
+.added_to_cart,
+.wc-forward:not(.cart-contents) {
+  display: none !important;
+}
+
 @keyframes cozySpin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
 
 
