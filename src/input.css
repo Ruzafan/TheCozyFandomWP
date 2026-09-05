@@ -3873,6 +3873,133 @@ a.added_to_cart,
   background-color: #88C4B5 !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Página de Carrito Vacío (Gutenberg Block & Template Standard)
+   ═══════════════════════════════════════════════════════════════ */
+.wp-block-woocommerce-cart.is-empty,
+.wp-block-woocommerce-empty-cart-block,
+.wc-block-empty-cart,
+.wc-block-components-empty-cart-block,
+.wc-block-cart__empty-cart-block {
+  background: #ffffff !important;
+  border: 1px solid #F2E6D5 !important;
+  border-radius: 32px !important;
+  padding: 3.5rem 2rem !important;
+  max-width: 38rem !important;
+  margin: 2rem auto !important;
+  text-align: center !important;
+  box-shadow: 0 4px 20px rgba(58, 49, 40, 0.04) !important;
+}
+
+/* Ocultar la carita triste de Gutenberg y SVGs del bloque de carrito vacío */
+.wc-block-cart__empty-cart-image,
+.wc-block-grid__empty-cart-image,
+.wc-block-empty-cart__image,
+.wc-block-components-empty-cart-block__image,
+.wp-block-woocommerce-empty-cart-block > svg,
+.wp-block-woocommerce-cart.is-empty > svg,
+.wp-block-woocommerce-empty-cart-block ul:empty {
+  display: none !important;
+}
+
+.wc-block-cart__empty-cart-title,
+.wc-block-empty-cart__title,
+.wp-block-woocommerce-empty-cart-block h2,
+.wc-block-components-empty-cart-block__title,
+.wp-block-woocommerce-cart.is-empty h2 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-bottom: 1rem !important;
+  text-align: center !important;
+}
+
+/* Botón Volver a la tienda en Gutenberg Cart Block */
+.wp-block-woocommerce-empty-cart-block .wp-block-button__link,
+.wc-block-cart__submit-button,
+.wc-block-empty-cart .wp-element-button,
+.wc-block-empty-cart a.button,
+.wc-block-empty-cart .wc-block-components-button,
+.wp-block-woocommerce-cart.is-empty a.button {
+  background: #88C4B5 !important;
+  color: #3A3128 !important;
+  font-weight: 700 !important;
+  border-radius: 16px !important;
+  padding: 0.875rem 2rem !important;
+  font-size: 0.875rem !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  transition: all 0.2s ease-in-out !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(136, 196, 181, 0.2) !important;
+  margin-top: 1rem !important;
+}
+
+.wp-block-woocommerce-empty-cart-block .wp-block-button__link:hover,
+.wc-block-cart__submit-button:hover,
+.wc-block-empty-cart .wp-element-button:hover,
+.wc-block-empty-cart a.button:hover,
+.wc-block-empty-cart .wc-block-components-button:hover,
+.wp-block-woocommerce-cart.is-empty a.button:hover {
+  background: #72B0A2 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(136, 196, 181, 0.35) !important;
+}
+
+/* Productos recomendados en carrito vacío (Handpicked / Grid Gutenberg) */
+.wp-block-handpicked-products.wc-block-grid,
+.wp-block-woocommerce-empty-cart-block .wc-block-grid {
+  margin-top: 3rem !important;
+}
+
+.wp-block-handpicked-products .wc-block-grid__title,
+.wp-block-woocommerce-empty-cart-block .wc-block-grid__title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  text-align: center !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.wp-block-handpicked-products ul.wc-block-grid__products {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1.25rem !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  list-style: none !important;
+}
+
+@media (min-width: 768px) {
+  .wp-block-handpicked-products ul.wc-block-grid__products {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+.wp-block-handpicked-products .wc-block-grid__product {
+  background: #ffffff !important;
+  border: 1px solid #F2E6D5 !important;
+  border-radius: 24px !important;
+  padding: 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+}
+
+.wp-block-handpicked-products .wc-block-grid__product:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 10px 25px -5px rgba(74,63,53,0.08) !important;
+  border-color: #88C4B5 !important;
+}
+
+
 
 
 

@@ -226,6 +226,23 @@ add_action( 'wp', function() {
    "X se ha añadido a tu carrito" banner is redundant — remove it. */
 add_filter( 'wc_add_to_cart_message_html', '__return_empty_string' );
 
+/* Translate WooCommerce Cart Block empty cart strings to Spanish */
+add_filter( 'gettext', function( $translated_text, $text ) {
+    if ( 'Your cart is currently empty!' === $text ) return 'Tu carrito está vacío';
+    if ( 'New in store' === $text ) return 'Novedades en la tienda';
+    if ( 'Browse store' === $text ) return 'Volver a la tienda';
+    return $translated_text;
+}, 20, 2 );
+
+add_filter( 'render_block', function( $block_content, $block ) {
+    if ( ! empty( $block['blockName'] ) && false !== strpos( $block['blockName'], 'woocommerce' ) ) {
+        $block_content = str_replace( 'Your cart is currently empty!', 'Tu carrito está vacío', $block_content );
+        $block_content = str_replace( 'Browse store', 'Volver a la tienda', $block_content );
+        $block_content = str_replace( 'New in store', 'Novedades en la tienda', $block_content );
+    }
+    return $block_content;
+}, 10, 2 );
+
 /* Single product page: remove redundant category/tag output.
    - woocommerce_template_single_meta (priority 40) outputs the SKU/Category/Tag row.
    - Astra injects the product category above the title at priority 3 via its own hook.
@@ -1338,14 +1355,14 @@ add_action( 'woocommerce_edit_account_form_end', function () {
 
 add_action( 'woocommerce_after_edit_account_form', function () {
     ?>
-    <div style="margin-top:2rem;padding-top:1.25rem;border-top:1px solid #fecaca;">
-        <p style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(74,63,53,.4);margin:0 0 .6rem;">Zona de peligro</p>
+    <div style="margin-top:2rem;padding-top:1.25rem;border-top:1px solid #f2e6d5;">
+        <p style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(74,63,53,.5);margin:0 0 .6rem;">Gestión de la cuenta</p>
         <a href="<?php echo esc_url( wc_get_account_endpoint_url( 'delete-account' ) ); ?>"
            style="display:inline-flex;align-items:center;gap:.5rem;font-size:0.75rem;font-weight:600;color:#f87171;text-decoration:none;">
             <?php echo cozy_icon( 'user-xmark', '14' ); ?>
-            Cerrar y eliminar mi cuenta
+            Eliminar mi cuenta
         </a>
-        <p style="font-size:0.7rem;color:rgba(74,63,53,.4);margin:.4rem 0 0;">Te pediremos confirmación antes de borrar nada.</p>
+        <p style="font-size:0.7rem;color:rgba(74,63,53,.5);margin:.4rem 0 0;">Te pediremos confirmación antes de dar de baja tu cuenta.</p>
     </div>
     <?php
 } );
