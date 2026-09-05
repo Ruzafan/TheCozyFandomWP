@@ -213,17 +213,80 @@ input[type="submit"] {
 .woocommerce-message,
 .woocommerce-info {
   border-radius: 16px !important;
-  border: none !important;
+  border: 1px solid #C4E4DC !important;
   /* padding-left: 3rem leaves room for WC's ::before icon (position:absolute; left:1em) */
   padding: 0.875rem 1.25rem 0.875rem 3rem !important;
   font-size: 0.875rem !important;
+  margin-top: 1.5rem !important;
   margin-bottom: 1.5rem !important;
   list-style: none !important;
   position: relative !important;
+  box-shadow: 0 2px 8px rgba(58, 49, 40, 0.04) !important;
 }
-.woocommerce-error   { background: #FEF2F2 !important; color: #b91c1c !important; }
-.woocommerce-message { background: #EAF6F3 !important; color: #4A3F35 !important; }
-.woocommerce-info    { background: #EAF6F3 !important; color: #4A3F35 !important; }
+.woocommerce-error   { background: #FEF2F2 !important; border-color: #FCA5A5 !important; color: #b91c1c !important; }
+.woocommerce-message { background: #EAF6F3 !important; border-color: #C4E4DC !important; color: #3A3128 !important; }
+.woocommerce-info    { background: #EAF6F3 !important; border-color: #C4E4DC !important; color: #3A3128 !important; }
+
+/* Icon color inside messages */
+.woocommerce-message::before,
+.woocommerce-info::before {
+  color: #88C4B5 !important;
+}
+.woocommerce-error::before {
+  color: #DC2626 !important;
+}
+
+/* Links & Buttons inside WooCommerce notices (e.g. "¿Deshacer?" / "Ver carrito") */
+.woocommerce-message a,
+.woocommerce-message a.button,
+.woocommerce-message a.wc-forward,
+.woocommerce-message a.restore-item,
+.woocommerce-info a,
+.woocommerce-info a.button,
+.woocommerce-info a.wc-forward,
+.woocommerce-info a.restore-item,
+.woocommerce-error a,
+.woocommerce-error a.button {
+  display: inline-block !important;
+  float: right !important;
+  margin: 0 0 0 1rem !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  text-decoration: underline !important;
+  line-height: inherit !important;
+  transition: color 0.2s ease, opacity 0.2s ease !important;
+}
+
+.woocommerce-message a:hover,
+.woocommerce-message a.button:hover,
+.woocommerce-message a.wc-forward:hover,
+.woocommerce-message a.restore-item:hover,
+.woocommerce-info a:hover,
+.woocommerce-info a.button:hover,
+.woocommerce-info a.wc-forward:hover,
+.woocommerce-info a.restore-item:hover {
+  color: #88C4B5 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  text-decoration: underline !important;
+  opacity: 0.85 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.woocommerce-error a:hover,
+.woocommerce-error a.button:hover {
+  color: #991B1B !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  text-decoration: underline !important;
+}
 
 .cozy-account-content table.woocommerce-orders-table,
 .cozy-account-content table.woocommerce-table {
