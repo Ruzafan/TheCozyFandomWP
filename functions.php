@@ -998,6 +998,13 @@ add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
 /* ------------------------------------------------------------------ */
 /*  AJAX ADD TO CART HANDLER                                            */
 /* ------------------------------------------------------------------ */
+// Prevent WooCommerce core WC_Form_Handler from auto-adding items during wp_loaded on cozy_ajax_add_to_cart requests
+add_action( 'init', function() {
+    if ( isset( $_REQUEST['action'] ) && 'cozy_ajax_add_to_cart' === $_REQUEST['action'] ) {
+        remove_action( 'wp_loaded', array( 'WC_Form_Handler', 'add_to_cart_action' ), 20 );
+    }
+} );
+
 function cozy_ajax_add_to_cart() {
     check_ajax_referer( 'cozy_cart', 'nonce' );
 

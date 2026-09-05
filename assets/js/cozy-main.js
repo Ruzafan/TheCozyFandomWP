@@ -738,8 +738,10 @@ function cozyReplaceFragments(fragments) {
             if (!form) return;
             if (form.classList.contains('grouped_form')) return;
             if (typeof cozyAjax === 'undefined' || !cozyAjax.cartNonce) return;
+            if (form.dataset.cozySubmitting === 'true') return;
 
             e.preventDefault();
+            form.dataset.cozySubmitting = 'true';
 
             var submitBtn = form.querySelector('button[type="submit"], input[type="submit"], .single_add_to_cart_button');
             var originalBtnContent = submitBtn ? submitBtn.innerHTML : '';
@@ -752,13 +754,19 @@ function cozyReplaceFragments(fragments) {
             }
 
             var formData = new FormData(form);
+
+            // Save product ID from add-to-cart parameter or submitter
+            var submitter = e.submitter;
+            var productId = formData.get('add-to-cart') || (submitter && submitter.name === 'add-to-cart' ? submitter.value : null);
+            if (productId && !formData.get('product_id')) {
+                formData.set('product_id', productId);
+            }
+
+            // Remove 'add-to-cart' parameter to prevent WooCommerce core from auto-adding a 2nd unit during wp_loaded
+            formData.delete('add-to-cart');
+
             formData.append('action', 'cozy_ajax_add_to_cart');
             formData.append('nonce', cozyAjax.cartNonce);
-
-            var submitter = e.submitter;
-            if (submitter && submitter.name && submitter.value) {
-                formData.append(submitter.name, submitter.value);
-            }
 
             fetch(cozyAjax.url, {
                 method: 'POST',
@@ -767,6 +775,7 @@ function cozyReplaceFragments(fragments) {
             })
             .then(function (r) { return r.json(); })
             .then(function (res) {
+                delete form.dataset.cozySubmitting;
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = '';
@@ -780,14 +789,16 @@ function cozyReplaceFragments(fragments) {
                     }
                     if (typeof jQuery !== 'undefined') {
                         jQuery(document.body).trigger('added_to_cart', [res.data ? res.data.fragments : null, res.data ? res.data.cart_hash : '', submitBtn ? jQuery(submitBtn) : null]);
+                    } else {
+                        window.openCart();
                     }
-                    window.openCart();
                 } else {
                     var errorMsg = (res && res.data && res.data.message) ? res.data.message : 'No se pudo añadir el producto al carrito.';
                     alert(errorMsg);
                 }
             })
             .catch(function () {
+                delete form.dataset.cozySubmitting;
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = '';
