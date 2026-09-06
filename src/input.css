@@ -209,6 +209,86 @@ input[type="submit"] {
   width: 100% !important;
 }
 
+/* ─── Cozy Login & Register Forms ─────────────────────────────── */
+body.woocommerce-account .woocommerce form.login,
+body.woocommerce-account .woocommerce form.register,
+.cozy-login-page form.login,
+.cozy-login-page form.register,
+.cozy-login-page .woocommerce form.login,
+.cozy-login-page .woocommerce form.register {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  float: none !important;
+  width: 100% !important;
+}
+
+.cozy-login-page .googlesitekit-sign-in-with-google__frontend-output-button,
+.googlesitekit-sign-in-with-google__frontend-output-button {
+  max-width: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  float: none !important;
+  clear: both !important;
+}
+
+.googlesitekit-sign-in-with-google__frontend-output-button iframe,
+.googlesitekit-sign-in-with-google__frontend-output-button > div {
+  margin: 0 auto !important;
+  border-radius: 9999px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 4px rgba(58, 49, 40, 0.08) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.googlesitekit-sign-in-with-google__frontend-output-button:hover iframe,
+.googlesitekit-sign-in-with-google__frontend-output-button:hover > div {
+  box-shadow: 0 4px 14px rgba(58, 49, 40, 0.12) !important;
+  transform: translateY(-1px) !important;
+}
+
+.cozy-login-page .woocommerce-privacy-policy-text {
+  font-size: 0.75rem !important;
+  line-height: 1.55 !important;
+  color: rgba(58, 49, 40, 0.65) !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.cozy-login-page .woocommerce-privacy-policy-text p {
+  margin: 0 !important;
+  font-size: 0.75rem !important;
+  line-height: 1.55 !important;
+  color: rgba(58, 49, 40, 0.65) !important;
+}
+
+.cozy-login-page .woocommerce-privacy-policy-link {
+  color: #88C4B5 !important;
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+  transition: color 0.2s ease !important;
+}
+
+.cozy-login-page .woocommerce-privacy-policy-link:hover {
+  color: #72b0a2 !important;
+}
+
+.cozy-login-page .form-row {
+  padding: 0 !important;
+  margin: 0 !important;
+  float: none !important;
+  width: 100% !important;
+}
+
+
 .woocommerce-error,
 .woocommerce-message,
 .woocommerce-info {

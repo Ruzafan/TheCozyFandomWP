@@ -1927,3 +1927,18 @@ add_action( 'woocommerce_after_checkout_validation', function( $data, $errors ) 
     }
 }, 10, 2 );
 
+/* ------------------------------------------------------------------ */
+/*  SITE KIT SIGN-IN WITH GOOGLE — COZY DESIGN CUSTOMIZATION           */
+/* ------------------------------------------------------------------ */
+/**
+ * Customize Site Kit Sign-in with Google button options to match Cozy aesthetic.
+ */
+add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
+    if ( strpos( $tag, 'data-siwg-config' ) !== false ) {
+        // Adjust button to pill shape, large size, and proportional width
+        $tag = str_replace( '"shape":"rectangular"', '"shape":"pill","size":"large","width":340', $tag );
+    }
+    return $tag;
+}, 10, 3 );
+
+
