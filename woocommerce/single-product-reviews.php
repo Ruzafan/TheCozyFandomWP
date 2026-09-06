@@ -72,10 +72,10 @@ if ( ! comments_open() ) {
 					'title_reply'         => have_comments() ? esc_html__( 'Añadir una valoración', 'woocommerce' ) : sprintf( esc_html__( 'Sé el primero en valorar &ldquo;%s&rdquo;', 'woocommerce' ), get_the_title() ),
 					/* translators: %s is product title */
 					'title_reply_to'      => esc_html__( 'Dejar una respuesta a %s', 'woocommerce' ),
-					'title_reply_before'  => '<span id="reply-title" class="comment-reply-title">',
+					'title_reply_before'  => '<div class="cozy-review-badge">✨ Tu opinión importa</div><span id="reply-title" class="comment-reply-title">',
 					'title_reply_after'   => '</span>',
 					'comment_notes_after' => '',
-					'label_submit'        => esc_html__( 'Enviar', 'woocommerce' ),
+					'label_submit'        => esc_html__( 'Publicar valoración ✨', 'cozy-fandom-child' ),
 					'logged_in_as'        => '',
 					'comment_field'       => '',
 				);
@@ -128,7 +128,7 @@ if ( ! comments_open() ) {
 					</select></div>';
 				}
 
-				$comment_form['comment_field'] .= '<p class="comment-form-comment"><label for="comment">' . esc_html__( 'Tu reseña', 'woocommerce' ) . '&nbsp;<span class="required">*</span></label><textarea id="comment" name="comment" cols="45" rows="8" required></textarea></p>';
+				$comment_form['comment_field'] .= '<p class="comment-form-comment"><label for="comment">' . esc_html__( 'Tu reseña', 'woocommerce' ) . '&nbsp;<span class="required">*</span></label><textarea id="comment" name="comment" cols="45" rows="8" placeholder="' . esc_attr__( 'Cuéntanos qué te ha parecido este producto cozy, los detalles, la calidad...', 'cozy-fandom-child' ) . '" required></textarea></p>';
 
 				comment_form( apply_filters( 'woocommerce_product_review_comment_form_args', $comment_form ) );
 				?>

@@ -1342,32 +1342,47 @@ p.woocommerce-noreviews {
 }
 
 #review_form {
-  background: linear-gradient(180deg, #FCF9F5 0%, #FAF5EE 100%) !important;
-  border: 1.5px solid #F2E6D5 !important;
-  border-top: 4px solid #88C4B5 !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #F0E6D8 !important;
   border-radius: 24px !important;
-  padding: 2rem 2.25rem !important;
-  box-shadow: 0 4px 20px -2px rgba(58, 49, 40, 0.04) !important;
+  padding: 2.25rem 2.5rem !important;
+  box-shadow: 0 8px 30px -4px rgba(58, 49, 40, 0.05) !important;
   box-sizing: border-box !important;
 }
 
 @media (max-width: 640px) {
   #review_form {
     padding: 1.5rem 1.25rem !important;
-    border-radius: 18px !important;
+    border-radius: 20px !important;
   }
+}
+
+/* Review Badge */
+.cozy-review-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  background: #EAF6F3 !important;
+  color: #4B8E80 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.04em !important;
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 9999px !important;
+  margin-bottom: 0.6rem !important;
 }
 
 /* Review Form Title */
 #review_form #reply-title,
 #review_form .comment-reply-title {
   font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 1.35rem !important;
+  font-size: 1.4rem !important;
   font-weight: 700 !important;
   color: #3A3128 !important;
   margin-top: 0 !important;
-  margin-bottom: 1.25rem !important;
-  line-height: 1.4 !important;
+  margin-bottom: 1.5rem !important;
+  line-height: 1.35 !important;
   display: block !important;
 }
 
@@ -1385,17 +1400,20 @@ p.woocommerce-noreviews {
   text-decoration: underline !important;
 }
 
-/* Rating Stars Field */
+/* Rating Stars Field — Snug Pill & Perfect Vertical Center Alignment */
 .comment-form-rating {
-  display: flex !important;
-  flex-wrap: wrap !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
   align-items: center !important;
-  gap: 0.75rem !important;
-  margin-bottom: 1.25rem !important;
-  padding: 0.875rem 1.25rem !important;
-  background: #FFFFFF !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  padding: 0.6rem 1.25rem !important;
+  background: #FCF9F5 !important;
   border: 1.5px solid #F2E6D5 !important;
-  border-radius: 16px !important;
+  border-radius: 9999px !important;
+  width: auto !important;
+  max-width: fit-content !important;
+  box-shadow: 0 2px 8px rgba(58, 49, 40, 0.03) !important;
 }
 
 .comment-form-rating label {
@@ -1404,32 +1422,90 @@ p.woocommerce-noreviews {
   font-size: 0.875rem !important;
   color: #3A3128 !important;
   margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
 }
 
 .comment-form-rating .stars {
   margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
   display: inline-flex !important;
   align-items: center !important;
+  height: 30px !important;
 }
 
 .comment-form-rating .stars span {
   display: inline-flex !important;
-  gap: 0.35rem !important;
-}
-
-.comment-form-rating .stars span a {
-  font-size: 1.35rem !important;
-  color: #D4A373 !important;
-  transition: transform 0.15s ease, color 0.15s ease !important;
-  text-decoration: none !important;
-  display: inline-block !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
   line-height: 1 !important;
+  height: 30px !important;
 }
 
-.comment-form-rating .stars span a:hover,
-.comment-form-rating .stars span a.active {
-  color: #E5A93C !important;
-  transform: scale(1.18) !important;
+/* Reset any WooCommerce font icons */
+.comment-form-rating .stars span a::before {
+  display: none !important;
+  content: "" !important;
+}
+
+/* Kawaii Chubby Stars — SVG Data URIs */
+.comment-form-rating .stars span a {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  display: inline-block !important;
+  text-indent: -9999px !important;
+  overflow: hidden !important;
+  background-size: 28px 28px !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
+  cursor: pointer !important;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease !important;
+  line-height: 1 !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Hover: Turn stars up to the hovered one into glowing Kawaii golden stars */
+.comment-form-rating .stars:hover span a {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZERTZBIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjVBNjIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTEyIDIuNWMuMzggMCAuNzMuMjMuODguNThsMi41OCA1Ljg2IDYuMzMuNTZjLjM5LjA0LjcyLjMuODQuNjguMTIuMzgtLjAyLjgtLjM0IDEuMDRsLTQuOCAzLjcyIDEuNDUgNi4xOGMuMDkuMzktLjA2Ljc5LS4zOCAxLjAyLS4zMi4yMi0uNzUuMjQtMS4wOS4wNUwxMiAxOC43OGwtNS40NyAzLjQ5Yy0uMzQuMTktLjc3LjE3LTEuMDktLjA1LS4zMi0uMjMtLjQ3LS42My0uMzgtMS4wMmwxLjQ1LTYuMTgtNC44LTMuNzJjLS4zMi0uMjQtLjQ2LS42Ni0uMzQtMS4wNC4xMi0uMzguNDUtLjY0Ljg0LS42OGw2LjMzLS41NkwxMS4xMiAzLjA4Yy4xNS0uMzUuNS0uNTguODgtLjU4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjRTA5MjE0IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+') !important;
+  filter: drop-shadow(0 2px 6px rgba(245, 166, 35, 0.4)) !important;
+}
+
+.comment-form-rating .stars span a:hover ~ a {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
+  filter: none !important;
+}
+
+/* Selected state (when clicked) */
+.comment-form-rating .stars.selected span a {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZERTZBIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjVBNjIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTEyIDIuNWMuMzggMCAuNzMuMjMuODguNThsMi41OCA1Ljg2IDYuMzMuNTZjLjM5LjA0LjcyLjMuODQuNjguMTIuMzgtLjAyLjgtLjM0IDEuMDRsLTQuOCAzLjcyIDEuNDUgNi4xOGMuMDkuMzktLjA2Ljc5LS4zOCAxLjAyLS4zMi4yMi0uNzUuMjQtMS4wOS4wNUwxMiAxOC43OGwtNS40NyAzLjQ5Yy0uMzQuMTktLjc3LjE3LTEuMDktLjA1LS4zMi0uMjMtLjQ3LS42My0uMzgtMS4wMmwxLjQ1LTYuMTgtNC44LTMuNzJjLS4zMi0uMjQtLjQ2LS42Ni0uMzQtMS4wNC4xMi0uMzguNDUtLjY0Ljg0LS42OGw2LjMzLS41NkwxMS4xMiAzLjA4Yy4xNS0uMzUuNS0uNTguODgtLjU4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjRTA5MjE0IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+') !important;
+  filter: drop-shadow(0 2px 6px rgba(245, 166, 35, 0.4)) !important;
+}
+
+.comment-form-rating .stars.selected span a.active ~ a {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
+  filter: none !important;
+}
+
+/* Hover while selected */
+.comment-form-rating .stars.selected:hover span a {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZERTZBIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjVBNjIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTEyIDIuNWMuMzggMCAuNzMuMjMuODguNThsMi41OCA1Ljg2IDYuMzMuNTZjLjM5LjA0LjcyLjMuODQuNjguMTIuMzgtLjAyLjgtLjM0IDEuMDRsLTQuOCAzLjcyIDEuNDUgNi4xOGMuMDkuMzktLjA2Ljc5LS4zOCAxLjAyLS4zMi4yMi0uNzUuMjQtMS4wOS4wNUwxMiAxOC43OGwtNS40NyAzLjQ5Yy0uMzQuMTktLjc3LjE3LTEuMDktLjA1LS4zMi0uMjMtLjQ3LS42My0uMzgtMS4wMmwxLjQ1LTYuMTgtNC44LTMuNzJjLS4zMi0uMjQtLjQ2LS42Ni0uMzQtMS4wNC4xMi0uMzguNDUtLjY0Ljg0LS42OGw2LjMzLS41NkwxMS4xMiAzLjA4Yy4xNS0uMzUuNS0uNTguODgtLjU4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjRTA5MjE0IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+') !important;
+}
+
+.comment-form-rating .stars.selected:hover span a:hover ~ a {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
+  filter: none !important;
+}
+
+/* Bouncy spring interaction */
+.comment-form-rating .stars span a:hover {
+  transform: scale(1.25) rotate(-6deg) !important;
 }
 
 /* Form Labels */
