@@ -1286,6 +1286,360 @@ body.single-product {
   margin: 0 !important;
 }
 
+/* ─── Cozy Product Reviews & CusRev ────────────────────────────── */
+.woocommerce-Reviews {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.5rem !important;
+}
+
+/* Cozy Empty State */
+.cozy-noreviews-box {
+  background: #FCF9F5 !important;
+  border: 1.5px dashed #F2E6D5 !important;
+  border-radius: 20px !important;
+  padding: 2.25rem 2rem !important;
+  text-align: center !important;
+  margin-bottom: 2rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cozy-noreviews-icon {
+  font-size: 2.25rem !important;
+  margin-bottom: 0.5rem !important;
+  display: inline-block !important;
+}
+
+.cozy-noreviews-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin: 0 0 0.35rem 0 !important;
+}
+
+.cozy-noreviews-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.875rem !important;
+  color: rgba(58, 49, 40, 0.65) !important;
+  margin: 0 !important;
+  max-width: 440px !important;
+  line-height: 1.5 !important;
+}
+
+p.woocommerce-noreviews {
+  display: none !important;
+}
+
+/* Review Form Card Container */
+#review_form_wrapper {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+#review_form {
+  background: linear-gradient(180deg, #FCF9F5 0%, #FAF5EE 100%) !important;
+  border: 1.5px solid #F2E6D5 !important;
+  border-top: 4px solid #88C4B5 !important;
+  border-radius: 24px !important;
+  padding: 2rem 2.25rem !important;
+  box-shadow: 0 4px 20px -2px rgba(58, 49, 40, 0.04) !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 640px) {
+  #review_form {
+    padding: 1.5rem 1.25rem !important;
+    border-radius: 18px !important;
+  }
+}
+
+/* Review Form Title */
+#review_form #reply-title,
+#review_form .comment-reply-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-top: 0 !important;
+  margin-bottom: 1.25rem !important;
+  line-height: 1.4 !important;
+  display: block !important;
+}
+
+#review_form #reply-title small,
+#review_form .comment-reply-title small {
+  float: right !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+}
+
+#review_form #reply-title small a,
+#review_form .comment-reply-title small a {
+  color: #88C4B5 !important;
+  text-decoration: underline !important;
+}
+
+/* Rating Stars Field */
+.comment-form-rating {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  margin-bottom: 1.25rem !important;
+  padding: 0.875rem 1.25rem !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #F2E6D5 !important;
+  border-radius: 16px !important;
+}
+
+.comment-form-rating label {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
+  color: #3A3128 !important;
+  margin: 0 !important;
+}
+
+.comment-form-rating .stars {
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.comment-form-rating .stars span {
+  display: inline-flex !important;
+  gap: 0.35rem !important;
+}
+
+.comment-form-rating .stars span a {
+  font-size: 1.35rem !important;
+  color: #D4A373 !important;
+  transition: transform 0.15s ease, color 0.15s ease !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  line-height: 1 !important;
+}
+
+.comment-form-rating .stars span a:hover,
+.comment-form-rating .stars span a.active {
+  color: #E5A93C !important;
+  transform: scale(1.18) !important;
+}
+
+/* Form Labels */
+#review_form label {
+  display: block !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#review_form label .required {
+  color: #D4A373 !important;
+  font-weight: bold !important;
+}
+
+/* Form Inputs & Textarea */
+#review_form textarea#comment {
+  width: 100% !important;
+  min-height: 120px !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #F2E6D5 !important;
+  border-radius: 16px !important;
+  padding: 1rem 1.25rem !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.925rem !important;
+  color: #3A3128 !important;
+  line-height: 1.6 !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  resize: vertical !important;
+}
+
+#review_form input[type="text"],
+#review_form input[type="email"] {
+  width: 100% !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #F2E6D5 !important;
+  border-radius: 14px !important;
+  padding: 0.75rem 1rem !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.925rem !important;
+  color: #3A3128 !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+#review_form textarea#comment:focus,
+#review_form input[type="text"]:focus,
+#review_form input[type="email"]:focus {
+  outline: none !important;
+  border-color: #88C4B5 !important;
+  box-shadow: 0 0 0 4px rgba(136, 196, 181, 0.18) !important;
+  background: #FFFFFF !important;
+}
+
+@media (min-width: 640px) {
+  .comment-form-author,
+  .comment-form-email {
+    display: inline-block !important;
+    width: calc(50% - 0.5rem) !important;
+    vertical-align: top !important;
+  }
+  .comment-form-author {
+    margin-right: 0.75rem !important;
+  }
+}
+
+/* Submit Button */
+#review_form .form-submit {
+  margin-top: 1.5rem !important;
+  margin-bottom: 0 !important;
+}
+
+#review_form input#submit,
+#review_form button#submit {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: linear-gradient(135deg, #88C4B5 0%, #72B0A2 100%) !important;
+  color: #FFFFFF !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  padding: 0.85rem 2.5rem !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 14px rgba(136, 196, 181, 0.35) !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+}
+
+#review_form input#submit:hover,
+#review_form button#submit:hover {
+  background: linear-gradient(135deg, #72B0A2 0%, #5E9B8D 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(136, 196, 181, 0.45) !important;
+}
+
+#review_form input#submit:active,
+#review_form button#submit:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(136, 196, 181, 0.3) !important;
+}
+
+/* Reviews List */
+.woocommerce-Reviews ol.commentlist {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 0 2rem 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.25rem !important;
+}
+
+.woocommerce-Reviews ol.commentlist li.review {
+  background: #FFFFFF !important;
+  border: 1.5px solid #F5EDE0 !important;
+  border-radius: 20px !important;
+  padding: 1.5rem 1.75rem !important;
+  margin: 0 !important;
+  box-shadow: 0 2px 10px rgba(58, 49, 40, 0.03) !important;
+  transition: border-color 0.2s ease, transform 0.2s ease !important;
+}
+
+.woocommerce-Reviews ol.commentlist li.review:hover {
+  border-color: #E2D7C8 !important;
+  transform: translateY(-1px) !important;
+}
+
+.woocommerce-Reviews .comment_container {
+  display: flex !important;
+  gap: 1.25rem !important;
+  align-items: flex-start !important;
+}
+
+.woocommerce-Reviews img.avatar {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 9999px !important;
+  border: 2px solid #F2E6D5 !important;
+  padding: 2px !important;
+  background: #FCF9F5 !important;
+}
+
+.woocommerce-Reviews .comment-text {
+  flex: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.woocommerce-Reviews .star-rating {
+  float: right !important;
+  color: #D4A373 !important;
+  font-size: 0.95rem !important;
+}
+
+.woocommerce-Reviews .meta {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.85rem !important;
+  color: rgba(58, 49, 40, 0.6) !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.woocommerce-Reviews .meta strong {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #3A3128 !important;
+  margin-right: 0.5rem !important;
+}
+
+.woocommerce-Reviews .description {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.925rem !important;
+  color: #3A3128 !important;
+  line-height: 1.65 !important;
+}
+
+/* CusRev Overrides */
+.cr-summaryBox-wrap {
+  background: #FCF9F5 !important;
+  border: 1.5px solid #F2E6D5 !important;
+  border-radius: 20px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.cr-summaryBox-wrap .cr-overall-rating {
+  color: #3A3128 !important;
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+}
+
+.cr-summaryBox-wrap .cr-star-rating,
+.cr-summaryBox-wrap .cr-star-bar .cr-count-filtered-inner {
+  background-color: #D4A373 !important;
+}
+
+.cr-upload-images-wrap,
+.ivole-upload-files {
+  background: #FFFFFF !important;
+  border: 1.5px dashed #88C4B5 !important;
+  border-radius: 16px !important;
+  padding: 1rem !important;
+  margin-top: 0.75rem !important;
+}
+
 /* ─── Related products ──────────────────────────────────────── */
 .cozy-single-product .related.products {
   margin-top: 3rem;

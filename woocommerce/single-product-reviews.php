@@ -54,7 +54,11 @@ if ( ! comments_open() ) {
 			endif;
 			?>
 		<?php else : ?>
-			<p class="woocommerce-noreviews"><?php esc_html_e( 'No hay valoraciones aún.', 'woocommerce' ); ?></p>
+			<div class="cozy-noreviews-box">
+				<span class="cozy-noreviews-icon">☕</span>
+				<h4 class="cozy-noreviews-title"><?php esc_html_e( 'Aún no hay valoraciones', 'cozy-fandom-child' ); ?></h4>
+				<p class="cozy-noreviews-desc"><?php esc_html_e( 'Sé la primera persona en compartir su experiencia con este producto.', 'cozy-fandom-child' ); ?></p>
+			</div>
 		<?php endif; ?>
 	</div>
 
