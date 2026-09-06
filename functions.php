@@ -1765,6 +1765,52 @@ function cozy_save_extra_profile_fields( $user_id ) {
     }
 }
 
+/* ------------------------------------------------------------------ */
+/*  LIMPIAR NOTIFICACIONES DE CARRITO EN MI CUENTA                    */
+/* ------------------------------------------------------------------ */
+add_action( 'template_redirect', function () {
+    if ( ! function_exists( 'is_account_page' ) || ! is_account_page() ) {
+        return;
+    }
+    if ( ! function_exists( 'wc_get_notices' ) || ! function_exists( 'wc_set_notices' ) ) {
+        return;
+    }
+
+    $all_notices = wc_get_notices();
+    if ( empty( $all_notices ) ) {
+        return;
+    }
+
+    $modified = false;
+    foreach ( $all_notices as $type => $notices ) {
+        foreach ( $notices as $key => $notice_data ) {
+            $notice_text = is_array( $notice_data ) ? ( $notice_data['notice'] ?? '' ) : (string) $notice_data;
+
+            // Filtrar avisos del carrito (eliminaciones, enlace ¿Deshacer?, adiciones) que no corresponden a Mi Cuenta
+            if (
+                strpos( $notice_text, 'eliminado' ) !== false ||
+                strpos( $notice_text, 'Deshacer' ) !== false ||
+                strpos( $notice_text, 'removed' ) !== false ||
+                strpos( $notice_text, 'undo' ) !== false ||
+                strpos( $notice_text, 'añadido' ) !== false ||
+                strpos( $notice_text, 'carrito' ) !== false
+            ) {
+                unset( $all_notices[ $type ][ $key ] );
+                $modified = true;
+            }
+        }
+
+        if ( empty( $all_notices[ $type ] ) ) {
+            unset( $all_notices[ $type ] );
+        }
+    }
+
+    if ( $modified ) {
+        wc_set_notices( $all_notices );
+    }
+}, 5 );
+
+
 
 
 
