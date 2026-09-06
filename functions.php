@@ -1720,5 +1720,51 @@ add_action( 'pre_get_posts', function( $query ) {
     }
 }, 5 );
 
+/* ------------------------------------------------------------------ */
+/*  FECHA DE NACIMIENTO (Birthdate) in WooCommerce & WP Admin         */
+/* ------------------------------------------------------------------ */
+
+// Guardar fecha de nacimiento desde la página "Detalles de la cuenta" de WooCommerce
+add_action( 'woocommerce_save_account_details', function( $user_id ) {
+    if ( isset( $_POST['account_birthdate'] ) ) {
+        $birthdate = sanitize_text_field( wp_unslash( $_POST['account_birthdate'] ) );
+        update_user_meta( $user_id, 'birthdate', $birthdate );
+    }
+} );
+
+// Mostrar el campo de fecha de nacimiento en el perfil de usuario en WP Admin
+add_action( 'show_user_profile', 'cozy_show_extra_profile_fields' );
+add_action( 'edit_user_profile', 'cozy_show_extra_profile_fields' );
+
+function cozy_show_extra_profile_fields( $user ) {
+    $birthdate = get_user_meta( $user->ID, 'birthdate', true );
+    ?>
+    <h3><?php esc_html_e( 'Información personal adicional', 'woocommerce' ); ?></h3>
+    <table class="form-table">
+        <tr>
+            <th><label for="birthdate"><?php esc_html_e( 'Fecha de nacimiento', 'woocommerce' ); ?></label></th>
+            <td>
+                <input type="date" name="birthdate" id="birthdate" value="<?php echo esc_attr( $birthdate ); ?>" class="regular-text" />
+                <p class="description"><?php esc_html_e( 'Fecha de nacimiento del cliente / usuario.', 'woocommerce' ); ?></p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+// Guardar el campo de fecha de nacimiento desde el perfil de usuario en WP Admin
+add_action( 'personal_options_update', 'cozy_save_extra_profile_fields' );
+add_action( 'edit_user_profile_update', 'cozy_save_extra_profile_fields' );
+
+function cozy_save_extra_profile_fields( $user_id ) {
+    if ( ! current_user_can( 'edit_user', $user_id ) ) {
+        return false;
+    }
+    if ( isset( $_POST['birthdate'] ) ) {
+        update_user_meta( $user_id, 'birthdate', sanitize_text_field( wp_unslash( $_POST['birthdate'] ) ) );
+    }
+}
+
+
 
 

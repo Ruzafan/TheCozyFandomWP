@@ -41,6 +41,12 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
             <input type="email" class="woocommerce-Input woocommerce-Input--email input-text w-full px-4 py-3 bg-cozy-cream rounded-xl border border-cozy-sand focus:border-cozy-mint focus:outline-none text-sm text-cozy-coffee" name="account_email" id="account_email" autocomplete="email" value="<?php echo esc_attr( $user->user_email ); ?>" required />
         </p>
 
+        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide m-0">
+            <label for="account_birthdate" class="block text-xs font-bold uppercase tracking-wider text-cozy-coffee/80 mb-1.5"><?php esc_html_e( 'Fecha de nacimiento', 'woocommerce' ); ?></label>
+            <input type="date" class="woocommerce-Input woocommerce-Input--date input-text w-full px-4 py-3 bg-cozy-cream rounded-xl border border-cozy-sand focus:border-cozy-mint focus:outline-none text-sm text-cozy-coffee" name="account_birthdate" id="account_birthdate" value="<?php echo esc_attr( get_user_meta( $user->ID, 'birthdate', true ) ); ?>" />
+            <span class="block text-[11px] text-cozy-coffee/60 mt-1">Opcional. Se utiliza para ofrecerte sorpresas en tu cumpleaños y personalizar tu experiencia.</span>
+        </p>
+
         <!-- PASSWORD TOGGLE & COLLAPSIBLE FIELDSET -->
         <div class="pt-4 border-t border-cozy-sand">
             <label for="cozy_toggle_password" class="inline-flex items-center gap-3 cursor-pointer select-none p-3.5 rounded-xl bg-cozy-cream hover:bg-cozy-sand/50 transition-colors border border-cozy-sand">
