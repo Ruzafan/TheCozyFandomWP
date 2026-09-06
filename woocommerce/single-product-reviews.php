@@ -1,95 +1,138 @@
 <?php
 /**
- * Single Product Reviews — Cozy Fandom override
- * Mirrors woocommerce/templates/single-product-reviews.php (WC 8.x)
+ * Display single product reviews (comments)
  *
- * Custom: renders the login-required message inline so comment_form()
- * is never called for logged-out users, and wraps comment_form() in a
- * try/catch to prevent plugin hooks (e.g. WooCommerce Payments) from
- * surfacing a critical-error banner inside the reviews panel.
+ * Fully compatible with WooCommerce 8.x / 9.x and Customer Reviews for WooCommerce (CusRev).
+ *
+ * @package WooCommerce\Templates
+ * @version 4.3.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
 global $product;
 
-if ( ! comments_open() ) return;
+if ( ! comments_open() ) {
+	return;
+}
+
 ?>
 <div id="reviews" class="woocommerce-Reviews">
+	<div id="comments">
+		<h2 class="woocommerce-Reviews-title">
+			<?php
+			$count = $product->get_review_count();
+			if ( $count && wc_review_ratings_enabled() ) {
+				/* translators: 1: reviews count 2: product name */
+				$reviews_title = sprintf( esc_html( _n( '%1$s valoración para %2$s', '%1$s valoraciones para %2$s', $count, 'woocommerce' ) ), esc_html( $count ), '<span>' . get_the_title() . '</span>' );
+				echo apply_filters( 'woocommerce_reviews_title', $reviews_title, $count, $product ); // WPCS: XSS ok.
+			} else {
+				esc_html_e( 'Valoraciones', 'woocommerce' );
+			}
+			?>
+		</h2>
 
-    <div id="comments">
+		<?php if ( have_comments() ) : ?>
+			<ol class="commentlist woocommerce-Reviews-list">
+				<?php wp_list_comments( apply_filters( 'woocommerce_product_review_list_args', array( 'callback' => 'woocommerce_comments' ) ) ); ?>
+			</ol>
 
-        <?php if ( have_comments() ) : ?>
-            <ol class="commentlist woocommerce-Reviews-list">
-                <?php wp_list_comments( apply_filters( 'woocommerce_product_review_list_args', [
-                    'callback'          => 'woocommerce_comments',
-                    'reverse_top_level' => false,
-                ] ) ); ?>
-            </ol>
+			<?php
+			if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) :
+				echo '<nav class="woocommerce-pagination">';
+				paginate_comments_links(
+					apply_filters(
+						'woocommerce_comment_pagination_args',
+						array(
+							'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
+							'next_text' => is_rtl() ? '&larr;' : '&rarr;',
+							'type'      => 'list',
+						)
+					)
+				);
+				echo '</nav>';
+			endif;
+			?>
+		<?php else : ?>
+			<p class="woocommerce-noreviews"><?php esc_html_e( 'No hay valoraciones aún.', 'woocommerce' ); ?></p>
+		<?php endif; ?>
+	</div>
 
-            <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
-                <nav class="woocommerce-pagination">
-                    <?php paginate_comments_links( [
-                        'prev_text' => '&larr;',
-                        'next_text' => '&rarr;',
-                        'type'      => 'list',
-                    ] ); ?>
-                </nav>
-            <?php endif; ?>
+	<?php if ( get_option( 'woocommerce_review_rating_verification_required' ) === 'no' || wc_customer_bought_product( '', get_current_user_id(), $product->get_id() ) ) : ?>
+		<div id="review_form_wrapper">
+			<div id="review_form">
+				<?php
+				$commenter    = wp_get_current_commenter();
+				$comment_form = array(
+					/* translators: %s is product title */
+					'title_reply'         => have_comments() ? esc_html__( 'Añadir una valoración', 'woocommerce' ) : sprintf( esc_html__( 'Sé el primero en valorar &ldquo;%s&rdquo;', 'woocommerce' ), get_the_title() ),
+					/* translators: %s is product title */
+					'title_reply_to'      => esc_html__( 'Dejar una respuesta a %s', 'woocommerce' ),
+					'title_reply_before'  => '<span id="reply-title" class="comment-reply-title">',
+					'title_reply_after'   => '</span>',
+					'comment_notes_after' => '',
+					'label_submit'        => esc_html__( 'Enviar', 'woocommerce' ),
+					'logged_in_as'        => '',
+					'comment_field'       => '',
+				);
 
-        <?php else : ?>
-            <p class="woocommerce-noreviews">
-                <?php esc_html_e( 'No hay valoraciones aún.', 'woocommerce' ); ?>
-            </p>
-        <?php endif; ?>
+				$name_email_req = (bool) get_option( 'require_name_email', 1 );
+				$fields         = array(
+					'author' => array(
+						'label'    => __( 'Nombre', 'woocommerce' ),
+						'type'     => 'text',
+						'value'    => $commenter['comment_author'],
+						'required' => $name_email_req,
+					),
+					'email'  => array(
+						'label'    => __( 'Correo electrónico', 'woocommerce' ),
+						'type'     => 'email',
+						'value'    => $commenter['comment_author_email'],
+						'required' => $name_email_req,
+					),
+				);
 
-    </div>
+				$comment_form['fields'] = array();
 
-    <div id="review_form_wrapper">
+				foreach ( $fields as $key => $field ) {
+					$field_html  = '<p class="comment-form-' . esc_attr( $key ) . '">';
+					$field_html .= '<label for="' . esc_attr( $key ) . '">' . esc_html( $field['label'] );
 
-        <?php if ( ! is_user_logged_in() ) : ?>
-            <p class="must-log-in" style="font-size:0.875rem;color:rgba(74,63,53,0.6);margin-top:1rem">
-                <?php printf(
-                    wp_kses(
-                        __( 'Debes %1$siniciar sesión%2$s para dejar una valoración.', 'cozy-fandom-child' ),
-                        [ 'a' => [ 'href' => [], 'class' => [] ] ]
-                    ),
-                    '<a href="' . esc_url( wp_login_url( get_permalink() ) ) . '" style="color:#88C4B5;font-weight:600">',
-                    '</a>'
-                ); ?>
-            </p>
+					if ( $field['required'] ) {
+						$field_html .= '&nbsp;<span class="required">*</span>';
+					}
 
-        <?php else :
-            $comment_form = [
-                'title_reply'         => have_comments()
-                    ? __( 'Add a review', 'woocommerce' )
-                    : sprintf( __( 'Be the first to review &ldquo;%s&rdquo;', 'woocommerce' ), get_the_title() ),
-                'title_reply_to'      => __( 'Leave a Reply to %s', 'woocommerce' ),
-                'title_reply_before'  => '<span id="reply-title" class="comment-reply-title">',
-                'title_reply_after'   => '</span>',
-                'comment_notes_after' => '',
-                'label_submit'        => __( 'Submit', 'woocommerce' ),
-                'logged_in_as'        => '',
-                'comment_field'       => '',
-                'fields'              => [],
-            ];
-            ?>
-            <div id="review_form">
-                <?php
-                // Wrap in try/catch + output buffer so a fatal error from any
-                // plugin hook (e.g. WooCommerce Payments) doesn't surface as
-                // "Ha habido un error crítico" inside the reviews panel.
-                try {
-                    ob_start();
-                    comment_form( apply_filters( 'woocommerce_product_review_comment_form_args', $comment_form ) );
-                    ob_end_flush();
-                } catch ( \Throwable $e ) {
-                    ob_end_clean();
-                }
-                ?>
-            </div>
-        <?php endif; ?>
+					$field_html .= '</label><input id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" type="' . esc_attr( $field['type'] ) . '" value="' . esc_attr( $field['value'] ) . '" size="30" ' . ( $field['required'] ? 'required' : '' ) . ' /></p>';
 
-    </div>
+					$comment_form['fields'][ $key ] = $field_html;
+				}
 
+				$account_page_url = wc_get_page_permalink( 'myaccount' );
+				if ( $account_page_url ) {
+					/* translators: %s opening and closing link tags respectively */
+					$comment_form['must_log_in'] = '<p class="must-log-in">' . sprintf( esc_html__( 'Debes %1$siniciar sesión%2$s para publicar una valoración.', 'woocommerce' ), '<a href="' . esc_url( $account_page_url ) . '">', '</a>' ) . '</p>';
+				}
+
+				if ( wc_review_ratings_enabled() ) {
+					$comment_form['comment_field'] = '<div class="comment-form-rating"><label for="rating">' . esc_html__( 'Tu puntuación', 'woocommerce' ) . ( wc_review_ratings_required() ? '&nbsp;<span class="required">*</span>' : '' ) . '</label><select name="rating" id="rating" required>
+						<option value="">' . esc_html__( 'Puntúa&hellip;', 'woocommerce' ) . '</option>
+						<option value="5">' . esc_html__( 'Perfecto', 'woocommerce' ) . '</option>
+						<option value="4">' . esc_html__( 'Bueno', 'woocommerce' ) . '</option>
+						<option value="3">' . esc_html__( 'Normal', 'woocommerce' ) . '</option>
+						<option value="2">' . esc_html__( 'No tan malo', 'woocommerce' ) . '</option>
+						<option value="1">' . esc_html__( 'Muy malo', 'woocommerce' ) . '</option>
+					</select></div>';
+				}
+
+				$comment_form['comment_field'] .= '<p class="comment-form-comment"><label for="comment">' . esc_html__( 'Tu reseña', 'woocommerce' ) . '&nbsp;<span class="required">*</span></label><textarea id="comment" name="comment" cols="45" rows="8" required></textarea></p>';
+
+				comment_form( apply_filters( 'woocommerce_product_review_comment_form_args', $comment_form ) );
+				?>
+			</div>
+		</div>
+	<?php else : ?>
+		<p class="woocommerce-verification-required"><?php esc_html_e( 'Solo los clientes registrados que hayan comprado este producto pueden hacer una valoración.', 'woocommerce' ); ?></p>
+	<?php endif; ?>
+
+	<div class="clear"></div>
 </div>
