@@ -1811,7 +1811,119 @@ add_action( 'template_redirect', function () {
     }
 }, 5 );
 
+/* ------------------------------------------------------------------ */
+/*  FIRST-PURCHASE ONLY COUPONS (e.g. cozywelcome)                    */
+/* ------------------------------------------------------------------ */
+/**
+ * Check if a customer (by user ID or billing email) has any previous paid/completed orders.
+ */
+function cozy_is_first_order_customer( $email = '', $user_id = 0 ) {
+    if ( ! $user_id && is_user_logged_in() ) {
+        $user_id = get_current_user_id();
+    }
 
+    // 1. Check logged-in user orders count
+    if ( $user_id > 0 ) {
+        $order_count = wc_get_customer_order_count( $user_id );
+        if ( $order_count > 0 ) {
+            return false;
+        }
+        if ( empty( $email ) ) {
+            $user = get_userdata( $user_id );
+            if ( $user && ! empty( $user->user_email ) ) {
+                $email = $user->user_email;
+            }
+        }
+    }
 
+    // 2. Check billing email history against completed, processing, or on-hold orders
+    if ( ! empty( $email ) ) {
+        // Check if there is an existing WP user with this email who has orders
+        $existing_user = get_user_by( 'email', $email );
+        if ( $existing_user && $existing_user->ID ) {
+            if ( wc_get_customer_order_count( $existing_user->ID ) > 0 ) {
+                return false;
+            }
+        }
 
+        // Check past orders by billing email
+        $past_orders = wc_get_orders( [
+            'billing_email' => $email,
+            'limit'         => 1,
+            'status'        => [ 'wc-completed', 'wc-processing', 'wc-on-hold' ],
+            'return'        => 'ids',
+        ] );
+
+        if ( ! empty( $past_orders ) ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Filter when applying coupon (Cart & Checkout pages, including AJAX updates).
+ */
+add_filter( 'woocommerce_coupon_is_valid', function( $is_valid, $coupon, $discount ) {
+    if ( ! $is_valid ) {
+        return $is_valid;
+    }
+
+    $first_order_coupons = apply_filters( 'cozy_first_order_coupons', [ 'cozywelcome' ] );
+    $code = strtolower( $coupon->get_code() );
+
+    if ( in_array( $code, $first_order_coupons, true ) ) {
+        $email = '';
+        if ( is_user_logged_in() ) {
+            $current_user = wp_get_current_user();
+            $email = $current_user ? $current_user->user_email : '';
+        } elseif ( ! empty( $_POST['billing_email'] ) ) {
+            $email = sanitize_email( wp_unslash( $_POST['billing_email'] ) );
+        } elseif ( ! empty( $_POST['post_data'] ) ) {
+            $post_data = [];
+            parse_str( wp_unslash( $_POST['post_data'] ), $post_data );
+            if ( ! empty( $post_data['billing_email'] ) ) {
+                $email = sanitize_email( $post_data['billing_email'] );
+            }
+        } elseif ( function_exists( 'WC' ) && WC()->customer && WC()->customer->get_billing_email() ) {
+            $email = sanitize_email( WC()->customer->get_billing_email() );
+        }
+
+        if ( ! empty( $email ) || is_user_logged_in() ) {
+            if ( ! cozy_is_first_order_customer( $email, get_current_user_id() ) ) {
+                throw new Exception( sprintf( __( 'El cupón "%s" solo es válido para tu primera compra.', 'cozy-fandom-child' ), $coupon->get_code() ) );
+            }
+        }
+    }
+
+    return $is_valid;
+}, 10, 3 );
+
+/**
+ * Final validation during checkout processing (catches guests who entered coupon before typing email).
+ */
+add_action( 'woocommerce_after_checkout_validation', function( $data, $errors ) {
+    if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+        return;
+    }
+
+    $applied_coupons = WC()->cart->get_applied_coupons();
+    if ( empty( $applied_coupons ) ) {
+        return;
+    }
+
+    $first_order_coupons = apply_filters( 'cozy_first_order_coupons', [ 'cozywelcome' ] );
+    $email = ! empty( $data['billing_email'] ) ? sanitize_email( $data['billing_email'] ) : '';
+
+    foreach ( $applied_coupons as $code ) {
+        if ( in_array( strtolower( $code ), $first_order_coupons, true ) ) {
+            if ( ! cozy_is_first_order_customer( $email, get_current_user_id() ) ) {
+                WC()->cart->remove_coupon( $code );
+                $errors->add( 'coupon_error', sprintf( __( 'El cupón "%s" solo es válido para clientes en su primera compra.', 'cozy-fandom-child' ), $code ) );
+                break;
+            }
+        }
+    }
+}, 10, 2 );
 
