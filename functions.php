@@ -1941,4 +1941,109 @@ add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
     return $tag;
 }, 10, 3 );
 
+/* ------------------------------------------------------------------ */
+/*  LLMS.TXT GENERATOR — Dynamic AI Indexing for WooCommerce           */
+/* ------------------------------------------------------------------ */
+add_action( 'init', function() {
+    add_rewrite_rule( '^llms\.txt$', 'index.php?cozy_llms_txt=1', 'top' );
+    add_rewrite_rule( '^llms-full\.txt$', 'index.php?cozy_llms_txt=full', 'top' );
+} );
+
+add_filter( 'query_vars', function( $vars ) {
+    $vars[] = 'cozy_llms_txt';
+    return $vars;
+} );
+
+// Refrescar reglas de reescritura automáticamente si la regla de llms.txt aún no está registrada
+add_action( 'wp_loaded', function() {
+    $rules = get_option( 'rewrite_rules' );
+    if ( ! isset( $rules['^llms\.txt$'] ) ) {
+        flush_rewrite_rules();
+    }
+} );
+
+add_action( 'template_redirect', function() {
+    $mode = get_query_var( 'cozy_llms_txt' );
+    if ( ! $mode ) {
+        return;
+    }
+
+    status_header( 200 );
+    header( 'Content-Type: text/plain; charset=utf-8' );
+    header( 'Cache-Control: public, max-age=3600' );
+
+    $site_name = get_bloginfo( 'name' );
+    $site_desc = get_bloginfo( 'description' );
+
+    echo "# " . $site_name . "\n\n";
+    echo "> " . ( $site_desc ?: 'Tienda online de productos cozy, papelería, ramen, merchandising fandom y regalos adorables.' ) . "\n\n";
+
+    echo "## Páginas Principales\n";
+    echo "- [Inicio](" . esc_url( home_url( '/' ) ) . "): Página principal de la tienda.\n";
+    if ( function_exists( 'wc_get_page_id' ) ) {
+        $shop_page_id = wc_get_page_id( 'shop' );
+        if ( $shop_page_id > 0 ) {
+            echo "- [Tienda](" . esc_url( get_permalink( $shop_page_id ) ) . "): Catálogo completo de productos.\n";
+        }
+    }
+    echo "\n";
+
+    // Categorías de productos
+    if ( taxonomy_exists( 'product_cat' ) ) {
+        $categories = get_terms( [
+            'taxonomy'   => 'product_cat',
+            'hide_empty' => true,
+        ] );
+
+        if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) {
+            echo "## Categorías de Productos\n";
+            foreach ( $categories as $cat ) {
+                $cat_url  = get_term_link( $cat );
+                $cat_desc = ! empty( $cat->description ) ? wp_strip_all_tags( $cat->description ) : 'Productos de la categoría ' . $cat->name;
+                echo "- [" . esc_html( $cat->name ) . "](" . esc_url( $cat_url ) . "): " . esc_html( $cat_desc ) . "\n";
+            }
+            echo "\n";
+        }
+    }
+
+    // Catálogo completo de productos
+    echo "## Catálogo Completo de Productos\n\n";
+
+    if ( function_exists( 'wc_get_products' ) ) {
+        $products = wc_get_products( [
+            'status'  => 'publish',
+            'limit'   => -1,
+            'orderby' => 'title',
+            'order'   => 'ASC',
+        ] );
+
+        foreach ( $products as $product ) {
+            if ( ! $product instanceof WC_Product ) {
+                continue;
+            }
+            $title     = $product->get_name();
+            $permalink = $product->get_permalink();
+            $price     = $product->get_price();
+            $currency  = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '€';
+            $price_str = $price !== '' ? $price . ' ' . $currency : '';
+            $stock     = $product->is_in_stock() ? 'En stock' : 'Agotado';
+
+            $raw_desc   = $product->get_short_description() ?: $product->get_description();
+            $desc_clean = trim( wp_strip_all_tags( html_entity_decode( $raw_desc, ENT_QUOTES, 'UTF-8' ) ) );
+            $desc_clean = preg_replace( '/\s+/', ' ', $desc_clean );
+            if ( mb_strlen( $desc_clean ) > 140 ) {
+                $desc_clean = mb_substr( $desc_clean, 0, 137 ) . '...';
+            }
+
+            $info_parts = array_filter( [ $price_str, $stock, $desc_clean ] );
+            $info_text  = implode( ' | ', $info_parts );
+
+            echo "- [" . esc_html( $title ) . "](" . esc_url( $permalink ) . "): " . esc_html( $info_text ) . "\n";
+        }
+    }
+
+    exit;
+} );
+
+
 
