@@ -368,6 +368,7 @@ add_filter( 'pre_option_woocommerce_thumbnail_cropping', function() {
 /* Review verification and registration settings are managed directly
    via WooCommerce > Settings > Products > Reviews to avoid breaking
    review plugins like Customer Reviews for WooCommerce (CusRev). */
+remove_action( 'woocommerce_review_before', 'woocommerce_review_display_gravatar', 10 );
 
 
 /* ------------------------------------------------------------------ */

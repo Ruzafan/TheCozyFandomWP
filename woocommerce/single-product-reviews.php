@@ -139,4 +139,70 @@ if ( ! comments_open() ) {
 	<?php endif; ?>
 
 	<div class="clear"></div>
+
+	<script>
+	(function() {
+		function initCozyStars() {
+			var wrap = document.querySelector('.comment-form-rating');
+			if (!wrap) return;
+			var stars = wrap.querySelectorAll('.stars span a');
+			var select = document.querySelector('select#rating');
+			if (!stars.length) return;
+
+			function updateVisual(count) {
+				stars.forEach(function(s, idx) {
+					if (idx < count) {
+						s.classList.add('star-filled');
+					} else {
+						s.classList.remove('star-filled');
+					}
+				});
+			}
+
+			stars.forEach(function(star, idx) {
+				star.addEventListener('click', function(e) {
+					e.preventDefault();
+					var val = idx + 1;
+					if (select) {
+						select.value = val;
+						select.dispatchEvent(new Event('change', { bubbles: true }));
+					}
+					var p = star.closest('.stars');
+					if (p) {
+						p.classList.add('selected');
+						stars.forEach(function(s) { s.classList.remove('active'); });
+						star.classList.add('active');
+					}
+					updateVisual(val);
+				});
+
+				star.addEventListener('mouseenter', function() {
+					stars.forEach(function(s, i) {
+						if (i <= idx) {
+							s.classList.add('star-hovered');
+						} else {
+							s.classList.remove('star-hovered');
+						}
+					});
+				});
+			});
+
+			var pStars = wrap.querySelector('.stars');
+			if (pStars) {
+				pStars.addEventListener('mouseleave', function() {
+					stars.forEach(function(s) {
+						s.classList.remove('star-hovered');
+					});
+				});
+			}
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initCozyStars);
+		} else {
+			initCozyStars();
+		}
+	})();
+	</script>
 </div>
+

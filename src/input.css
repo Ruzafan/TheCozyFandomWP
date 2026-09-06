@@ -1505,33 +1505,17 @@ p.woocommerce-noreviews {
 }
 
 /* Hover: Turn stars up to the hovered one into glowing Kawaii golden stars */
-.comment-form-rating .stars:hover span a {
+#review_form .comment-form-rating .stars:hover span a,
+#review_form .comment-form-rating .stars.selected span a,
+#review_form .comment-form-rating .stars span a.star-filled,
+#review_form .comment-form-rating .stars span a.star-hovered {
   background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZERTZBIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjVBNjIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTEyIDIuNWMuMzggMCAuNzMuMjMuODguNThsMi41OCA1Ljg2IDYuMzMuNTZjLjM5LjA0LjcyLjMuODQuNjguMTIuMzgtLjAyLjgtLjM0IDEuMDRsLTQuOCAzLjcyIDEuNDUgNi4xOGMuMDkuMzktLjA2Ljc5LS4zOCAxLjAyLS4zMi4yMi0uNzUuMjQtMS4wOS4wNUwxMiAxOC43OGwtNS40NyAzLjQ5Yy0uMzQuMTktLjc3LjE3LTEuMDktLjA1LS4zMi0uMjMtLjQ3LS42My0uMzgtMS4wMmwxLjQ1LTYuMTgtNC44LTMuNzJjLS4zMi0uMjQtLjQ2LS42Ni0uMzQtMS4wNC4xMi0uMzguNDUtLjY0Ljg0LS42OGw2LjMzLS41NkwxMS4xMiAzLjA4Yy4xNS0uMzUuNS0uNTguODgtLjU4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjRTA5MjE0IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+') !important;
   filter: drop-shadow(0 2px 6px rgba(245, 166, 35, 0.4)) !important;
 }
 
-.comment-form-rating .stars span a:hover ~ a {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
-  filter: none !important;
-}
-
-/* Selected state (when clicked) */
-.comment-form-rating .stars.selected span a {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZERTZBIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjVBNjIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTEyIDIuNWMuMzggMCAuNzMuMjMuODguNThsMi41OCA1Ljg2IDYuMzMuNTZjLjM5LjA0LjcyLjMuODQuNjguMTIuMzgtLjAyLjgtLjM0IDEuMDRsLTQuOCAzLjcyIDEuNDUgNi4xOGMuMDkuMzktLjA2Ljc5LS4zOCAxLjAyLS4zMi4yMi0uNzUuMjQtMS4wOS4wNUwxMiAxOC43OGwtNS40NyAzLjQ5Yy0uMzQuMTktLjc3LjE3LTEuMDktLjA1LS4zMi0uMjMtLjQ3LS42My0uMzgtMS4wMmwxLjQ1LTYuMTgtNC44LTMuNzJjLS4zMi0uMjQtLjQ2LS42Ni0uMzQtMS4wNC4xMi0uMzguNDUtLjY0Ljg0LS42OGw2LjMzLS41NkwxMS4xMiAzLjA4Yy4xNS0uMzUuNS0uNTguODgtLjU4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjRTA5MjE0IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+') !important;
-  filter: drop-shadow(0 2px 6px rgba(245, 166, 35, 0.4)) !important;
-}
-
-.comment-form-rating .stars.selected span a.active ~ a {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
-  filter: none !important;
-}
-
-/* Hover while selected */
-.comment-form-rating .stars.selected:hover span a {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZERTZBIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjVBNjIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTEyIDIuNWMuMzggMCAuNzMuMjMuODguNThsMi41OCA1Ljg2IDYuMzMuNTZjLjM5LjA0LjcyLjMuODQuNjguMTIuMzgtLjAyLjgtLjM0IDEuMDRsLTQuOCAzLjcyIDEuNDUgNi4xOGMuMDkuMzktLjA2Ljc5LS4zOCAxLjAyLS4zMi4yMi0uNzUuMjQtMS4wOS4wNUwxMiAxOC43OGwtNS40NyAzLjQ5Yy0uMzQuMTktLjc3LjE3LTEuMDktLjA1LS4zMi0uMjMtLjQ3LS42My0uMzgtMS4wMmwxLjQ1LTYuMTgtNC44LTMuNzJjLS4zMi0uMjQtLjQ2LS42Ni0uMzQtMS4wNC4xMi0uMzguNDUtLjY0Ljg0LS42OGw2LjMzLS41NkwxMS4xMiAzLjA4Yy4xNS0uMzUuNS0uNTguODgtLjU4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjRTA5MjE0IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+') !important;
-}
-
-.comment-form-rating .stars.selected:hover span a:hover ~ a {
+#review_form .comment-form-rating .stars span a:hover ~ a,
+#review_form .comment-form-rating .stars.selected span a.active ~ a,
+#review_form .comment-form-rating .stars.selected:hover span a:hover ~ a {
   background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
   filter: none !important;
 }
@@ -1658,12 +1642,13 @@ p.woocommerce-noreviews {
 
 .woocommerce-Reviews ol.commentlist li.review {
   background: #FFFFFF !important;
-  border: 1.5px solid #F5EDE0 !important;
+  border: 1.5px solid #F0E6D8 !important;
   border-radius: 20px !important;
   padding: 1.5rem 1.75rem !important;
   margin: 0 !important;
-  box-shadow: 0 2px 10px rgba(58, 49, 40, 0.03) !important;
+  box-shadow: 0 4px 16px -2px rgba(58, 49, 40, 0.04) !important;
   transition: border-color 0.2s ease, transform 0.2s ease !important;
+  position: relative !important;
 }
 
 .woocommerce-Reviews ol.commentlist li.review:hover {
@@ -1673,17 +1658,19 @@ p.woocommerce-noreviews {
 
 .woocommerce-Reviews .comment_container {
   display: flex !important;
-  gap: 1.25rem !important;
-  align-items: flex-start !important;
+  flex-direction: column !important;
+  gap: 0.35rem !important;
+  width: 100% !important;
 }
 
-.woocommerce-Reviews img.avatar {
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 9999px !important;
-  border: 2px solid #F2E6D5 !important;
-  padding: 2px !important;
-  background: #FCF9F5 !important;
+/* Remove Reviewer Avatar Completely */
+.woocommerce-Reviews .avatar,
+.woocommerce-Reviews img.avatar,
+.woocommerce-Reviews .comment_container > img,
+.woocommerce-Reviews ol.commentlist li.review img,
+.commentlist .avatar,
+.commentlist img.avatar {
+  display: none !important;
 }
 
 .woocommerce-Reviews .comment-text {
@@ -1691,26 +1678,62 @@ p.woocommerce-noreviews {
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
+  width: 100% !important;
 }
 
+/* Kawaii Stars in Published Reviews */
 .woocommerce-Reviews .star-rating {
-  float: right !important;
-  color: #D4A373 !important;
-  font-size: 0.95rem !important;
+  width: 100px !important;
+  height: 20px !important;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIj48cGF0aCBkPSJNMTIgMi41Yy4zOCAwIC43My4yMy44OC41OGwyLjU4IDUuODYgNi4zMy41NmMuMzkuMDQuNzIuMy44NC42OC4xMi4zOC0uMDIuOC0uMzQgMS4wNGwtNC44IDMuNzIgMS40NSA2LjE4Yy4wOS4zOS0uMDYuNzktLjM4IDEuMDItLjMyLjIyLS43NS4yNC0xLjA5LjA1TDEyIDE4Ljc4bC01LjQ3IDMuNDljLS4zNC4xOS0uNzcuMTctMS4wOS0uMDUtLjMyLS4yMy0uNDctLjYzLS4zOC0xLjAybDEuNDUtNi4xOC00LjgtMy43MmMtLjMyLS4yNC0uNDYtLjY2LS4zNC0xLjA0LjEyLS4zOC40NS0uNjQuODQtLjY4bDYuMzMtLjU2TDExLjEyIDMuMDhjLjE1LS4zNS41LS41OC44OC0uNTh6IiBmaWxsPSIjRkZGOEYwIiBzdHJva2U9IiNERkJBOTIiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=') !important;
+  background-size: 20px 20px !important;
+  background-repeat: repeat-x !important;
+  float: none !important;
+  display: block !important;
+  margin: 0.25rem 0 0.5rem 0 !important;
+  position: relative !important;
+}
+
+.woocommerce-Reviews .star-rating::before {
+  display: none !important;
+  content: "" !important;
+}
+
+.woocommerce-Reviews .star-rating span {
+  display: block !important;
+  height: 100% !important;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZERTZBIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjVBNjIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTEyIDIuNWMuMzggMCAuNzMuMjMuODguNThsMi41OCA1Ljg2IDYuMzMuNTZjLjM5LjA0LjcyLjMuODQuNjguMTIuMzgtLjAyLjgtLjM0IDEuMDRsLTQuOCAzLjcyIDEuNDUgNi4xOGMuMDkuMzktLjA2Ljc5LS4zOCAxLjAyLS4zMi4yMi0uNzUuMjQtMS4wOS4wNUwxMiAxOC43OGwtNS40NyAzLjQ5Yy0uMzQuMTktLjc3LjE3LTEuMDktLjA1LS4zMi0uMjMtLjQ3LS42My0uMzgtMS4wMmwxLjQ1LTYuMTgtNC44LTMuNzJjLS4zMi0uMjQtLjQ2LS42Ni0uMzQtMS4wNC4xMi0uMzguNDUtLjY0Ljg0LS42OGw2LjMzLS41NkwxMS4xMiAzLjA4Yy4xNS0uMzUuNS0uNTguODgtLjU4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjRTA5MjE0IiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+') !important;
+  background-size: 20px 20px !important;
+  background-repeat: repeat-x !important;
+  text-indent: -9999px !important;
+  overflow: hidden !important;
+}
+
+.woocommerce-Reviews .star-rating span::before {
+  display: none !important;
+  content: "" !important;
 }
 
 .woocommerce-Reviews .meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  font-size: 0.85rem !important;
-  color: rgba(58, 49, 40, 0.6) !important;
-  margin-bottom: 0.75rem !important;
+  font-size: 0.875rem !important;
+  color: rgba(58, 49, 40, 0.55) !important;
+  margin: 0 !important;
 }
 
 .woocommerce-Reviews .meta strong {
   font-size: 0.95rem !important;
   font-weight: 700 !important;
   color: #3A3128 !important;
-  margin-right: 0.5rem !important;
+}
+
+.woocommerce-Reviews .meta .woocommerce-review__published-date {
+  font-size: 0.8rem !important;
+  color: rgba(58, 49, 40, 0.5) !important;
 }
 
 .woocommerce-Reviews .description {
@@ -1718,6 +1741,12 @@ p.woocommerce-noreviews {
   font-size: 0.925rem !important;
   color: #3A3128 !important;
   line-height: 1.65 !important;
+  margin: 0 !important;
+}
+
+.woocommerce-Reviews .description p {
+  margin: 0 !important;
+  color: #3A3128 !important;
 }
 
 /* CusRev Overrides */
