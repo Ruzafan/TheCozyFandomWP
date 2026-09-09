@@ -240,7 +240,18 @@ add_filter( 'gettext', function( $translated_text, $text ) {
     if ( false !== strpos( $text, 'Confirm your email address to check for past orders' ) ) {
         return 'Confirma tu dirección de correo electrónico para consultar tus pedidos anteriores y vincularlos a tu cuenta.';
     }
+    if ( 'Card' === $text ) {
+        return 'Tarjeta de crédito / débito';
+    }
     return $translated_text;
+}, 20, 2 );
+
+/* Change payment gateway title 'Card' to Spanish */
+add_filter( 'woocommerce_gateway_title', function( $title, $id ) {
+    if ( 'Card' === trim( $title ) ) {
+        return 'Tarjeta de crédito / débito';
+    }
+    return $title;
 }, 20, 2 );
 
 add_filter( 'render_block', function( $block_content, $block ) {
