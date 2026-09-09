@@ -226,11 +226,20 @@ add_action( 'wp', function() {
    "X se ha añadido a tu carrito" banner is redundant — remove it. */
 add_filter( 'wc_add_to_cart_message_html', '__return_empty_string' );
 
-/* Translate WooCommerce Cart Block empty cart strings to Spanish */
+/* Translate WooCommerce & plugin strings to Spanish */
 add_filter( 'gettext', function( $translated_text, $text ) {
     if ( 'Your cart is currently empty!' === $text ) return 'Tu carrito está vacío';
     if ( 'New in store' === $text ) return 'Novedades en la tienda';
     if ( 'Browse store' === $text ) return 'Volver a la tienda';
+    if ( 'Confirm your email address to check for past orders and link them to your account.' === $text ) {
+        return 'Confirma tu dirección de correo electrónico para consultar tus pedidos anteriores y vincularlos a tu cuenta.';
+    }
+    if ( 'Confirm email address' === $text ) {
+        return 'Confirmar correo electrónico';
+    }
+    if ( false !== strpos( $text, 'Confirm your email address to check for past orders' ) ) {
+        return 'Confirma tu dirección de correo electrónico para consultar tus pedidos anteriores y vincularlos a tu cuenta.';
+    }
     return $translated_text;
 }, 20, 2 );
 
