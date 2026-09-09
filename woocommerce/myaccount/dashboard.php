@@ -9,11 +9,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$current_user  = wp_get_current_user();
-$raw_name      = $current_user->first_name
-    ?: ( strpos( (string) $current_user->display_name, '@' ) === false ? $current_user->display_name : '' )
-    ?: $current_user->user_login;
-$display_name  = $raw_name;
+$current_user = wp_get_current_user();
+$raw_display  = trim( (string) $current_user->display_name );
+$display_name = ( ! empty( $raw_display ) && false === strpos( $raw_display, '@' ) )
+    ? $raw_display
+    : ( ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->user_login );
 
 /* Stats */
 $order_count = wc_get_customer_order_count( $current_user->ID );

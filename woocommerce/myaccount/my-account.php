@@ -10,9 +10,10 @@
 defined( 'ABSPATH' ) || exit;
 
 $current_user = wp_get_current_user();
-$display_name = $current_user->first_name
-    ?: ( strpos( (string) $current_user->display_name, '@' ) === false ? $current_user->display_name : '' )
-    ?: $current_user->user_login;
+$raw_display  = trim( (string) $current_user->display_name );
+$display_name = ( ! empty( $raw_display ) && false === strpos( $raw_display, '@' ) )
+    ? $raw_display
+    : ( ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->user_login );
 $shop_url     = get_permalink( wc_get_page_id( 'shop' ) );
 ?>
 
