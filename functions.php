@@ -243,6 +243,9 @@ add_filter( 'gettext', function( $translated_text, $text ) {
     if ( 'Card' === $text ) {
         return 'Tarjeta de crédito / débito';
     }
+    if ( false !== strpos( $text, 'cargue en tu tarjeta futuros pagos' ) || false !== strpos( $text, 'charge your card for future payments' ) ) {
+        return 'Al facilitar los datos de tu tarjeta, autorizas a The Cozy Fandom a procesar el pago de forma segura conforme a nuestros términos y condiciones.';
+    }
     return $translated_text;
 }, 20, 2 );
 
