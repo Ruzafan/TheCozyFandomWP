@@ -346,7 +346,6 @@ add_filter( 'the_content', function( $content ) {
                     return $output;
                 }
             } else {
-                // Cart has items: include custom Cozy Fandom cart template directly
                 $template = get_stylesheet_directory() . '/woocommerce/cart/cart.php';
                 if ( file_exists( $template ) ) {
                     ob_start();
@@ -355,9 +354,6 @@ add_filter( 'the_content', function( $content ) {
                     $in_cart_filter = false;
                     return $output;
                 }
-                $output = do_shortcode( '[woocommerce_cart]' );
-                $in_cart_filter = false;
-                return $output;
             }
 
             $in_cart_filter = false;
