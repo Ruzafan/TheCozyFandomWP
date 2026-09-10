@@ -322,7 +322,13 @@ add_filter( 'the_content', function( $content ) {
 
     if ( class_exists( 'WooCommerce' ) && isset( WC()->cart ) && WC()->cart ) {
         $cart_page_id = wc_get_page_id( 'cart' );
-        $is_cart_page = is_cart() || ( $cart_page_id > 0 && is_page( $cart_page_id ) ) || is_page( 'cart' ) || is_page( 'carrito' );
+        $req_uri      = $_SERVER['REQUEST_URI'] ?? '';
+        $is_cart_page = is_cart()
+            || ( $cart_page_id > 0 && is_page( $cart_page_id ) )
+            || is_page( 'cart' )
+            || is_page( 'carrito' )
+            || false !== strpos( $req_uri, '/cart' )
+            || false !== strpos( $req_uri, '/carrito' );
 
         if ( $is_cart_page ) {
             $in_cart_filter = true;
