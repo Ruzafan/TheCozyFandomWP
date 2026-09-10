@@ -8,14 +8,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Clear any notices queued on empty cart page so no redundant top banners render
-if ( function_exists( 'wc_clear_notices' ) ) {
+if ( function_exists( 'wc_clear_notices' ) && isset( WC()->session ) && WC()->session ) {
     wc_clear_notices();
 }
 
 remove_action( 'woocommerce_cart_is_empty', 'wc_empty_cart_message', 10 );
 remove_action( 'woocommerce_before_cart', 'woocommerce_output_all_notices', 10 );
-
+?>
 <style>
 	/* Hide default WooCommerce notice banner on empty cart page */
 	.woocommerce-info,
