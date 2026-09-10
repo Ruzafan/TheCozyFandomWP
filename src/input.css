@@ -2425,7 +2425,7 @@ ul.wc-block-grid {
   border: 0 !important;
 }
 
-@media (min-width: 774px) {
+@media (max-width: 774px) {
   .wp-block-woocommerce-checkout-order-summary-block {
     display: none;
   }
