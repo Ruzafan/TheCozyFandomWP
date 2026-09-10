@@ -314,7 +314,9 @@ add_filter( 'render_block', function( $block_content, $block ) {
 
 /* Ensure Cart page content renders reliably for both empty & non-empty states */
 add_filter( 'the_content', function( $content ) {
-    if ( is_admin() ) {
+    static $in_cart_filter = false;
+
+    if ( is_admin() || $in_cart_filter ) {
         return $content;
     }
 
@@ -323,6 +325,8 @@ add_filter( 'the_content', function( $content ) {
         $is_cart_page = is_cart() || ( $cart_page_id > 0 && is_page( $cart_page_id ) ) || is_page( 'cart' ) || is_page( 'carrito' );
 
         if ( $is_cart_page ) {
+            $in_cart_filter = true;
+
             if ( WC()->cart->is_empty() ) {
                 if ( function_exists( 'wc_clear_notices' ) && isset( WC()->session ) && WC()->session ) {
                     wc_clear_notices();
@@ -331,11 +335,18 @@ add_filter( 'the_content', function( $content ) {
                 if ( file_exists( $template ) ) {
                     ob_start();
                     include $template;
-                    return ob_get_clean();
+                    $output = ob_get_clean();
+                    $in_cart_filter = false;
+                    return $output;
                 }
-            } elseif ( empty( trim( $content ) ) ) {
-                return do_shortcode( '[woocommerce_cart]' );
+            } else {
+                // Cart has items: force classic PHP WooCommerce cart shortcode layout
+                $output = do_shortcode( '[woocommerce_cart]' );
+                $in_cart_filter = false;
+                return $output;
             }
+
+            $in_cart_filter = false;
         }
     }
     return $content;
