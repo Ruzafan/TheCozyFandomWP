@@ -10,8 +10,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$has_methods = (bool) $saved_methods;
-$types       = wc_get_account_payment_methods_types();
+$saved_methods = wc_get_customer_saved_methods_list( get_current_user_id() );
+$has_methods   = (bool) $saved_methods;
+$types         = wc_get_account_payment_methods_types();
 
 do_action( 'woocommerce_before_account_payment_methods', $has_methods );
 ?>
