@@ -2131,5 +2131,37 @@ add_action( 'template_redirect', function() {
     exit;
 } );
 
+/**
+ * Ocultar / Desactivar la casilla de opt-in de invitaciones a reseñas de CusRev en el Checkout
+ */
+add_filter( 'cr_opt_in_checkbox_show', '__return_false', 999 );
+add_filter( 'ivole_opt_in_checkbox_show', '__return_false', 999 );
+add_filter( 'cr_checkout_consent_opt_in_checkbox_show', '__return_false', 999 );
 
+add_filter( 'woocommerce_checkout_fields', function( $fields ) {
+    if ( isset( $fields['order']['ivole_opt_in'] ) ) {
+        unset( $fields['order']['ivole_opt_in'] );
+    }
+    if ( isset( $fields['order']['cr_opt_in'] ) ) {
+        unset( $fields['order']['cr_opt_in'] );
+    }
+    if ( isset( $fields['order']['cusrev_checkout_consent'] ) ) {
+        unset( $fields['order']['cusrev_checkout_consent'] );
+    }
+    return $fields;
+}, 999 );
 
+add_action( 'init', function() {
+    if ( class_exists( 'CR_Checkout' ) ) {
+        $cr_checkout = CR_Checkout::get_instance();
+        remove_action( 'woocommerce_checkout_before_order_review', array( $cr_checkout, 'show_opt_in_checkbox' ), 10 );
+        remove_action( 'woocommerce_after_order_notes', array( $cr_checkout, 'show_opt_in_checkbox' ), 10 );
+        remove_action( 'woocommerce_review_order_before_submit', array( $cr_checkout, 'show_opt_in_checkbox' ), 10 );
+    }
+    if ( class_exists( 'IVOLE_Checkout' ) ) {
+        $ivole_checkout = IVOLE_Checkout::get_instance();
+        remove_action( 'woocommerce_checkout_before_order_review', array( $ivole_checkout, 'show_opt_in_checkbox' ), 10 );
+        remove_action( 'woocommerce_after_order_notes', array( $ivole_checkout, 'show_opt_in_checkbox' ), 10 );
+        remove_action( 'woocommerce_review_order_before_submit', array( $ivole_checkout, 'show_opt_in_checkbox' ), 10 );
+    }
+}, 999 );
