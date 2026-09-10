@@ -167,10 +167,27 @@ do_action( 'woocommerce_before_cart' );
                             </div>
                         <?php endforeach; ?>
 
-                        
-                        <div class="pt-2 border-t border-cozy-sand/40">
-                            <?php wc_cart_totals_shipping_html(); ?>
-                        </div>
+                        <?php if ( WC()->cart->needs_shipping() ) : ?>
+                            <div class="pt-2 border-t border-cozy-sand/40">
+                                <?php
+                                if ( WC()->cart->show_shipping() ) {
+                                    wc_cart_totals_shipping_html();
+                                } else {
+                                    ?>
+                                    <div class="flex items-center justify-between text-cozy-coffee/70 text-sm">
+                                        <span>Envío</span>
+                                        <span class="font-bold text-cozy-coffee text-xs">
+                                            <?php
+                                            $shipping_total = WC()->cart->get_cart_shipping_total();
+                                            echo ! empty( $shipping_total ) ? $shipping_total : __( 'Calculado en el checkout', 'woocommerce' );
+                                            ?>
+                                        </span>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        <?php endif; ?>
 
                         <?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
                             <div class="flex items-center justify-between text-cozy-coffee/70">
@@ -179,9 +196,11 @@ do_action( 'woocommerce_before_cart' );
                             </div>
                         <?php endforeach; ?>
 
-                        <div class="pt-3 border-t border-cozy-sand flex items-center justify-between text-base">
-                            <span class="font-bold text-cozy-coffee">Total</span>
-                            <span class="font-bold text-cozy-coffee text-lg"><?php wc_cart_totals_order_total_html(); ?></span>
+                        <div class="pt-3 border-t border-cozy-sand flex items-start justify-between text-base gap-2">
+                            <span class="font-bold text-cozy-coffee shrink-0">Total</span>
+                            <div class="text-right">
+                                <span class="font-bold text-cozy-coffee text-lg"><?php wc_cart_totals_order_total_html(); ?></span>
+                            </div>
                         </div>
                     </div>
 

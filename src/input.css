@@ -93,6 +93,18 @@ body.home #page .site-main {
 
 /* WooCommerce price HTML */
 .woocommerce-Price-amount { font-weight: 700; }
+.includes_tax,
+small.includes_tax,
+.tax_label {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 0.25rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 400 !important;
+  line-height: 1.3 !important;
+  color: rgba(74, 63, 53, 0.65) !important;
+  text-align: right !important;
+}
 
 /* ─── Global site-wide rules (consolidated from style.css) ───── */
 body {
@@ -4854,6 +4866,22 @@ a.added_to_cart,
     border-top: 1px dashed #EEE4D8 !important;
   }
 }
+
+/* ─── Checkout: Hide redundant top collapsible order summary on mobile ───── */
+@media (max-width: 1023px) {
+  .ast-order-review-toggle,
+  .ast-order-review-toggle-wrap,
+  #ast-order-review-content,
+  .ast-checkout-mobile-order-review,
+  .ast-checkout-slides-wrapper,
+  .woocommerce-checkout-review-order-toggle,
+  .woocommerce-checkout-mobile-review,
+  .woocommerce-checkout #order_review_heading_mobile,
+  .woocommerce-checkout .ast-mobile-order-review-wrap {
+    display: none !important;
+  }
+}
+
 
 
 
