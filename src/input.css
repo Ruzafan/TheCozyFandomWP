@@ -2418,6 +2418,7 @@ ul.wc-block-grid {
 }
 
 .wp-block-woocommerce-checkout-order-summary-block,
+.wp-block-woocommerce-checkout-order-summary-block .checkout-order-summary-block-fill,
 .wp-block-woocommerce-checkout-order-summary-totals-block,
 .wc-block-components-express-payment--checkout .wc-block-components-express-payment__content,
 .wc-block-checkout__terms.wc-block-checkout__terms--with-separator {
