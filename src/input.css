@@ -3280,6 +3280,9 @@ body.woocommerce-order-received #primary {
     justify-content: center;
     line-height: 1;
   }
+  .cozy-mobile-action-badge--fav {
+    background: #f87171 !important;
+  }
 }
 
 /* ─── Footer ──────────────────────────────────────────────────── */

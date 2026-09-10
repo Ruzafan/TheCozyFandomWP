@@ -644,9 +644,15 @@ function cozyUpdateFavBtns(productId, isFav) {
 }
 function cozyUpdateFavBadge(count) {
     var badge = document.getElementById('fav-badge');
-    if (!badge) return;
-    badge.textContent = count;
-    badge.classList.toggle('hidden', count === 0);
+    if (badge) {
+        badge.textContent = count;
+        badge.classList.toggle('hidden', count === 0);
+    }
+    var mobBadge = document.getElementById('fav-badge-mobile');
+    if (mobBadge) {
+        mobBadge.textContent = count;
+        mobBadge.classList.toggle('hidden', count === 0);
+    }
 }
 function cozyAddFavItem(html) {
     var container = document.getElementById('fav-items');

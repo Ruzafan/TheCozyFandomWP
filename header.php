@@ -176,9 +176,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </a>
             <button type="button" data-action="close-mobile-menu-open-favorites" class="cozy-mobile-nav-action-btn" aria-label="Mis favoritos">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                <?php if ( $fav_count > 0 ) : ?>
-                <span class="cozy-mobile-action-badge"><?php echo absint( $fav_count ); ?></span>
-                <?php endif; ?>
+                <span id="fav-badge-mobile" class="<?php echo $fav_count > 0 ? '' : 'hidden '; ?>cozy-mobile-action-badge cozy-mobile-action-badge--fav"><?php echo absint( $fav_count ); ?></span>
                 <span class="cozy-mobile-nav-action-label">Favoritos</span>
             </button>
             <button type="button" data-action="close-mobile-menu-open-cart" class="cozy-mobile-nav-action-btn" aria-label="<?php esc_attr_e( 'Carrito', 'woocommerce' ); ?>">
