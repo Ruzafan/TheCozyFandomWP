@@ -68,9 +68,9 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
         ?>
         <a href="<?php echo esc_url( get_term_link( $cozy_cat ) ); ?>"
            class="cozy-cat-picker-card group block bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 no-underline">
-            <div class="bg-cozy-cream h-56 sm:h-64 lg:h-72 overflow-hidden">
+            <div class="bg-cozy-cream overflow-hidden">
                 <img src="<?php echo esc_url( $cozy_cat_image ); ?>" alt="<?php echo esc_attr( $cozy_cat->name ); ?>"
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 object-contain" loading="lazy">
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
             </div>
             <div class="p-4 sm:p-5 text-center">
                 <h3 class="text-lg font-bold text-cozy-coffee m-0 mb-1"><?php echo esc_html( $cozy_cat->name ); ?></h3>
