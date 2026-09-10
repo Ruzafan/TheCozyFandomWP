@@ -425,7 +425,8 @@ body.woocommerce-account .woocommerce form.register,
 }
 
 .cozy-account-content table.woocommerce-orders-table,
-.cozy-account-content table.woocommerce-table {
+.cozy-account-content table.woocommerce-table,
+.cozy-account-content table.woocommerce-MyAccount-paymentMethods {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -4765,6 +4766,95 @@ a.added_to_cart,
   background: #72B0A2 !important;
   transform: translateY(-1px) !important;
 }
+
+/* ── WooCommerce Payment Methods & Mobile Table Fixes ── */
+.woocommerce table.shop_table_responsive tr td.payment-method-actions::before,
+.woocommerce table.shop_table_responsive tr td.woocommerce-PaymentMethod-actions::before,
+.woocommerce table.shop_table_responsive tr td[data-title=""]::before,
+.woocommerce table.shop_table_responsive tr td[data-title=" "]::before,
+.woocommerce-page table.shop_table_responsive tr td.payment-method-actions::before,
+.woocommerce-page table.shop_table_responsive tr td.woocommerce-PaymentMethod-actions::before,
+.woocommerce-page table.shop_table_responsive tr td[data-title=""]::before,
+.woocommerce-page table.shop_table_responsive tr td[data-title=" "]::before {
+  content: "" !important;
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .cozy-account-content table.woocommerce-MyAccount-paymentMethods,
+  .cozy-account-content table.account-payment-methods-table,
+  table.woocommerce-MyAccount-paymentMethods {
+    display: block !important;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .cozy-account-content table.woocommerce-MyAccount-paymentMethods thead,
+  .cozy-account-content table.account-payment-methods-table thead,
+  table.woocommerce-MyAccount-paymentMethods thead {
+    display: none !important;
+  }
+
+  .cozy-account-content table.woocommerce-MyAccount-paymentMethods tbody,
+  .cozy-account-content table.account-payment-methods-table tbody,
+  table.woocommerce-MyAccount-paymentMethods tbody {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    width: 100% !important;
+  }
+
+  .cozy-account-content table.woocommerce-MyAccount-paymentMethods tbody tr,
+  .cozy-account-content table.account-payment-methods-table tbody tr,
+  table.woocommerce-MyAccount-paymentMethods tbody tr {
+    display: flex !important;
+    flex-direction: column !important;
+    background: #FFFFFF !important;
+    border: 1px solid #EEE4D8 !important;
+    border-radius: 20px !important;
+    padding: 1.25rem !important;
+    gap: 0.625rem !important;
+    box-shadow: 0 1px 4px rgba(74, 63, 53, 0.04) !important;
+    margin-bottom: 0 !important;
+  }
+
+  .cozy-account-content table.woocommerce-MyAccount-paymentMethods tbody tr td,
+  .cozy-account-content table.account-payment-methods-table tbody tr td,
+  table.woocommerce-MyAccount-paymentMethods tbody tr td {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.375rem 0 !important;
+    border: none !important;
+    background: transparent !important;
+    text-align: right !important;
+    font-size: 0.875rem !important;
+    color: #4A3F35 !important;
+  }
+
+  .cozy-account-content table.woocommerce-MyAccount-paymentMethods tbody tr td::before,
+  .cozy-account-content table.account-payment-methods-table tbody tr td::before,
+  table.woocommerce-MyAccount-paymentMethods tbody tr td::before {
+    content: attr(data-title) ": " !important;
+    font-weight: 700 !important;
+    color: #4A3F35 !important;
+    margin-right: 0.5rem !important;
+    text-align: left !important;
+    float: none !important;
+  }
+
+  .cozy-account-content table.woocommerce-MyAccount-paymentMethods tbody tr td.payment-method-actions,
+  .cozy-account-content table.account-payment-methods-table tbody tr td.payment-method-actions,
+  table.woocommerce-MyAccount-paymentMethods tbody tr td.payment-method-actions,
+  table.woocommerce-MyAccount-paymentMethods tbody tr td.woocommerce-PaymentMethod-actions {
+    justify-content: flex-end !important;
+    margin-top: 0.375rem !important;
+    padding-top: 0.75rem !important;
+    border-top: 1px dashed #EEE4D8 !important;
+  }
+}
+
 
 
 
