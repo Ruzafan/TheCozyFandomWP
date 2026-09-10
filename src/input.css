@@ -2425,11 +2425,6 @@ ul.wc-block-grid {
   border: 0 !important;
 }
 
-@media (max-width: 774px) {
-  .wp-block-woocommerce-checkout-order-summary-block {
-    display: none;
-  }
-}
 
 .wc-block-components-main,
 .wc-block-components-sidebar {
