@@ -3359,13 +3359,22 @@ body.woocommerce-order-received #primary {
 /* Inner header card (title + edit button) */
 .cozy-account-content .woocommerce-Address-title {
   display: flex !important;
-  align-items: center !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
   justify-content: space-between !important;
-  padding: 0.875rem 1.25rem !important;
+  gap: 0.625rem !important;
+  padding: 0.875rem 1rem !important;
   margin: 0 !important;
   border: 1px solid #EEE4D8 !important;
   border-radius: 18px !important;
   background: #FAFAF8 !important;
+}
+@media (min-width: 540px) {
+  .cozy-account-content .woocommerce-Address-title {
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 0.875rem 1.25rem !important;
+  }
 }
 .cozy-account-content .woocommerce-Address-title h2,
 .cozy-account-content .woocommerce-Address-title h3 {
@@ -3376,18 +3385,27 @@ body.woocommerce-order-received #primary {
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
+  line-height: 1.35 !important;
+  word-break: break-word !important;
 }
 .cozy-account-content .woocommerce-Address-title a.edit {
-  font-size: 0.7rem !important;
+  font-size: 0.75rem !important;
   font-weight: 700 !important;
   color: #88C4B5 !important;
   text-decoration: none !important;
   border: 1px solid rgba(136,196,181,0.4) !important;
   border-radius: 20px !important;
-  padding: 0.25rem 0.85rem !important;
+  padding: 0.35rem 0.85rem !important;
   background: rgba(136,196,181,0.08) !important;
   transition: background 0.2s, color 0.2s !important;
-  white-space: nowrap !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
 }
 .cozy-account-content .woocommerce-Address-title a.edit:hover {
   background: #88C4B5 !important;

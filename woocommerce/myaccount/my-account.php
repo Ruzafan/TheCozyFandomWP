@@ -17,7 +17,7 @@ $display_name = ( ! empty( $raw_display ) && false === strpos( $raw_display, '@'
 $shop_url     = get_permalink( wc_get_page_id( 'shop' ) );
 ?>
 
-<div class="cozy-my-account py-12 px-6 md:px-12 max-w-7xl mx-auto relative overflow-hidden">
+<div class="cozy-my-account py-6 sm:py-12 px-3 sm:px-6 md:px-12 max-w-7xl mx-auto relative overflow-hidden">
 
     <!-- Decorative background blobs -->
     <div class="absolute top-0 right-0 w-96 h-96 bg-cozy-mint/10 rounded-full blur-3xl -z-10" aria-hidden="true"></div>
@@ -58,7 +58,7 @@ $shop_url     = get_permalink( wc_get_page_id( 'shop' ) );
     <!-- ============================================================ -->
     <!-- CONTENT AREA                                                   -->
     <!-- ============================================================ -->
-    <div class="bg-white rounded-[32px] p-6 md:p-8 border border-cozy-sand shadow-sm cozy-account-content">
+    <div class="bg-white rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 md:p-8 border border-cozy-sand shadow-sm cozy-account-content">
         <?php do_action( 'woocommerce_account_content' ); ?>
     </div>
 

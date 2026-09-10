@@ -231,14 +231,11 @@ add_filter( 'gettext', function( $translated_text, $text ) {
     if ( 'Your cart is currently empty!' === $text ) return 'Tu carrito está vacío';
     if ( 'New in store' === $text ) return 'Novedades en la tienda';
     if ( 'Browse store' === $text ) return 'Volver a la tienda';
-    if ( 'Confirm your email address to check for past orders and link them to your account.' === $text ) {
-        return 'Confirma tu dirección de correo electrónico para consultar tus pedidos anteriores y vincularlos a tu cuenta.';
-    }
-    if ( 'Confirm email address' === $text ) {
-        return 'Confirmar correo electrónico';
-    }
-    if ( false !== strpos( $text, 'Confirm your email address to check for past orders' ) ) {
-        return 'Confirma tu dirección de correo electrónico para consultar tus pedidos anteriores y vincularlos a tu cuenta.';
+    if ( 'Confirm your email address to check for past orders and link them to your account.' === $text ||
+         'Confirm email address' === $text ||
+         false !== strpos( $text, 'Confirm your email address to check for past orders' ) ||
+         false !== strpos( $text, 'Confirma tu dirección de correo electrónico para consultar tus pedidos' ) ) {
+        return '';
     }
     if ( 'Card' === $text ) {
         return 'Tarjeta de crédito / débito';
@@ -248,6 +245,45 @@ add_filter( 'gettext', function( $translated_text, $text ) {
     }
     return $translated_text;
 }, 20, 2 );
+
+/* Suppress email confirmation / verification notices in WooCommerce */
+add_filter( 'woocommerce_add_notice', function( $message ) {
+    if ( is_string( $message ) && (
+        false !== strpos( $message, 'Confirm your email' ) ||
+        false !== strpos( $message, 'Confirma tu dirección' ) ||
+        false !== strpos( $message, 'Confirm email' ) ||
+        false !== strpos( $message, 'Confirmar correo' )
+    ) ) {
+        return false;
+    }
+    return $message;
+}, 20 );
+
+add_action( 'template_redirect', function() {
+    if ( function_exists( 'wc_get_notices' ) ) {
+        $notices = wc_get_notices();
+        if ( ! empty( $notices ) ) {
+            $updated = false;
+            foreach ( $notices as $type => $notice_list ) {
+                foreach ( (array) $notice_list as $key => $notice ) {
+                    $notice_text = is_array( $notice ) ? ( $notice['notice'] ?? '' ) : $notice;
+                    if ( is_string( $notice_text ) && (
+                        false !== strpos( $notice_text, 'Confirm your email' ) ||
+                        false !== strpos( $notice_text, 'Confirma tu dirección' ) ||
+                        false !== strpos( $notice_text, 'Confirm email' ) ||
+                        false !== strpos( $notice_text, 'Confirmar correo' )
+                    ) ) {
+                        unset( $notices[ $type ][ $key ] );
+                        $updated = true;
+                    }
+                }
+            }
+            if ( $updated && WC()->session ) {
+                WC()->session->set( 'wc_notices', $notices );
+            }
+        }
+    }
+}, 20 );
 
 /* Change payment gateway title 'Card' to Spanish */
 add_filter( 'woocommerce_gateway_title', function( $title, $id ) {
