@@ -1914,23 +1914,6 @@ p.woocommerce-noreviews {
   margin-top: 0.75rem !important;
 }
 
-/* Ocultar casilla y sección de opt-in de invitaciones de CusRev en Checkout */
-#order-cusrev-checkout-consent,
-label[for="order-cusrev-checkout-consent"],
-fieldset:has(#order-cusrev-checkout-consent),
-.wc-block-checkout__additional-fields:has(#order-cusrev-checkout-consent),
-#ivole_opt_in_field,
-#cr_opt_in_field,
-#ivole_opt_in,
-#cr_opt_in,
-.ivole-opt-in,
-.cr-opt-in,
-.cr-checkout-consent,
-.cr-opt-in-checkbox {
-  display: none !important;
-}
-
-
 /* ─── Related products ──────────────────────────────────────── */
 .cozy-single-product .related.products {
   margin-top: 3rem;
