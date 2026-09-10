@@ -167,11 +167,10 @@ do_action( 'woocommerce_before_cart' );
                             </div>
                         <?php endforeach; ?>
 
-                        <?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) : ?>
-                            <div class="pt-2 border-t border-cozy-sand/40">
-                                <?php wc_cart_totals_shipping_html(); ?>
-                            </div>
-                        <?php endif; ?>
+                        
+                        <div class="pt-2 border-t border-cozy-sand/40">
+                            <?php wc_cart_totals_shipping_html(); ?>
+                        </div>
 
                         <?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
                             <div class="flex items-center justify-between text-cozy-coffee/70">
