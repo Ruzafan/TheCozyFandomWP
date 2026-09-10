@@ -312,8 +312,12 @@ add_filter( 'render_block', function( $block_content, $block ) {
     return $block_content;
 }, 10, 2 );
 
-/* Force custom Cozy Empty Cart template on empty cart page */
+/* Ensure Cart page content renders reliably for both empty & non-empty states */
 add_filter( 'the_content', function( $content ) {
+    if ( is_admin() ) {
+        return $content;
+    }
+
     $cart_page_id = class_exists( 'WooCommerce' ) ? wc_get_page_id( 'cart' ) : 0;
     $is_cart_page = is_cart() || ( $cart_page_id > 0 && is_page( $cart_page_id ) ) || is_page( 'cart' ) || is_page( 'carrito' );
 
@@ -328,7 +332,8 @@ add_filter( 'the_content', function( $content ) {
                 include $template;
                 return ob_get_clean();
             }
-        } elseif ( empty( trim( $content ) ) ) {
+        } else {
+            // Cart has items: execute [woocommerce_cart] shortcode to ensure PHP cart layout renders
             return do_shortcode( '[woocommerce_cart]' );
         }
     }
