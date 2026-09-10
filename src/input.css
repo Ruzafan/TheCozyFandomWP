@@ -4541,11 +4541,14 @@ a.added_to_cart,
   width: 0 !important;
 }
 
-/* 2. Forzar que los contenedores de Gutenberg ocupen el 100% del ancho sin encerrarse */
+/* 2. Ocultar los avisos nativos de WooCommerce y forzar visibilidad del contenedor principal */
 .woocommerce-cart #primary,
 .woocommerce-cart .entry-content,
-.woocommerce-cart .ast-container,
-.wp-block-woocommerce-cart,
+.woocommerce-cart .ast-container {
+  display: block !important;
+  width: 100% !important;
+}
+
 .woocommerce-cart .cart-empty.woocommerce-info,
 .page-id-carrito .cart-empty.woocommerce-info,
 .page-id-cart .cart-empty.woocommerce-info {
