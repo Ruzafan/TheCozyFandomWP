@@ -43,16 +43,6 @@ $calculator_text          = '';
                         <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
-
-                <?php if ( is_cart() && $formatted_destination ) : ?>
-                    <p class="woocommerce-shipping-destination text-[11px] text-cozy-coffee/50 m-0 mt-1">
-                        <?php
-                        printf( esc_html__( 'Envío a %s.', 'woocommerce' ), '<strong>' . esc_html( $formatted_destination ) . '</strong>' );
-                        $calculator_text = esc_html__( 'Cambiar dirección', 'woocommerce' );
-                        ?>
-                    </p>
-                <?php endif; ?>
-
             <?php elseif ( ! $has_calculated_shipping || ! $formatted_destination ) : ?>
                 <span class="text-xs text-cozy-coffee/60">
                     <?php echo wp_kses_post( apply_filters( 'woocommerce_shipping_not_enabled_on_cart_html', __( 'Calculado en el checkout', 'woocommerce' ) ) ); ?>
