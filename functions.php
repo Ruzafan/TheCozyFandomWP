@@ -1586,13 +1586,37 @@ add_filter( 'option_woocommerce_default_customer_address', function( $val ) {
     return $val ? $val : 'base';
 } );
 
-add_action( 'wp', function() {
-    if ( is_admin() ) return;
-    if ( class_exists( 'WooCommerce' ) && isset( WC()->customer ) && WC()->customer ) {
-        if ( ! WC()->customer->get_shipping_country() ) {
-            $base_country = function_exists( 'wc_get_base_location' ) ? ( wc_get_base_location()['country'] ?? 'ES' ) : 'ES';
-            WC()->customer->set_billing_country( $base_country );
-            WC()->customer->set_shipping_country( $base_country );
+// Ensure shipping packages always have a destination country (defaults to ES / store base)
+add_filter( 'woocommerce_cart_shipping_packages', function( $packages ) {
+    $base_loc = function_exists( 'wc_get_base_location' ) ? wc_get_base_location() : [ 'country' => 'ES' ];
+    $default_country = ! empty( $base_loc['country'] ) ? $base_loc['country'] : 'ES';
+
+    foreach ( $packages as $i => $package ) {
+        if ( empty( $package['destination']['country'] ) ) {
+            $packages[ $i ]['destination']['country'] = $default_country;
+        }
+    }
+    return $packages;
+}, 10, 1 );
+
+// Ensure customer shipping country is set & shipping recalculated on cart page load
+add_action( 'template_redirect', function() {
+    if ( is_admin() || ! class_exists( 'WooCommerce' ) ) return;
+    if ( is_cart() || is_page( 'cart' ) || is_page( 'carrito' ) ) {
+        if ( isset( WC()->customer ) && WC()->customer ) {
+            $shipping_country = WC()->customer->get_shipping_country();
+            if ( empty( $shipping_country ) ) {
+                $base_loc = function_exists( 'wc_get_base_location' ) ? wc_get_base_location() : [ 'country' => 'ES' ];
+                $default_country = ! empty( $base_loc['country'] ) ? $base_loc['country'] : 'ES';
+
+                WC()->customer->set_billing_country( $default_country );
+                WC()->customer->set_shipping_country( $default_country );
+                WC()->customer->save();
+            }
+        }
+        if ( isset( WC()->cart ) && WC()->cart ) {
+            WC()->cart->calculate_shipping();
+            WC()->cart->calculate_totals();
         }
     }
 }, 5 );
