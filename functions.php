@@ -1561,6 +1561,24 @@ add_filter( 'woocommerce_shipping_rate_label', function ( $label, $method ) {
     return $label;
 }, 10, 2 );
 
+/* ─── Format 0€ shipping cost as "Gratis" in cart/checkout ────── */
+add_filter( 'woocommerce_cart_shipping_method_full_label', function( $label, $method ) {
+    $cost = (float) $method->cost;
+    if ( $method->get_shipping_tax() > 0 && WC()->cart && WC()->cart->display_prices_including_tax() ) {
+        $cost += (float) $method->get_shipping_tax();
+    }
+
+    if ( 0.0 === $cost || ( $cost < 0.01 && $cost >= 0 ) ) {
+        $method_name = $method->get_label();
+        if ( false !== mb_strpos( mb_strtolower( $method_name ), 'gratis' ) ) {
+            return esc_html( $method_name ) . ' <span class="text-green-600 font-bold">(Gratis)</span>';
+        }
+        return esc_html( $method_name ) . ': <span class="text-green-600 font-bold">Gratis</span>';
+    }
+
+    return $label;
+}, 10, 2 );
+
 /* ─── Tracking number block on view-order page ──────────────── */
 add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
     $codigo  = $order->get_meta( 'numero_seguimiento', true );

@@ -173,13 +173,22 @@ do_action( 'woocommerce_before_cart' );
                                 if ( WC()->cart->show_shipping() ) {
                                     wc_cart_totals_shipping_html();
                                 } else {
+                                    $shipping_total_raw = (float) WC()->cart->get_shipping_total() + (float) WC()->cart->get_shipping_tax();
+                                    $formatted_shipping = WC()->cart->get_cart_shipping_total();
                                     ?>
                                     <div class="flex items-center justify-between text-cozy-coffee/70 text-sm">
-                                        <span>Envío</span>
+                                        <span>Gastos de envío</span>
                                         <span class="font-bold text-cozy-coffee text-xs">
                                             <?php
-                                            $shipping_total = WC()->cart->get_cart_shipping_total();
-                                            echo ! empty( $shipping_total ) ? $shipping_total : __( 'Calculado en el checkout', 'woocommerce' );
+                                            if ( 0.0 === $shipping_total_raw && WC()->cart->get_cart_contents_total() > 0 && ! empty( $formatted_shipping ) && ( false !== strpos( $formatted_shipping, '0,00' ) || false !== strpos( $formatted_shipping, '0.00' ) || false !== strpos( mb_strtolower( $formatted_shipping ), 'gratis' ) ) ) {
+                                                echo '<span class="text-green-600 font-bold">Gratis</span>';
+                                            } elseif ( ! empty( $formatted_shipping ) && false === strpos( $formatted_shipping, '0,00' ) && false === strpos( $formatted_shipping, '0.00' ) ) {
+                                                echo wp_kses_post( $formatted_shipping );
+                                            } elseif ( $shipping_total_raw > 0 ) {
+                                                echo wc_price( $shipping_total_raw );
+                                            } else {
+                                                echo esc_html__( 'Calculado en el checkout', 'woocommerce' );
+                                            }
                                             ?>
                                         </span>
                                     </div>

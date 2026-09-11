@@ -16,7 +16,7 @@ $calculator_text          = '';
 ?>
 <div class="woocommerce-shipping-totals shipping space-y-2">
     <div class="flex items-start justify-between text-cozy-coffee/70 gap-2">
-        <span class="font-medium text-xs sm:text-sm shrink-0"><?php echo wp_kses_post( $package_name ); ?></span>
+        <span class="font-medium text-xs sm:text-sm shrink-0"><?php echo ( 'Envío' === $package_name || 'Shipping' === $package_name ) ? 'Gastos de envío' : wp_kses_post( $package_name ); ?></span>
         <div class="text-right min-w-0">
             <?php if ( $available_methods ) : ?>
                 <?php if ( 1 === count( $available_methods ) ) : ?>
