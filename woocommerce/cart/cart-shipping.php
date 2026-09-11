@@ -22,9 +22,13 @@ $calculator_text          = '';
                 <?php if ( 1 === count( $available_methods ) ) : ?>
                     <?php
                     $method = current( $available_methods );
+                    $method_label = wc_cart_totals_shipping_method_label( $method );
+                    if ( 0 === strpos( $method_label, 'Gastos de envío: ' ) ) {
+                        $method_label = substr( $method_label, strlen( 'Gastos de envío: ' ) );
+                    }
                     ?>
                     <span class="font-bold text-cozy-coffee text-xs sm:text-sm">
-                        <?php echo wp_kses_post( wc_cart_totals_shipping_method_label( $method ) ); ?>
+                        <?php echo wp_kses_post( $method_label ); ?>
                     </span>
                     <input type="hidden" name="shipping_method[<?php echo $index; ?>]" data-index="<?php echo $index; ?>" id="shipping_method_<?php echo $index; ?>_<?php echo esc_attr( sanitize_title( $method->id ) ); ?>" value="<?php echo esc_attr( $method->id ); ?>" class="shipping_method" />
                 <?php else : ?>

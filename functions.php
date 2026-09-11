@@ -1579,6 +1579,24 @@ add_filter( 'woocommerce_cart_shipping_method_full_label', function( $label, $me
     return $label;
 }, 10, 2 );
 
+/* ─── Force Shipping Calculation on Cart Page ────────────────── */
+add_filter( 'option_woocommerce_shipping_cost_requires_address', '__return_false' );
+
+add_filter( 'option_woocommerce_default_customer_address', function( $val ) {
+    return $val ? $val : 'base';
+} );
+
+add_action( 'wp', function() {
+    if ( is_admin() ) return;
+    if ( class_exists( 'WooCommerce' ) && isset( WC()->customer ) && WC()->customer ) {
+        if ( ! WC()->customer->get_shipping_country() ) {
+            $base_country = function_exists( 'wc_get_base_location' ) ? ( wc_get_base_location()['country'] ?? 'ES' ) : 'ES';
+            WC()->customer->set_billing_country( $base_country );
+            WC()->customer->set_shipping_country( $base_country );
+        }
+    }
+}, 5 );
+
 /* ─── Tracking number block on view-order page ──────────────── */
 add_action( 'woocommerce_order_details_after_order_table', function ( $order ) {
     $codigo  = $order->get_meta( 'numero_seguimiento', true );
