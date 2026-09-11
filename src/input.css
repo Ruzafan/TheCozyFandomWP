@@ -2426,7 +2426,7 @@ ul.wc-block-grid {
 }
 
 @media (max-width: 774px) {
-  .wc-block-components-sidebar.wc-block-checkout__sidebar.wp-block-woocommerce-checkout-totals-block.is-sticky .wp-block-woocommerce-checkout-order-summary-block {
+  .wc-block-components-sidebar.wc-block-checkout__sidebar .wp-block-woocommerce-checkout-order-summary-block {
     display: none;
   }
 }
