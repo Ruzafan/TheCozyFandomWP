@@ -246,14 +246,14 @@ add_filter( 'gettext', function( $translated_text, $text ) {
     return $translated_text;
 }, 20, 2 );
 
-/* Suppress email confirmation / verification notices in WooCommerce */
+/* Suppress email confirmation / verification notices and empty notices in WooCommerce */
 add_filter( 'woocommerce_add_notice', function( $message ) {
-    if ( is_string( $message ) && (
+    if ( ! $message || ( is_string( $message ) && (
         false !== strpos( $message, 'Confirm your email' ) ||
         false !== strpos( $message, 'Confirma tu dirección' ) ||
         false !== strpos( $message, 'Confirm email' ) ||
         false !== strpos( $message, 'Confirmar correo' )
-    ) ) {
+    ) ) ) {
         return false;
     }
     return $message;
@@ -267,15 +267,21 @@ add_action( 'template_redirect', function() {
             foreach ( $notices as $type => $notice_list ) {
                 foreach ( (array) $notice_list as $key => $notice ) {
                     $notice_text = is_array( $notice ) ? ( $notice['notice'] ?? '' ) : $notice;
-                    if ( is_string( $notice_text ) && (
-                        false !== strpos( $notice_text, 'Confirm your email' ) ||
-                        false !== strpos( $notice_text, 'Confirma tu dirección' ) ||
-                        false !== strpos( $notice_text, 'Confirm email' ) ||
-                        false !== strpos( $notice_text, 'Confirmar correo' )
-                    ) ) {
+                    $clean_text  = is_string( $notice_text ) ? trim( wp_strip_all_tags( $notice_text ) ) : '';
+
+                    if (
+                        empty( $clean_text ) ||
+                        false !== strpos( $clean_text, 'Confirm your email' ) ||
+                        false !== strpos( $clean_text, 'Confirma tu dirección' ) ||
+                        false !== strpos( $clean_text, 'Confirm email' ) ||
+                        false !== strpos( $clean_text, 'Confirmar correo' )
+                    ) {
                         unset( $notices[ $type ][ $key ] );
                         $updated = true;
                     }
+                }
+                if ( empty( $notices[ $type ] ) ) {
+                    unset( $notices[ $type ] );
                 }
             }
             if ( $updated && isset( WC()->session ) && WC()->session ) {

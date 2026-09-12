@@ -1738,9 +1738,26 @@ function cozyReplaceFragments(fragments) {
             }
         }
 
+        // Clean empty WooCommerce notice banners that contain no text
+        function cleanEmptyNotices() {
+            var notices = document.querySelectorAll('.woocommerce-info, .woocommerce-message, .woocommerce-error');
+            notices.forEach(function(el) {
+                var clone = el.cloneNode(true);
+                var btns = clone.querySelectorAll('.button, a.wc-forward, button, svg, i');
+                btns.forEach(function(b) { b.remove(); });
+                var text = clone.textContent.replace(/\s+/g, ' ').trim();
+                if (!text || text.length === 0) {
+                    el.style.display = 'none';
+                }
+            });
+        }
+
         formatCozyEmptyCart();
+        cleanEmptyNotices();
         setTimeout(formatCozyEmptyCart, 200);
+        setTimeout(cleanEmptyNotices, 200);
         setTimeout(formatCozyEmptyCart, 600);
+        setTimeout(cleanEmptyNotices, 600);
     });
 
 })();

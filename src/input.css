@@ -355,9 +355,13 @@ body.woocommerce-account .woocommerce form.register,
   font-size: 0.875rem !important;
   margin-top: 1.5rem !important;
   margin-bottom: 1.5rem !important;
-  list-style: none !important;
-  position: relative !important;
   box-shadow: 0 2px 8px rgba(58, 49, 40, 0.04) !important;
+}
+
+.woocommerce-error:empty,
+.woocommerce-message:empty,
+.woocommerce-info:empty {
+  display: none !important;
 }
 
 .woocommerce-error {
