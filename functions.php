@@ -2274,5 +2274,70 @@ function cozy_hide_newsletter_formatted_meta_in_emails( $formatted_meta, $order 
     return $formatted_meta;
 }
 
+/* ------------------------------------------------------------------ */
+/*  NEWSLETTER POPUP MODAL (First-time visit only)                    */
+/* ------------------------------------------------------------------ */
+add_action( 'wp_footer', function() {
+    if ( is_admin() || get_option( 'cozy_coming_soon_mode' ) ) {
+        return;
+    }
+    ?>
+    <div id="cozy-newsletter-modal"
+         class="fixed inset-0 z-[4000] hidden items-center justify-center p-4 sm:p-6 bg-cozy-coffee/60 backdrop-blur-sm transition-opacity duration-300"
+         role="dialog" aria-modal="true" aria-label="Modal Newsletter">
+        
+        <!-- Backdrop (click to close) -->
+        <div class="absolute inset-0" onclick="window.closeNewsletterModal()"></div>
+
+        <!-- Modal Card Container -->
+        <div class="relative z-10 w-full max-w-lg bg-cozy-cream border border-cozy-sand rounded-[32px] sm:rounded-[40px] px-6 sm:px-10 py-8 sm:py-12 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+            
+            <!-- Decorative Blobs -->
+            <div class="absolute -top-16 -left-16 w-64 h-64 bg-cozy-mint/10 rounded-full blur-3xl opacity-60 pointer-events-none" aria-hidden="true"></div>
+            <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-cozy-accent/10 rounded-full blur-3xl opacity-60 pointer-events-none" aria-hidden="true"></div>
+
+            <!-- Close Button (X) -->
+            <button type="button"
+                    onclick="window.closeNewsletterModal()"
+                    class="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 hover:bg-white text-cozy-coffee/70 hover:text-cozy-coffee border border-cozy-sand flex items-center justify-center transition-all cursor-pointer shadow-xs focus:outline-none z-20"
+                    aria-label="Cerrar modal">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <div class="relative z-10 flex flex-col items-center gap-4 sm:gap-5">
+
+                <!-- Badge -->
+                <span class="inline-flex items-center gap-1.5 bg-white text-cozy-accent text-xs font-bold px-4 py-1.5 rounded-full border border-cozy-accent/20 shadow-2xs">
+                    ✨ Únete al Cozy Club
+                </span>
+
+                <!-- Title -->
+                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cozy-coffee leading-tight m-0">
+                    Un rincón de paz en tu<br> bandeja de entrada.
+                </h2>
+
+                <!-- Body -->
+                <p class="text-xs sm:text-sm text-cozy-coffee/80 max-w-md leading-relaxed m-0">
+                    Apúntate a nuestra newsletter y recibe un <strong>5% de descuento</strong> en tu primer pedido. Cero spam, solo novedades bonitas, tips de decoración geek y ofertas exclusivas para la comunidad.
+                </p>
+
+                <!-- Form -->
+                <div class="w-full mt-1 cozy-reach-form">
+                    <?php cozy_reach_subscription_form( 'a87ce047-ee47-4dd0-865a-c37dd40e52d6' ); ?>
+                </div>
+
+                <!-- Legal Footer Micro-text -->
+                <p class="text-cozy-coffee/60 m-0 text-[11px]">
+                    Prometemos cuidar de tus datos tanto como cuidamos nuestros envíos.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <?php
+}, 30 );
+
 
 

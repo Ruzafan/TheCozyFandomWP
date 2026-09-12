@@ -37,7 +37,27 @@ window.closeFavorites = function () {
     var overlay = document.getElementById('fav-overlay');
     if (drawer)  drawer.classList.add('translate-x-full');
     if (overlay) overlay.classList.add('hidden');
-    document.body.style.overflow = '';
+    };
+
+/* ---------- NEWSLETTER POPUP MODAL ---------- */
+window.openNewsletterModal = function () {
+    var modal = document.getElementById('cozy-newsletter-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+};
+window.closeNewsletterModal = function () {
+    var modal = document.getElementById('cozy-newsletter-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+        try {
+            localStorage.setItem('cozy_newsletter_modal_dismissed', 'true');
+        } catch (e) {}
+    }
 };
 
 /* ---------- COOKIE CONSENT BANNER ---------- */
@@ -1758,6 +1778,35 @@ function cozyReplaceFragments(fragments) {
         setTimeout(cleanEmptyNotices, 200);
         setTimeout(formatCozyEmptyCart, 600);
         setTimeout(cleanEmptyNotices, 600);
+
+        // Auto-open newsletter popup modal for first-time visitors
+        try {
+            var modalDismissed = localStorage.getItem('cozy_newsletter_modal_dismissed');
+            if (!modalDismissed) {
+                setTimeout(function () {
+                    var modal = document.getElementById('cozy-newsletter-modal');
+                    if (modal && !localStorage.getItem('cozy_newsletter_modal_dismissed')) {
+                        window.openNewsletterModal();
+                    }
+                }, 1200);
+            }
+        } catch (e) {}
+
+        // Dismiss modal permanently when form inside modal is submitted
+        var modalEl = document.getElementById('cozy-newsletter-modal');
+        if (modalEl) {
+            var modalForms = modalEl.querySelectorAll('form');
+            modalForms.forEach(function (f) {
+                f.addEventListener('submit', function () {
+                    try {
+                        localStorage.setItem('cozy_newsletter_modal_dismissed', 'true');
+                    } catch (e) {}
+                    setTimeout(function () {
+                        window.closeNewsletterModal();
+                    }, 2000);
+                });
+            });
+        }
     });
 
 })();
