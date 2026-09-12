@@ -2191,5 +2191,82 @@ add_action( 'template_redirect', function() {
     exit;
 } );
 
+/* ------------------------------------------------------------------ */
+/*  WOOCOMMERCE EMAIL — Ocultar suscripción a Newsletter              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Filtra los campos meta de WooCommerce para evitar que la casilla o estado
+ * de suscripción a la newsletter aparezca en los emails del pedido.
+ */
+add_filter( 'woocommerce_email_order_meta_fields', 'cozy_remove_newsletter_from_order_emails', 10, 3 );
+function cozy_remove_newsletter_from_order_emails( $fields, $sent_to_admin, $order ) {
+    $keys_to_remove = array(
+        'newsletter',
+        'subscribe_newsletter',
+        'subscribe_to_newsletter',
+        'marketing_consent',
+        'mailchimp_woocommerce_newsletter',
+        'mailpoet_checkout_subscribe',
+        'suscribirse_newsletter',
+        'suscripcion_newsletter',
+        'suscrito_newsletter',
+        'boletin',
+        'Boletín',
+        'Newsletter',
+    );
+
+    foreach ( $keys_to_remove as $key ) {
+        if ( isset( $fields[ $key ] ) ) {
+            unset( $fields[ $key ] );
+        }
+    }
+
+    return $fields;
+}
+
+add_filter( 'woocommerce_email_order_meta_keys', 'cozy_remove_newsletter_meta_keys_from_emails', 10, 1 );
+function cozy_remove_newsletter_meta_keys_from_emails( $keys ) {
+    $keys_to_remove = array(
+        'newsletter',
+        'subscribe_newsletter',
+        'subscribe_to_newsletter',
+        'marketing_consent',
+        'mailchimp_woocommerce_newsletter',
+        'suscribirse_newsletter',
+        'suscripcion_newsletter',
+        'suscrito_newsletter',
+        'boletin',
+    );
+
+    return array_diff( $keys, $keys_to_remove );
+}
+
+/**
+ * Oculta cualquier metadato con relación a newsletter o boletín de la tabla
+ * de metadatos formateados cuando WooCommerce genera el HTML de los emails.
+ */
+add_filter( 'woocommerce_order_get_formatted_meta_data', 'cozy_hide_newsletter_formatted_meta_in_emails', 10, 2 );
+function cozy_hide_newsletter_formatted_meta_in_emails( $formatted_meta, $order ) {
+    if ( did_action( 'woocommerce_email_header' ) ) {
+        foreach ( $formatted_meta as $key => $meta ) {
+            $meta_key_lower   = isset( $meta->key ) ? strtolower( (string) $meta->key ) : '';
+            $meta_label_lower = isset( $meta->display_key ) ? strtolower( (string) $meta->display_key ) : '';
+
+            if (
+                strpos( $meta_key_lower, 'newsletter' ) !== false ||
+                strpos( $meta_key_lower, 'marketing' ) !== false ||
+                strpos( $meta_key_lower, 'boletin' ) !== false ||
+                strpos( $meta_label_lower, 'newsletter' ) !== false ||
+                strpos( $meta_label_lower, 'boletín' ) !== false ||
+                strpos( $meta_label_lower, 'suscrito' ) !== false
+            ) {
+                unset( $formatted_meta[ $key ] );
+            }
+        }
+    }
+    return $formatted_meta;
+}
+
 
 
