@@ -69,7 +69,11 @@ add_action( 'wp_head', function() {
 add_action( 'wp_footer', function() {
     if ( is_admin() ) return;
     ?>
-    <div id="cozy-consent-banner" style="display:none"
+    <?php /* tailwind.config.js has `important: true`, so every Tailwind utility
+       (including the `flex` class below) compiles as `!important` — a plain
+       `display:none` inline style can't win against `.flex{display:flex!important}`.
+       Only an inline `!important` outranks that. */ ?>
+    <div id="cozy-consent-banner" style="display:none !important"
          class="fixed inset-x-0 bottom-0 z-[3000] bg-cozy-coffee text-white/90 px-6 py-5 md:py-4 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 shadow-2xl"
          role="dialog" aria-label="Aviso de cookies">
         <p class="text-xs md:text-[13px] leading-relaxed m-0 flex-1">
