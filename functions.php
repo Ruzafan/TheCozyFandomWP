@@ -575,6 +575,37 @@ add_action( 'wp_enqueue_scripts', function() {
     }
 }, 99 );
 
+/* WooCommerce's core 'wc-cart' script AJAX-submits the "Actualizar carrito"
+   form and injects the response into specific selectors it expects
+   (.cart_totals, etc.). Our woocommerce/cart/cart.php override renders its
+   own Tailwind markup instead of those template parts, so the AJAX call
+   recalculates the cart server-side but has nothing matching to update on
+   screen — the button looks like it does nothing. Dequeue it so the form
+   submits natively (full page reload), which this custom template already
+   renders correctly from the recalculated cart. */
+add_action( 'wp_enqueue_scripts', function() {
+    if ( is_cart() ) {
+        wp_dequeue_script( 'wc-cart' );
+    }
+}, 99 );
+
+/* ------------------------------------------------------------------ */
+/*  SHIPPING — hide paid methods once Free Shipping is available       */
+/* ------------------------------------------------------------------ */
+/* By default WooCommerce lists every enabled method in a zone as its own
+   radio option, so once the cart crosses the free-shipping threshold the
+   customer sees both "Envío gratis" AND the paid method (e.g. tarifa
+   plana) instead of just the free one. */
+add_filter( 'woocommerce_package_rates', function( $rates ) {
+    $free = [];
+    foreach ( $rates as $rate_id => $rate ) {
+        if ( 'free_shipping' === $rate->method_id ) {
+            $free[ $rate_id ] = $rate;
+        }
+    }
+    return ! empty( $free ) ? $free : $rates;
+}, 100 );
+
 /* ------------------------------------------------------------------ */
 /*  PERFORMANCE TRANSIENTS (Nav Menu & Front Page Queries)            */
 /* ------------------------------------------------------------------ */
