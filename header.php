@@ -8,7 +8,6 @@
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
-<?php $cozy_consent = isset( $_COOKIE['cozy_consent'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['cozy_consent'] ) ) : ''; ?>
 <!-- Google Tag Manager -->
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -22,9 +21,10 @@ window.cozyLoadGTM = function () {
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-NRZGH332');
 };
-<?php if ( 'granted' === $cozy_consent ) : ?>
-window.cozyLoadGTM();
-<?php endif; ?>
+/* cozyInitConsent() (cozy-main.js) calls this on DOMContentLoaded once it
+   reads the real cozy_consent cookie client-side — this page is served from
+   LiteSpeed's full-page cache, so a PHP-side $_COOKIE check here would reflect
+   whoever's request generated that cache entry, not the current visitor. */
 </script>
 <!-- End Google Tag Manager -->
 <meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -34,12 +34,9 @@ window.cozyLoadGTM();
 </head>
 
 <body <?php body_class(); ?>>
-<?php if ( 'granted' === $cozy_consent ) : ?>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NRZGH332"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-<?php endif; ?>
+<?php /* No noscript GTM fallback: consent is decided client-side (cozyInitConsent()
+   in cozy-main.js), so without JS there's no way to know consent was granted —
+   and loading GTM unconditionally there would defeat the consent gate. */ ?>
 <?php wp_body_open(); ?>
 
 <div id="page" class="hfeed site ast-page-builder-template">

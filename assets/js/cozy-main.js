@@ -66,6 +66,26 @@ function cozySetCookie(name, value, days) {
     var secure = location.protocol === 'https:' ? '; Secure' : '';
     document.cookie = name + '=' + value + '; expires=' + expires + '; path=/; SameSite=Lax' + secure;
 }
+function cozyGetCookie(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : '';
+}
+/* The banner markup is always present in the (cached) page HTML so that
+   LiteSpeed's full-page cache can't freeze a stale consent state into it.
+   Visibility and GA/GTM loading are decided here, client-side, from the
+   visitor's actual cookie on every page view. */
+function cozyInitConsent() {
+    var consent = cozyGetCookie('cozy_consent');
+    if ('granted' === consent) {
+        if (typeof window.cozyLoadGA === 'function') window.cozyLoadGA();
+        if (typeof window.cozyLoadGTM === 'function') window.cozyLoadGTM();
+        return;
+    }
+    if ('denied' === consent) return;
+    var banner = document.getElementById('cozy-consent-banner');
+    if (banner) banner.style.display = '';
+}
+document.addEventListener('DOMContentLoaded', cozyInitConsent);
 window.cozyAcceptConsent = function () {
     cozySetCookie('cozy_consent', 'granted', 180);
     if (typeof window.cozyLoadGA === 'function') window.cozyLoadGA();

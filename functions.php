@@ -33,7 +33,6 @@ define( 'COZY_GA4_ID', 'G-3KDLH6MJ94' );
 
 add_action( 'wp_head', function() {
     if ( is_admin() ) return;
-    $consent = isset( $_COOKIE['cozy_consent'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['cozy_consent'] ) ) : '';
     ?>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -49,9 +48,11 @@ add_action( 'wp_head', function() {
             gtag('js', new Date());
             gtag('config', '<?php echo esc_js( COZY_GA4_ID ); ?>');
         };
-        <?php if ( 'granted' === $consent ) : ?>
-        window.cozyLoadGA();
-        <?php endif; ?>
+        /* cozyInitConsent() (cozy-main.js) calls this on DOMContentLoaded
+           once it reads the real cozy_consent cookie client-side — the
+           check can't happen here in PHP because the page is served from
+           LiteSpeed's full-page cache and $_COOKIE reflects whoever's
+           request happened to generate that cache entry, not this visitor. */
     </script>
     <?php
 }, 1 );
@@ -59,13 +60,16 @@ add_action( 'wp_head', function() {
 /* ------------------------------------------------------------------ */
 /*  COOKIE CONSENT BANNER                                               */
 /* ------------------------------------------------------------------ */
-/* Only rendered for visitors who haven't decided yet (no cozy_consent
-   cookie). "Aceptar"/"Rechazar" are wired via the data-action dispatcher
-   in cozy-main.js, consistent with the rest of the site's CSP-safe pattern. */
+/* Always rendered (hidden by default) so the markup is identical for every
+   visitor and safe to serve from LiteSpeed's full-page cache. cozyInitConsent()
+   in cozy-main.js reads the real cozy_consent cookie client-side on
+   DOMContentLoaded and un-hides it only for visitors who haven't decided yet.
+   "Aceptar"/"Rechazar" are wired via the data-action dispatcher in
+   cozy-main.js, consistent with the rest of the site's CSP-safe pattern. */
 add_action( 'wp_footer', function() {
-    if ( is_admin() || isset( $_COOKIE['cozy_consent'] ) ) return;
+    if ( is_admin() ) return;
     ?>
-    <div id="cozy-consent-banner"
+    <div id="cozy-consent-banner" style="display:none"
          class="fixed inset-x-0 bottom-0 z-[3000] bg-cozy-coffee text-white/90 px-6 py-5 md:py-4 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 shadow-2xl"
          role="dialog" aria-label="Aviso de cookies">
         <p class="text-xs md:text-[13px] leading-relaxed m-0 flex-1">
