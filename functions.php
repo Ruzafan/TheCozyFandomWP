@@ -119,6 +119,100 @@ add_action( 'wp_footer', function() {
     <?php
 }, 20 );
 
+/* view_item_list — shop/category/tag/search archive pages.
+   select_item is pushed client-side (cozy-main.js) from the same data-ga-* attributes. */
+add_action( 'wp_footer', function() {
+    if ( is_admin() || ! function_exists( 'is_shop' ) ) return;
+    if ( ! ( is_shop() || is_product_category() || is_product_tag() || ( is_search() && 'product' === get_query_var( 'post_type' ) ) ) ) return;
+    global $wp_query;
+    if ( empty( $wp_query->posts ) ) return;
+
+    $list_name = is_product_category() ? single_term_title( '', false ) : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' );
+    $items     = [];
+    $position  = 0;
+    foreach ( $wp_query->posts as $post_obj ) {
+        $prod = wc_get_product( $post_obj->ID );
+        if ( ! $prod ) continue;
+        $position++;
+        $items[] = [
+            'item_id'       => (string) $prod->get_id(),
+            'item_name'     => $prod->get_name(),
+            'price'         => (float) $prod->get_price(),
+            'index'         => $position,
+            'item_list_name' => $list_name,
+        ];
+    }
+    if ( empty( $items ) ) return;
+    ?>
+    <script>
+    gtag('event', 'view_item_list', {
+        item_list_name: <?php echo wp_json_encode( $list_name ); ?>,
+        items: <?php echo wp_json_encode( $items ); ?>
+    });
+    </script>
+    <?php
+}, 20 );
+
+/* remove_from_cart — the "✕" link (cart page + drawer) navigates with ?remove_item=key,
+   which WooCommerce processes server-side before this page re-renders. We flash the
+   removed item's data via a one-time cookie (same pattern as sign_up/login below) so the
+   event fires on the very next page load, then it's cleared so it never fires twice. */
+add_action( 'woocommerce_cart_item_removed', function( $cart_item_key, $cart ) {
+    if ( is_admin() ) return;
+    $item = $cart->removed_cart_contents[ $cart_item_key ] ?? null;
+    if ( ! $item || empty( $item['data'] ) ) return;
+    $product = $item['data'];
+    $payload = wp_json_encode( [
+        'item_id'   => (string) $product->get_id(),
+        'item_name' => $product->get_name(),
+        'price'     => (float) $product->get_price(),
+        'quantity'  => $item['quantity'],
+    ] );
+    setcookie( 'cozy_ga_removed_item', $payload, time() + MINUTE_IN_SECONDS, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
+}, 10, 2 );
+
+add_action( 'wp_footer', function() {
+    if ( empty( $_COOKIE['cozy_ga_removed_item'] ) ) return;
+    $item = json_decode( wp_unslash( $_COOKIE['cozy_ga_removed_item'] ), true );
+    setcookie( 'cozy_ga_removed_item', '', time() - HOUR_IN_SECONDS, COOKIEPATH ?: '/', COOKIE_DOMAIN );
+    if ( ! is_array( $item ) ) return;
+    ?>
+    <script>
+    gtag('event', 'remove_from_cart', {
+        currency: 'EUR',
+        value: <?php echo wp_json_encode( (float) $item['price'] * (int) $item['quantity'] ); ?>,
+        items: [<?php echo wp_json_encode( $item ); ?>]
+    });
+    </script>
+    <?php
+}, 21 );
+
+/* add_shipping_info / add_payment_info — classic single-page checkout, so these
+   fire on the visitor's first interaction with each block (shipping method /
+   payment method selection) rather than as separate steps. */
+add_action( 'wp_footer', function() {
+    if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_order_received_page() || WC()->cart->is_empty() ) return;
+    ?>
+    <script>
+    (function () {
+        if (typeof gtag !== 'function') return;
+        var checkoutValue = <?php echo wp_json_encode( (float) WC()->cart->get_cart_contents_total() ); ?>;
+        var firedShipping = false, firedPayment = false;
+        document.body.addEventListener('change', function (e) {
+            if (!firedShipping && e.target.closest && e.target.closest('.woocommerce-shipping-methods, #shipping_method')) {
+                firedShipping = true;
+                gtag('event', 'add_shipping_info', { currency: 'EUR', value: checkoutValue });
+            }
+            if (!firedPayment && e.target.name === 'payment_method') {
+                firedPayment = true;
+                gtag('event', 'add_payment_info', { currency: 'EUR', value: checkoutValue });
+            }
+        });
+    })();
+    </script>
+    <?php
+}, 20 );
+
 /* Full-fidelity view_cart (with items[]) on the real Cart page.
    The drawer also pushes a lighter view_cart (value only) when opened —
    see openCart() in cozy-main.js. */

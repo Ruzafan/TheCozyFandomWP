@@ -724,6 +724,26 @@ function cozyReplaceFragments(fragments) {
     });
 }
 
+/* select_item — click on a product card link inside a tracked list
+   (view_item_list pushes the matching list on page load, see functions.php) */
+document.addEventListener('click', function (e) {
+    if (typeof gtag !== 'function') return;
+    var link = e.target.closest ? e.target.closest('a[href]') : null;
+    if (!link) return;
+    var card = link.closest('[data-ga-item-id]');
+    var list = link.closest('[data-ga-list-name]');
+    if (!card || !list) return;
+    gtag('event', 'select_item', {
+        item_list_name: list.getAttribute('data-ga-list-name'),
+        items: [{
+            item_id:   card.getAttribute('data-ga-item-id'),
+            item_name: card.getAttribute('data-ga-item-name'),
+            price:     parseFloat(card.getAttribute('data-ga-item-price')) || 0,
+            index:     parseInt(card.getAttribute('data-ga-item-position'), 10) || undefined
+        }]
+    });
+});
+
 /* ─── WooCommerce event listeners & Cart Drawer Auto-Open ───────── */
 (function () {
     'use strict';

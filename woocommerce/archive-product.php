@@ -219,7 +219,11 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
     <!-- ==================================================== -->
     <!-- PRODUCT GRID                                           -->
     <!-- ==================================================== -->
-    <div id="cozy-products-container" class="transition-opacity duration-300 lg:flex-1 lg:min-w-0">
+    <?php
+    $GLOBALS['cozy_ga_loop_index'] = 0;
+    $cozy_ga_list_name = $current_cat ? $current_cat->name : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' );
+    ?>
+    <div id="cozy-products-container" class="transition-opacity duration-300 lg:flex-1 lg:min-w-0" data-ga-list-name="<?php echo esc_attr( $cozy_ga_list_name ); ?>">
         <?php if ( woocommerce_product_loop() ) : ?>
             <?php woocommerce_product_loop_start(); ?>
 

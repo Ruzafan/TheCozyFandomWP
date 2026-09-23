@@ -16,7 +16,11 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 }
 ?>
 
-<li <?php wc_product_class( 'bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col', $product ); ?>>
+<li <?php wc_product_class( 'bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col', $product ); ?>
+    data-ga-item-id="<?php echo absint( $product->get_id() ); ?>"
+    data-ga-item-name="<?php echo esc_attr( $product->get_name() ); ?>"
+    data-ga-item-price="<?php echo esc_attr( $product->get_price() ); ?>"
+    data-ga-item-position="<?php echo isset( $GLOBALS['cozy_ga_loop_index'] ) ? absint( $GLOBALS['cozy_ga_loop_index']++ ) + 1 : ''; ?>">
 
     <!-- Full-bleed image -->
     <div class="relative">
