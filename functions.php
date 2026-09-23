@@ -5,6 +5,7 @@
 
 require_once get_stylesheet_directory() . '/inc/cozy-icons.php';
 require_once get_stylesheet_directory() . '/inc/coming-soon.php';
+require_once get_stylesheet_directory() . '/inc/cozy-events.php';
 
 /* ------------------------------------------------------------------ */
 /*  RESOURCE PRELOADS (Critical Fonts & LCP Hero Banner)              */
