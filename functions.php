@@ -13,9 +13,8 @@ require_once get_stylesheet_directory() . '/inc/cozy-events.php';
 add_action( 'wp_head', function() {
     $font_dir = get_stylesheet_directory_uri() . '/assets/fonts/';
     ?>
-    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlusJakartaSans-Regular.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlusJakartaSans-Bold.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlayfairDisplay-SemiBold.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlusJakartaSans-Variable.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlayfairDisplay-Variable.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
     <?php if ( is_front_page() ) : ?>
     <link rel="preload" as="image" href="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>" fetchpriority="high">
     <?php endif; ?>
@@ -38,22 +37,43 @@ add_action( 'wp_head', function() {
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){ dataLayer.push(arguments); }
+
+        /* Google Consent Mode v2 (basic mode). The default state is pushed
+           before GTM/gtag.js can load, so both read it. The banner only asks
+           for analytics cookies, so ad_* stay denied until it also covers
+           advertising. */
+        gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied'
+        });
+
         window.cozyGaLoaded = false;
         window.cozyLoadGA = function () {
             if ( window.cozyGaLoaded ) return;
             window.cozyGaLoaded = true;
+            gtag('consent', 'update', { analytics_storage: 'granted' });
+            /* js/config are queued here, before any event the page pushes
+               afterwards — gtag.js drops events that precede their config. */
+            gtag('js', new Date());
+            gtag('config', '<?php echo esc_js( COZY_GA4_ID ); ?>');
             var s = document.createElement('script');
             s.async = true;
             s.src = 'https://www.googletagmanager.com/gtag/js?id=<?php echo esc_js( COZY_GA4_ID ); ?>';
             document.head.appendChild(s);
-            gtag('js', new Date());
-            gtag('config', '<?php echo esc_js( COZY_GA4_ID ); ?>');
         };
-        /* cozyInitConsent() (cozy-main.js) calls this on DOMContentLoaded
-           once it reads the real cozy_consent cookie client-side — the
-           check can't happen here in PHP because the page is served from
-           LiteSpeed's full-page cache and $_COOKIE reflects whoever's
-           request happened to generate that cache entry, not this visitor. */
+
+        /* The consent cookie is read client-side (the page may come from
+           LiteSpeed's full-page cache, so a PHP $_COOKIE check would reflect
+           whoever generated that cache entry). Doing it here in <head>, not on
+           DOMContentLoaded, means returning visitors who already accepted get
+           config queued before the server-rendered footer events
+           (view_item, view_item_list, view_cart, purchase). */
+        if ( /(?:^|;\s*)cozy_consent=granted(?:;|$)/.test( document.cookie ) ) {
+            window.cozyLoadGA();
+            if ( typeof window.cozyLoadGTM === 'function' ) window.cozyLoadGTM();
+        }
     </script>
     <?php
 }, 1 );
@@ -124,11 +144,11 @@ add_action( 'wp_footer', function() {
    select_item is pushed client-side (cozy-main.js) from the same data-ga-* attributes. */
 add_action( 'wp_footer', function() {
     if ( is_admin() || ! function_exists( 'is_shop' ) ) return;
-    if ( ! ( is_shop() || is_product_category() || is_product_tag() || ( is_search() && 'product' === get_query_var( 'post_type' ) ) ) ) return;
+    if ( ! ( is_shop() || is_product_category() || is_product_tag() || is_tax( 'product_brand' ) || ( is_search() && 'product' === get_query_var( 'post_type' ) ) ) ) return;
     global $wp_query;
     if ( empty( $wp_query->posts ) ) return;
 
-    $list_name = is_product_category() ? single_term_title( '', false ) : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' );
+    $list_name = ( is_product_category() || is_tax( 'product_brand' ) ) ? single_term_title( '', false ) : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' );
     $items     = [];
     $position  = 0;
     foreach ( $wp_query->posts as $post_obj ) {
@@ -421,6 +441,18 @@ add_filter( 'render_block', function( $block_content, $block ) {
     return $block_content;
 }, 10, 2 );
 
+/**
+ * True when one of the request path's segments is exactly one of $slugs
+ * (e.g. /es/carrito/ or /mi-cuenta/orders/). Matching whole segments — not a
+ * substring — keeps the multilingual /es/ fallback without also catching
+ * unrelated URLs such as /producto/cartera-snoopy/ or /cartas-de-hogwarts/.
+ */
+function cozy_request_path_has_segment( array $slugs ) {
+    $path     = (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH );
+    $segments = array_filter( explode( '/', strtolower( rawurldecode( $path ) ) ) );
+    return (bool) array_intersect( $segments, $slugs );
+}
+
 /* Ensure Cart page content renders reliably for both empty & non-empty states */
 add_filter( 'the_content', function( $content ) {
     static $in_cart_filter = false;
@@ -431,13 +463,11 @@ add_filter( 'the_content', function( $content ) {
 
     if ( class_exists( 'WooCommerce' ) && isset( WC()->cart ) && WC()->cart ) {
         $cart_page_id = wc_get_page_id( 'cart' );
-        $req_uri      = $_SERVER['REQUEST_URI'] ?? '';
         $is_cart_page = is_cart()
             || ( $cart_page_id > 0 && is_page( $cart_page_id ) )
             || is_page( 'cart' )
             || is_page( 'carrito' )
-            || false !== strpos( $req_uri, '/cart' )
-            || false !== strpos( $req_uri, '/carrito' );
+            || ( is_page() && cozy_request_path_has_segment( [ 'cart', 'carrito' ] ) );
 
         if ( $is_cart_page ) {
             $in_cart_filter = true;
@@ -509,6 +539,85 @@ add_action( 'pre_get_posts', function ( WP_Query $q ) {
     ];
     $q->set( 'tax_query', $tq );
 } );
+
+/**
+ * URL for a set of selected licences outside a product category:
+ * exactly one licence → its own indexable product_brand archive
+ * (e.g. /licencia/snoopy/), none → the shop root, several → the shop
+ * filtered with ?licencia=a,b (a noindex facet, see cozy_is_filtered_listing()).
+ * Inside a product category the ?licencia= facet is kept as-is instead.
+ */
+function cozy_licence_url( array $slugs ) {
+    $slugs = array_values( array_unique( array_filter( $slugs ) ) );
+    $shop  = function_exists( 'wc_get_page_id' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
+
+    if ( 1 === count( $slugs ) ) {
+        $term = get_term_by( 'slug', $slugs[0], 'product_brand' );
+        if ( $term && ! is_wp_error( $term ) ) {
+            $link = get_term_link( $term );
+            if ( ! is_wp_error( $link ) ) return $link;
+        }
+    }
+    return $slugs ? add_query_arg( 'licencia', implode( ',', $slugs ), $shop ) : $shop;
+}
+
+/* Legacy /tienda/?licencia=snoopy links (home cards, old menu, shared URLs)
+   → 301 to the licence's own archive, carrying any other query args along. */
+add_action( 'template_redirect', function () {
+    if ( empty( $_GET['licencia'] ) || ! function_exists( 'is_shop' ) || ! is_shop() || is_search() ) return;
+    if ( (int) get_query_var( 'paged' ) > 1 ) return;
+
+    $slugs = array_filter( array_map( 'sanitize_title', explode( ',', sanitize_text_field( wp_unslash( $_GET['licencia'] ) ) ) ) );
+    if ( 1 !== count( $slugs ) ) return;
+
+    $target = cozy_licence_url( $slugs );
+    if ( false !== strpos( $target, 'licencia=' ) ) return; // unknown slug — nothing to redirect to
+
+    $other_args = array_diff_key( wp_unslash( $_GET ), [ 'licencia' => true ] );
+    if ( $other_args ) {
+        $target .= ( false === strpos( $target, '?' ) ? '?' : '&' ) . http_build_query( $other_args );
+    }
+    wp_safe_redirect( $target, 301 );
+    exit;
+} );
+
+/* ------------------------------------------------------------------ */
+/*  FILTERED LISTINGS — noindex,follow for facet/sort URLs             */
+/* ------------------------------------------------------------------ */
+/**
+ * True on product listings whose URL carries a filter or sort parameter
+ * (price, rating, attribute, licence facet, orderby). Those are near-duplicates
+ * of the clean category/licence URL, so they are kept out of the index but
+ * still crawled for their links. Not done via robots.txt, which would stop
+ * Google from ever seeing the noindex.
+ */
+function cozy_is_filtered_listing() {
+    if ( ! function_exists( 'is_shop' ) ) return false;
+    if ( ! ( is_shop() || is_product_taxonomy() ) ) return false;
+
+    foreach ( array_keys( $_GET ) as $key ) { // phpcs:ignore WordPress.Security.NonceVerification
+        if ( in_array( $key, [ 'licencia', 'min_price', 'max_price', 'rating_filter', 'orderby' ], true )
+            || 0 === strpos( $key, 'filter_' )
+            || 0 === strpos( $key, 'query_type_' ) ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+add_filter( 'wpseo_robots', function ( $robots ) {
+    return cozy_is_filtered_listing() ? 'noindex, follow' : $robots;
+}, 20 );
+
+/* Fallback for when Yoast isn't handling the robots meta (core wp_robots). */
+add_filter( 'wp_robots', function ( $robots ) {
+    if ( ! defined( 'WPSEO_VERSION' ) && cozy_is_filtered_listing() ) {
+        $robots['noindex'] = true;
+        $robots['follow']  = true;
+        unset( $robots['index'] );
+    }
+    return $robots;
+}, 20 );
 
 /* Hide the WooCommerce "Marca" brand from product detail pages.
    Brands are for internal use / filtering only, not customer-facing.
@@ -714,7 +823,7 @@ add_filter( 'woocommerce_package_rates', function( $rates ) {
  * Eliminates 10-15 SQL queries on every single page load.
  */
 function cozy_get_header_nav_data() {
-    $cached = get_transient( 'cozy_header_nav_data' );
+    $cached = get_transient( 'cozy_header_nav_data_v2' );
     if ( false !== $cached && is_array( $cached ) ) {
         return $cached;
     }
@@ -766,14 +875,18 @@ function cozy_get_header_nav_data() {
         }
     }
 
-    $nav_licenses_raw = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => false ] );
+    /* Empty licences are left out: they'd link to an archive with no products. */
+    $nav_licenses_raw = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => true ] );
     $nav_licenses = [];
     if ( ! is_wp_error( $nav_licenses_raw ) && ! empty( $nav_licenses_raw ) ) {
         foreach ( $nav_licenses_raw as $lic ) {
+            $lic_url = get_term_link( $lic );
+            if ( is_wp_error( $lic_url ) ) continue;
             $nav_licenses[] = [
                 'term_id' => $lic->term_id,
                 'name'    => $lic->name,
                 'slug'    => $lic->slug,
+                'url'     => $lic_url,
             ];
         }
     }
@@ -783,7 +896,7 @@ function cozy_get_header_nav_data() {
         'licenses' => $nav_licenses,
     ];
 
-    set_transient( 'cozy_header_nav_data', $data, 12 * HOUR_IN_SECONDS );
+    set_transient( 'cozy_header_nav_data_v2', $data, 12 * HOUR_IN_SECONDS );
     return $data;
 }
 
@@ -834,7 +947,8 @@ function cozy_get_home_top_product_ids() {
  * Invalidate navigation & home product transients on changes.
  */
 function cozy_clear_performance_transients() {
-    delete_transient( 'cozy_header_nav_data' );
+    delete_transient( 'cozy_header_nav_data' ); // pre-licence-URL cache key
+    delete_transient( 'cozy_header_nav_data_v2' );
     delete_transient( 'cozy_home_new_pids' );
     delete_transient( 'cozy_home_top_pids' );
 }
@@ -1388,11 +1502,54 @@ add_action( 'wp_ajax_cozy_ajax_add_to_cart',        'cozy_ajax_add_to_cart' );
 add_action( 'wp_ajax_nopriv_cozy_ajax_add_to_cart', 'cozy_ajax_add_to_cart' );
 
 /* ------------------------------------------------------------------ */
+/*  FREE SHIPPING THRESHOLD — read from WooCommerce > Envío            */
+/* ------------------------------------------------------------------ */
+/**
+ * Minimum amount of the "Envío gratuito" method in the shipping zone that
+ * matches the store's base address, so the header banner and the cart-drawer
+ * progress bar can't drift from what checkout actually charges.
+ * Falls back to 60 when no minimum-amount free shipping method is configured.
+ */
+function cozy_get_free_shipping_threshold() {
+    static $threshold = null;
+    if ( null !== $threshold ) return $threshold;
+
+    $threshold = 60.0;
+    if ( class_exists( 'WC_Shipping_Zones' ) && function_exists( 'WC' ) && WC()->countries ) {
+        $zone = WC_Shipping_Zones::get_zone_matching_package( [
+            'destination' => [
+                'country'  => WC()->countries->get_base_country(),
+                'state'    => WC()->countries->get_base_state(),
+                'postcode' => WC()->countries->get_base_postcode(),
+            ],
+        ] );
+        foreach ( $zone->get_shipping_methods( true ) as $method ) {
+            if ( 'free_shipping' === $method->id
+                && in_array( $method->requires, [ 'min_amount', 'either', 'both' ], true )
+                && (float) $method->min_amount > 0 ) {
+                $threshold = (float) $method->min_amount;
+                break;
+            }
+        }
+    }
+
+    $threshold = (float) apply_filters( 'cozy_free_shipping_threshold', $threshold );
+    return $threshold;
+}
+
+/* Formatted for display, without decimals when it's a round amount ("60 €"). */
+function cozy_get_free_shipping_threshold_html() {
+    $threshold = cozy_get_free_shipping_threshold();
+    if ( ! function_exists( 'wc_price' ) ) return number_format_i18n( $threshold ) . ' €';
+    return wc_price( $threshold, [ 'decimals' => floor( $threshold ) == $threshold ? 0 : 2 ] );
+}
+
+/* ------------------------------------------------------------------ */
 /*  MINI CART RENDERER                                                  */
 /* ------------------------------------------------------------------ */
 function cozy_render_mini_cart() {
     if ( ! class_exists( 'WooCommerce' ) ) return;
-    $threshold = 60.0;
+    $threshold = cozy_get_free_shipping_threshold();
     // Total neto tras descuentos + impuestos del carrito
     $subtotal = (float) WC()->cart->get_cart_contents_total() + (float) WC()->cart->get_cart_contents_tax();
     $remaining = max( 0, $threshold - $subtotal );
@@ -2420,8 +2577,9 @@ add_action( 'wp_footer', function() {
          class="fixed inset-0 z-[4000] hidden items-center justify-center p-4 sm:p-6 bg-cozy-coffee/60 backdrop-blur-sm transition-opacity duration-300"
          role="dialog" aria-modal="true" aria-label="Modal Newsletter">
         
-        <!-- Backdrop (click to close) -->
-        <div class="absolute inset-0" onclick="window.closeNewsletterModal()"></div>
+        <!-- Backdrop (click to close) — wired via data-close-on-self in cozy-main.js;
+             inline onclick is blocked by the site's CSP (script-src-attr 'none'). -->
+        <div class="absolute inset-0" data-close-on-self="close-newsletter-modal"></div>
 
         <!-- Modal Card Container -->
         <div class="relative z-10 w-full max-w-lg bg-cozy-cream border border-cozy-sand rounded-[32px] sm:rounded-[40px] px-6 sm:px-10 py-8 sm:py-12 text-center shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
@@ -2432,7 +2590,7 @@ add_action( 'wp_footer', function() {
 
             <!-- Close Button (X) -->
             <button type="button"
-                    onclick="window.closeNewsletterModal()"
+                    data-action="close-newsletter-modal"
                     class="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 hover:bg-white text-cozy-coffee/70 hover:text-cozy-coffee border border-cozy-sand flex items-center justify-center transition-all cursor-pointer shadow-xs focus:outline-none z-20"
                     aria-label="Cerrar modal">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -56,6 +56,23 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
 
 <div class="cozy-shop-layout px-3 py-4 sm:p-6 md:p-8">
 
+    <!-- ==================================================== -->
+    <!-- ARCHIVE HEADER — H1 + category/licence description    -->
+    <!-- (the page's only H1; woocommerce_archive_description  -->
+    <!-- prints the term description on page 1, or the Shop   -->
+    <!-- page's content on the shop root)                      -->
+    <!-- ==================================================== -->
+    <header class="cozy-archive-header max-w-3xl mb-6 sm:mb-8">
+        <?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
+        <h1 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-cozy-coffee m-0 mb-3 leading-tight">
+            <?php woocommerce_page_title(); ?>
+        </h1>
+        <?php endif; ?>
+        <div class="cozy-archive-description text-sm text-cozy-coffee/70 leading-relaxed">
+            <?php do_action( 'woocommerce_archive_description' ); ?>
+        </div>
+    </header>
+
 <?php if ( $cozy_show_category_grid ) : ?>
 
     <!-- ==================================================== -->
@@ -73,7 +90,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
             </div>
             <div class="p-4 sm:p-5 text-center">
-                <h3 class="text-lg font-bold text-cozy-coffee m-0 mb-1"><?php echo esc_html( $cozy_cat->name ); ?></h3>
+                <h2 class="text-lg font-bold text-cozy-coffee m-0 mb-1"><?php echo esc_html( $cozy_cat->name ); ?></h2>
                 <span class="text-xs text-cozy-coffee/50"><?php echo absint( $cozy_cat->count ); ?> producto<?php echo $cozy_cat->count !== 1 ? 's' : ''; ?></span>
             </div>
         </a>
@@ -164,11 +181,18 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
         the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
 
         // Licencia filter — WooCommerce Brands (product_brand taxonomy)
-        $all_licenses = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => false ] );
+        $all_licenses = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => true ] );
         if ( ! is_wp_error( $all_licenses ) && ! empty( $all_licenses ) ) :
             $raw_sel      = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
             $selected     = array_filter( array_map( 'sanitize_title', explode( ',', $raw_sel ) ) );
             $base_url     = remove_query_arg( 'licencia' );
+            // Outside a category (shop root / a licence's own archive) a single
+            // licence links to its indexable archive; inside a category it
+            // stays a ?licencia= facet on that category.
+            $cozy_lic_to_archive = ! is_product_category() && ! is_search();
+            if ( is_tax( 'product_brand' ) ) {
+                $selected[] = get_queried_object()->slug;
+            }
             ?>
             <div class="cozy-filter-widget">
                 <h3 class="cozy-filter-widget__title">Licencia</h3>
@@ -179,9 +203,13 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
                         $new_sel = $checked
                             ? array_values( array_diff( $selected, [ $slug ] ) )
                             : array_merge( $selected, [ $slug ] );
-                        $href = $new_sel
-                            ? add_query_arg( 'licencia', implode( ',', $new_sel ), $base_url )
-                            : $base_url;
+                        if ( $cozy_lic_to_archive ) {
+                            $href = cozy_licence_url( $new_sel );
+                        } else {
+                            $href = $new_sel
+                                ? add_query_arg( 'licencia', implode( ',', $new_sel ), $base_url )
+                                : $base_url;
+                        }
                     ?>
                     <li>
                         <a href="<?php echo esc_url( $href ); ?>"
@@ -221,7 +249,7 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
     <!-- ==================================================== -->
     <?php
     $GLOBALS['cozy_ga_loop_index'] = 0;
-    $cozy_ga_list_name = $current_cat ? $current_cat->name : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' );
+    $cozy_ga_list_name = $current_cat ? $current_cat->name : ( is_tax( 'product_brand' ) ? single_term_title( '', false ) : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' ) );
     ?>
     <div id="cozy-products-container" class="transition-opacity duration-300 lg:flex-1 lg:min-w-0" data-ga-list-name="<?php echo esc_attr( $cozy_ga_list_name ); ?>">
         <?php if ( woocommerce_product_loop() ) : ?>

@@ -51,7 +51,7 @@ window.cozyLoadGTM = function () {
     <div class="cozy-announcement-bar flex items-center justify-center gap-4 flex-wrap px-4 py-2">
         <span class="inline-flex items-center gap-1.5">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            Envíos gratis en pedidos de más de <strong>60 €</strong>
+            Envíos gratis en pedidos de más de <strong><?php echo wp_kses_post( cozy_get_free_shipping_threshold_html() ); ?></strong>
         </span>
         <button id="tea-oracle-btn" type="button" data-action="open-tea-oracle" class="inline-flex items-center gap-1 bg-white/30 hover:bg-white/60 text-cozy-coffee text-[11px] font-bold px-3 py-0.5 rounded-full border border-cozy-coffee/20 transition-all cursor-pointer hidden">
             ✨ Mensaje Cozy del Día 🫖
@@ -268,6 +268,9 @@ window.cozyLoadGTM = function () {
                 if ( ! empty( $nav_licenses ) ) :
                     $raw_lic     = isset( $_GET['licencia'] ) ? sanitize_text_field( wp_unslash( $_GET['licencia'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
                     $active_lics = $raw_lic ? array_filter( array_map( 'sanitize_title', explode( ',', $raw_lic ) ) ) : [];
+                    if ( is_tax( 'product_brand' ) ) {
+                        $active_lics[] = get_queried_object()->slug;
+                    }
                     $has_act_lic = ! empty( $active_lics );
                     ?>
                     <div class="cozy-nav-item cozy-nav-has-dropdown">
@@ -280,9 +283,11 @@ window.cozyLoadGTM = function () {
                         <div class="cozy-nav-dropdown" role="menu">
                             <?php foreach ( $nav_licenses as $lic ) :
                                 $is_lic_active = in_array( $lic['slug'], $active_lics, true );
+                                /* Links to the licence's own indexable archive
+                                   (was /tienda/?licencia=slug, canonicalised away). */
                                 $lic_href      = $is_lic_active
-                                    ? remove_query_arg( 'licencia', $shop_url )
-                                    : add_query_arg( 'licencia', $lic['slug'], remove_query_arg( 'licencia', $shop_url ) );
+                                    ? $shop_url
+                                    : ( $lic['url'] ?? cozy_licence_url( [ $lic['slug'] ] ) );
                             ?>
                             <a href="<?php echo esc_url( $lic_href ); ?>"
                                class="cozy-nav-dropdown__link<?php echo $is_lic_active ? ' is-active' : ''; ?>"

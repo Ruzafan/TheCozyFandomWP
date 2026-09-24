@@ -131,10 +131,10 @@ add_action( 'wp_footer', function () {
 
     if ( function_exists( 'is_product' ) && is_product() ) {
         $context = [ 'type' => 'view_item', 'product_id' => get_queried_object_id() ];
-    } elseif ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() || ( is_search() && 'product' === get_query_var( 'post_type' ) ) ) ) {
+    } elseif ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() || is_tax( 'product_brand' ) || ( is_search() && 'product' === get_query_var( 'post_type' ) ) ) ) {
         $context = [
             'type'      => 'view_item_list',
-            'list_name' => is_product_category() ? single_term_title( '', false ) : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' ),
+            'list_name' => ( is_product_category() || is_tax( 'product_brand' ) ) ? single_term_title( '', false ) : ( is_search() ? 'Resultados de búsqueda' : 'Tienda' ),
         ];
     }
     ?>
@@ -169,13 +169,19 @@ add_action( 'rest_api_init', function () {
             }
 
             // Flood guard: cap events per anonymous session per minute so the
-            // open endpoint can't be used to bloat the table.
-            $rate_key = 'cozy_ev_rate_' . cozy_events_session_hash();
-            $count    = (int) get_transient( $rate_key );
+            // open endpoint can't be used to bloat the table. Counted straight
+            // from the table (covered by the session_day index) rather than a
+            // per-session transient, which meant two wp_options writes on every
+            // page view when there's no persistent object cache.
+            global $wpdb;
+            $count = (int) $wpdb->get_var( $wpdb->prepare(
+                'SELECT COUNT(*) FROM ' . cozy_events_table_name() . ' WHERE session_hash = %s AND created_at >= %s',
+                cozy_events_session_hash(),
+                gmdate( 'Y-m-d H:i:s', time() - MINUTE_IN_SECONDS )
+            ) );
             if ( $count >= 60 ) {
                 return new WP_REST_Response( null, 429 );
             }
-            set_transient( $rate_key, $count + 1, MINUTE_IN_SECONDS );
 
             $args = [];
             if ( 'view_item' === $type ) {

@@ -1,55 +1,24 @@
-/* Plus Jakarta Sans - 400 (normal) */
+/* Both families ship as variable fonts (fvar table), so a single file with a
+   weight range covers every weight — separate per-weight @font-face rules
+   pointing at copies of the same file made the browser download it again
+   under each URL. */
+
+/* Plus Jakarta Sans - variable 200–800 (normal) */
 @font-face {
   font-family: 'Plus Jakarta Sans';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 200 800;
   font-display: swap;
-  src: url('../fonts/PlusJakartaSans-Regular.woff2') format('woff2');
+  src: url('../fonts/PlusJakartaSans-Variable.woff2') format('woff2');
 }
 
-/* Plus Jakarta Sans - 500 (normal) */
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fonts/PlusJakartaSans-Medium.woff2') format('woff2');
-}
-
-/* Plus Jakarta Sans - 600 (normal) */
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('../fonts/PlusJakartaSans-SemiBold.woff2') format('woff2');
-}
-
-/* Plus Jakarta Sans - 700 (normal) */
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fonts/PlusJakartaSans-Bold.woff2') format('woff2');
-}
-
-/* Playfair Display - 400 (normal) */
+/* Playfair Display - variable 400–900 (normal) */
 @font-face {
   font-family: 'Playfair Display';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 400 900;
   font-display: swap;
-  src: url('../fonts/PlayfairDisplay-Regular.woff2') format('woff2');
-}
-
-/* Playfair Display - 600 (normal) */
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('../fonts/PlayfairDisplay-SemiBold.woff2') format('woff2');
+  src: url('../fonts/PlayfairDisplay-Variable.woff2') format('woff2');
 }
 
 /* Playfair Display - 400 (italic) */

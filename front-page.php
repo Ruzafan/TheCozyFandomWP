@@ -8,7 +8,7 @@ get_header();
 <div id="cozy-front-page">
 <?php
 
-/* License collection cards — URL filters shop by product_licencia slug */
+/* License collection cards — each links to its product_brand archive (see cozy_licence_url()) */
 $cozy_cats = [
     [
         'title'       => 'El Rincón de Snoopy',
@@ -176,9 +176,9 @@ $cozy_cats = [
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     <?php
-    $_shop_base = class_exists( 'WooCommerce' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/' );
     foreach ( $cozy_cats as $cat ) :
-        $cat_url = add_query_arg( 'licencia', $cat['licencia'], $_shop_base );
+        // The licence's own archive (/licencia/snoopy/), not a ?licencia= shop filter.
+        $cat_url = cozy_licence_url( [ $cat['licencia'] ] );
     ?>
         <a href="<?php echo esc_url( $cat_url ); ?>" class="group <?php echo esc_attr( $cat['card_bg'] ); ?> rounded-[32px] p-8 border border-cozy-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden no-underline">
             <?php if ( empty( $cat['image'] ) ) : ?>

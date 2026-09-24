@@ -92,6 +92,9 @@ window.cozyAcceptConsent = function () {
     if (typeof window.cozyLoadGTM === 'function') window.cozyLoadGTM();
     var banner = document.getElementById('cozy-consent-banner');
     if (banner) banner.remove();
+    /* Lets any other consent-gated script (future ad pixels) start
+       without having to know about this banner's internals. */
+    document.dispatchEvent(new CustomEvent('cozy:consent-granted'));
 };
 window.cozyRejectConsent = function () {
     cozySetCookie('cozy_consent', 'denied', 180);
@@ -616,6 +619,9 @@ document.addEventListener('click', function (e) {
         case 'close-oracle':
             if (window.cozyCloseOracle) window.cozyCloseOracle();
             break;
+        case 'close-newsletter-modal':
+            window.closeNewsletterModal();
+            break;
         case 'begin-checkout':
             if (typeof gtag === 'function') {
                 gtag('event', 'begin_checkout', {
@@ -638,6 +644,9 @@ document.addEventListener('click', function (e) {
         case 'close-oracle':
             if (window.cozyCloseOracle) window.cozyCloseOracle();
             break;
+        case 'close-newsletter-modal':
+            window.closeNewsletterModal();
+            break;
     }
 });
 
@@ -653,6 +662,10 @@ document.addEventListener('click', function (e) {
 
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
+        var newsletterModal = document.getElementById('cozy-newsletter-modal');
+        if (newsletterModal && !newsletterModal.classList.contains('hidden')) {
+            window.closeNewsletterModal();
+        }
         window.closeFilters();
         window.closeFavorites();
         window.closeLoginModal();

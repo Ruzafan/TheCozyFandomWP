@@ -14,16 +14,13 @@ the_post();
 $cart_id     = function_exists( 'wc_get_page_id' ) ? wc_get_page_id( 'cart' ) : 0;
 $checkout_id = function_exists( 'wc_get_page_id' ) ? wc_get_page_id( 'checkout' ) : 0;
 $account_id  = function_exists( 'wc_get_page_id' ) ? wc_get_page_id( 'myaccount' ) : 0;
-$req_uri     = $_SERVER['REQUEST_URI'] ?? '';
 
 $is_wc_page = ( function_exists( 'is_woocommerce' ) && ( is_cart() || is_checkout() || is_account_page() ) )
     || ( $cart_id > 0 && is_page( $cart_id ) )
     || ( $checkout_id > 0 && is_page( $checkout_id ) )
     || ( $account_id > 0 && is_page( $account_id ) )
     || is_page( 'cart' ) || is_page( 'carrito' ) || is_page( 'checkout' ) || is_page( 'pago' ) || is_page( 'my-account' ) || is_page( 'mi-cuenta' )
-    || false !== strpos( $req_uri, '/cart' ) || false !== strpos( $req_uri, '/carrito' )
-    || false !== strpos( $req_uri, '/checkout' ) || false !== strpos( $req_uri, '/pago' )
-    || false !== strpos( $req_uri, '/my-account' ) || false !== strpos( $req_uri, '/mi-cuenta' );
+    || cozy_request_path_has_segment( [ 'cart', 'carrito', 'checkout', 'pago', 'my-account', 'mi-cuenta' ] );
 ?>
 
 <div id="cozy-page" class="min-h-[60vh]">
