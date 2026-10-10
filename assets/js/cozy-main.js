@@ -10,11 +10,17 @@ window.openCart = function (e) {
     document.getElementById('cart-overlay').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 
+    var badge = document.getElementById('cart-badge');
+    var cartValue = badge ? (parseFloat(badge.getAttribute('data-cart-value')) || 0) : 0;
+    // Internal event log (inc/cozy-events.php) — the drawer is the cart most visitors actually see
+    if (cartValue > 0 && typeof window.cozyLogEvent === 'function') {
+        window.cozyLogEvent('view_cart', { value: cartValue });
+    }
+
     if (typeof gtag === 'function') {
-        var badge = document.getElementById('cart-badge');
         gtag('event', 'view_cart', {
             currency: 'EUR',
-            value: badge ? (parseFloat(badge.getAttribute('data-cart-value')) || 0) : 0
+            value: cartValue
         });
     }
 };

@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 /* ------------------------------------------------------------------ */
 /*  TABLE                                                               */
 /* ------------------------------------------------------------------ */
-define( 'COZY_EVENTS_TABLE_VERSION', '1.0' );
+define( 'COZY_EVENTS_TABLE_VERSION', '1.1' );
 
 function cozy_events_table_name() {
     global $wpdb;
@@ -45,6 +45,13 @@ function cozy_events_install() {
         item_list_name VARCHAR(191) NULL,
         product_id BIGINT UNSIGNED NULL,
         value DECIMAL(10,2) NULL,
+        page_path VARCHAR(191) NULL,
+        referrer VARCHAR(191) NULL,
+        utm_source VARCHAR(64) NULL,
+        utm_medium VARCHAR(64) NULL,
+        utm_campaign VARCHAR(100) NULL,
+        device VARCHAR(8) NULL,
+        detail VARCHAR(191) NULL,
         created_at DATETIME NOT NULL,
         PRIMARY KEY  (id),
         KEY session_day (session_hash, created_at),
@@ -78,11 +85,66 @@ function cozy_events_session_hash() {
         update_option( $salt_option, $salt, false );
     }
 
-    $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+    $ip = cozy_events_client_ip();
     $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
 
     $hash = substr( hash( 'sha256', $ip . '|' . $ua . '|' . $salt['value'] ), 0, 16 );
     return $hash;
+}
+
+/* The site sits behind Hostinger's CDN, so REMOTE_ADDR can be an edge node
+   (different per request) rather than the visitor — which would split one
+   visit across several hashes. Prefer the forwarded client IP when present.
+   It's only ever hashed, so a spoofed header gains nothing. */
+function cozy_events_client_ip() {
+    foreach ( [ 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' ] as $key ) {
+        if ( empty( $_SERVER[ $key ] ) ) continue;
+        $ip = trim( explode( ',', $_SERVER[ $key ] )[0] );
+        if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) return $ip;
+    }
+    return '';
+}
+
+function cozy_events_is_bot() {
+    $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    if ( '' === $ua ) return true;
+    return (bool) preg_match( '/bot|crawl|spider|slurp|facebookexternalhit|headless|lighthouse|scrapy|curl|wget|python|java\/|go-http|okhttp|axios|node-fetch|httpclient|libwww/i', $ua );
+}
+
+function cozy_events_device() {
+    $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    if ( preg_match( '/ipad|tablet|android(?!.*mobile)/i', $ua ) ) return 'tablet';
+    if ( preg_match( '/mobi|iphone|ipod|android/i', $ua ) ) return 'mobile';
+    return 'desktop';
+}
+
+/* Path only — the query string is dropped so nothing personal (search terms,
+   order keys, emails in links) ends up in the log. */
+function cozy_events_clean_path( $url ) {
+    $path = wp_parse_url( (string) $url, PHP_URL_PATH );
+    if ( ! $path ) return null;
+    return mb_substr( sanitize_text_field( $path ), 0, 191 );
+}
+
+/* Page the event happened on: for AJAX calls (add/remove to cart) that's the
+   referring page, for normal page loads it's the request itself. */
+function cozy_events_current_path() {
+    if ( wp_doing_ajax() || ! empty( $_GET['wc-ajax'] ) ) {
+        $referer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
+        if ( ! $referer || wp_parse_url( $referer, PHP_URL_HOST ) !== wp_parse_url( home_url(), PHP_URL_HOST ) ) return null;
+        return cozy_events_clean_path( $referer );
+    }
+    return cozy_events_clean_path( isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '' );
+}
+
+/* True once this session has sent at least one JS beacon — i.e. it's a real
+   browser that rendered a page, not a client that only requests URLs. */
+function cozy_events_session_has_beacon() {
+    global $wpdb;
+    return (bool) $wpdb->get_var( $wpdb->prepare(
+        'SELECT 1 FROM ' . cozy_events_table_name() . " WHERE session_hash = %s AND event_type IN ('page_view','view_item','view_item_list') LIMIT 1",
+        cozy_events_session_hash()
+    ) );
 }
 
 /* ------------------------------------------------------------------ */
@@ -91,14 +153,27 @@ function cozy_events_session_hash() {
 function cozy_log_event( $event_type, $args = [] ) {
     if ( is_admin() && ! wp_doing_ajax() ) return;                 // skip wp-admin screens
     if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) return; // skip the store owner's own traffic
+    if ( cozy_events_is_bot() ) return;
 
     global $wpdb;
     $defaults = [
         'item_list_name' => null,
         'product_id'     => null,
         'value'          => null,
+        'page_path'      => null,   // null = detect from the request, false = don't store
+        'referrer'       => null,
+        'utm_source'     => null,
+        'utm_medium'     => null,
+        'utm_campaign'   => null,
+        'detail'         => null,
     ];
     $args = wp_parse_args( $args, $defaults );
+
+    if ( null === $args['page_path'] ) {
+        $args['page_path'] = cozy_events_current_path();
+    } elseif ( false === $args['page_path'] ) {
+        $args['page_path'] = null;
+    }
 
     $wpdb->insert(
         cozy_events_table_name(),
@@ -108,9 +183,16 @@ function cozy_log_event( $event_type, $args = [] ) {
             'item_list_name' => $args['item_list_name'],
             'product_id'     => $args['product_id'],
             'value'          => $args['value'],
+            'page_path'      => $args['page_path'],
+            'referrer'       => $args['referrer'],
+            'utm_source'     => $args['utm_source'],
+            'utm_medium'     => $args['utm_medium'],
+            'utm_campaign'   => $args['utm_campaign'],
+            'device'         => cozy_events_device(),
+            'detail'         => $args['detail'],
             'created_at'     => current_time( 'mysql', true ),
         ],
-        [ '%s', '%s', '%s', '%d', '%f', '%s' ]
+        [ '%s', '%s', '%s', '%d', '%f', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ]
     );
 }
 
@@ -131,6 +213,9 @@ add_action( 'wp_footer', function () {
 
     if ( function_exists( 'is_product' ) && is_product() ) {
         $context = [ 'type' => 'view_item', 'product_id' => get_queried_object_id() ];
+    } elseif ( is_front_page() ) {
+        // The home shows product cards with add-to-cart buttons, so it's a list too.
+        $context = [ 'type' => 'view_item_list', 'list_name' => 'Inicio' ];
     } elseif ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() || is_tax( 'product_brand' ) || ( is_search() && 'product' === get_query_var( 'post_type' ) ) ) ) {
         $context = [
             'type'      => 'view_item_list',
@@ -140,13 +225,33 @@ add_action( 'wp_footer', function () {
     ?>
     <script>
     (function () {
-        var payload = JSON.stringify(<?php echo wp_json_encode( $context ); ?>);
         var url = <?php echo wp_json_encode( esc_url_raw( rest_url( 'cozy/v1/event' ) ) ); ?>;
-        if (navigator.sendBeacon) {
-            navigator.sendBeacon(url, new Blob([payload], { type: 'application/json' }));
-        } else {
-            fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true });
-        }
+        /* Also used by cozy-main.js for client-only events (cart drawer). */
+        window.cozyLogEvent = function (type, extra) {
+            var data = extra || {};
+            data.type = type;
+            data.path = location.pathname;
+            // Only external referrers say where the visit came from.
+            if (document.referrer && document.referrer.indexOf(location.origin) !== 0) data.ref = document.referrer;
+            try {
+                var q = new URLSearchParams(location.search);
+                ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function (k) {
+                    if (q.get(k)) data[k] = q.get(k);
+                });
+                if (!data.utm_source && q.get('gclid'))  { data.utm_source = 'google';   data.utm_medium = 'cpc'; }
+                if (!data.utm_source && q.get('fbclid')) { data.utm_source = 'facebook'; }
+            } catch (e) {}
+            var payload = JSON.stringify(data);
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(url, new Blob([payload], { type: 'application/json' }));
+            } else {
+                fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true });
+            }
+        };
+        var context = <?php echo wp_json_encode( $context ); ?>;
+        var type = context.type;
+        delete context.type;
+        window.cozyLogEvent(type, context);
     })();
     </script>
     <?php
@@ -157,14 +262,13 @@ add_action( 'rest_api_init', function () {
         'methods'             => 'POST',
         'permission_callback' => '__return_true',
         'callback'            => function ( WP_REST_Request $request ) {
-            $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
-            if ( preg_match( '/bot|crawl|spider|slurp|facebookexternalhit/i', $ua ) ) {
+            if ( cozy_events_is_bot() ) {
                 return new WP_REST_Response( null, 204 );
             }
 
             $body = json_decode( $request->get_body(), true );
             $type = is_array( $body ) ? ( $body['type'] ?? '' ) : '';
-            if ( ! in_array( $type, [ 'page_view', 'view_item', 'view_item_list' ], true ) ) {
+            if ( ! in_array( $type, [ 'page_view', 'view_item', 'view_item_list', 'view_cart' ], true ) ) {
                 return new WP_REST_Response( null, 400 );
             }
 
@@ -183,7 +287,27 @@ add_action( 'rest_api_init', function () {
                 return new WP_REST_Response( null, 429 );
             }
 
-            $args = [];
+            $args = [ 'page_path' => cozy_events_clean_path( $body['path'] ?? '' ) ?: false ];
+
+            // Where the visit came from: external referrer host + campaign tags.
+            $ref_host = strtolower( (string) wp_parse_url( (string) ( $body['ref'] ?? '' ), PHP_URL_HOST ) );
+            $ref_host = preg_replace( '/^www\./', '', $ref_host );
+            $own_host = preg_replace( '/^www\./', '', strtolower( (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) );
+            if ( $ref_host && $ref_host !== $own_host ) {
+                $args['referrer'] = mb_substr( sanitize_text_field( $ref_host ), 0, 191 );
+            }
+            foreach ( [ 'utm_source' => 64, 'utm_medium' => 64, 'utm_campaign' => 100 ] as $key => $max ) {
+                if ( ! empty( $body[ $key ] ) && is_string( $body[ $key ] ) ) {
+                    $args[ $key ] = mb_substr( sanitize_text_field( $body[ $key ] ), 0, $max );
+                }
+            }
+
+            /* view_cart from the cart drawer — the cart isn't loaded on REST
+               requests, so the value comes from the page (same figure GA4 gets). */
+            if ( 'view_cart' === $type ) {
+                $args['detail'] = 'drawer';
+                $args['value']  = min( max( (float) ( $body['value'] ?? 0 ), 0 ), 99999 );
+            }
             if ( 'view_item' === $type ) {
                 $product = wc_get_product( absint( $body['product_id'] ?? 0 ) );
                 if ( ! $product ) return new WP_REST_Response( null, 400 );
@@ -202,6 +326,13 @@ add_action( 'rest_api_init', function () {
 
 /* add_to_cart — both the AJAX handler and the non-JS fallback */
 add_action( 'woocommerce_add_to_cart', function ( $cart_item_key, $product_id, $quantity ) {
+    /* The buttons are plain ?add-to-cart= links, which scrapers follow without
+       ever rendering a page. A real visitor only reaches the link fallback
+       after loading a page (and so sending a beacon); anything else is noise. */
+    $is_link = ! wp_doing_ajax() && empty( $_GET['wc-ajax'] ) && isset( $_GET['add-to-cart'] )
+        && 'GET' === ( $_SERVER['REQUEST_METHOD'] ?? '' );
+    if ( $is_link && ! cozy_events_session_has_beacon() ) return;
+
     $product = wc_get_product( $product_id );
     cozy_log_event( 'add_to_cart', [
         'product_id' => $product_id,
@@ -222,7 +353,7 @@ add_action( 'woocommerce_cart_item_removed', function ( $cart_item_key, $cart ) 
 /* view_cart */
 add_action( 'wp_footer', function () {
     if ( ! function_exists( 'is_cart' ) || ! is_cart() || WC()->cart->is_empty() ) return;
-    cozy_log_event( 'view_cart', [ 'value' => WC()->cart->get_cart_contents_total() ] );
+    cozy_log_event( 'view_cart', [ 'value' => WC()->cart->get_cart_contents_total(), 'detail' => 'page' ] );
 }, 20 );
 
 /* begin_checkout / add_shipping_info / add_payment_info — checkout page load
@@ -234,6 +365,31 @@ add_action( 'wp_footer', function () {
     cozy_log_event( 'begin_checkout', [ 'value' => WC()->cart->get_cart_contents_total() ] );
 }, 20 );
 
+/* checkout_error — the visitor pressed "place order" and validation bounced
+   them. Only the error codes are kept (e.g. billing_phone_required, terms),
+   never what they typed. */
+add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors ) {
+    if ( ! is_wp_error( $errors ) || ! $errors->has_errors() ) return;
+    cozy_log_event( 'checkout_error', [
+        'value'  => WC()->cart ? WC()->cart->get_cart_contents_total() : null,
+        'detail' => mb_substr( implode( ',', $errors->get_error_codes() ), 0, 191 ),
+    ] );
+}, 10, 2 );
+
+/* place_order — order created, payment not yet confirmed. The gap between
+   this and purchase is abandoned/failed payments. Classic and block checkout. */
+function cozy_events_log_place_order( $order ) {
+    if ( ! $order instanceof WC_Order ) return;
+    cozy_log_event( 'place_order', [
+        'value'  => (float) $order->get_total(),
+        'detail' => mb_substr( (string) $order->get_payment_method(), 0, 191 ),
+    ] );
+}
+add_action( 'woocommerce_checkout_order_processed', function ( $order_id, $posted_data, $order ) {
+    cozy_events_log_place_order( $order );
+}, 10, 3 );
+add_action( 'woocommerce_store_api_checkout_order_processed', 'cozy_events_log_place_order' );
+
 /* purchase */
 add_action( 'woocommerce_thank_you', function ( $order_id ) {
     if ( ! $order_id ) return;
@@ -244,6 +400,7 @@ add_action( 'woocommerce_thank_you', function ( $order_id ) {
         cozy_log_event( 'purchase', [
             'product_id' => $item->get_product_id(),
             'value'      => (float) $order->get_item_total( $item, false, false ) * $item->get_quantity(),
+            'page_path'  => false, // the thank-you URL carries the order number
         ] );
     }
     $order->update_meta_data( '_cozy_events_tracked', 1 );
@@ -278,7 +435,7 @@ function cozy_events_render_report() {
     $since = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days} days" ) );
 
     // Funnel step counts (distinct sessions per step, so a step isn't inflated by repeat views)
-    $steps = [ 'page_view', 'view_item_list', 'view_item', 'add_to_cart', 'view_cart', 'begin_checkout', 'purchase' ];
+    $steps = [ 'page_view', 'view_item_list', 'view_item', 'add_to_cart', 'view_cart', 'begin_checkout', 'place_order', 'purchase' ];
     $funnel = [];
     foreach ( $steps as $step ) {
         $funnel[ $step ] = (int) $wpdb->get_var( $wpdb->prepare(
