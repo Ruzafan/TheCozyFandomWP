@@ -79,7 +79,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
                 <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </span>
             <?php $is_ajax = $product->is_type( 'simple' ) && $product->is_in_stock() && $product->is_purchasable(); ?>
-            <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>" rel="nofollow"
+            <a href="<?php echo esc_url( $is_ajax ? $product->get_permalink() : $product->add_to_cart_url() ); ?>" rel="nofollow"
                <?php if ( $is_ajax ) : ?>
                data-product_id="<?php echo absint( $product->get_id() ); ?>"
                data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"

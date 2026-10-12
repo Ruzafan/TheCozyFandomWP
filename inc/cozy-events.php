@@ -326,9 +326,9 @@ add_action( 'rest_api_init', function () {
 
 /* add_to_cart — both the AJAX handler and the non-JS fallback */
 add_action( 'woocommerce_add_to_cart', function ( $cart_item_key, $product_id, $quantity ) {
-    /* The buttons are plain ?add-to-cart= links, which scrapers follow without
-       ever rendering a page. A real visitor only reaches the link fallback
-       after loading a page (and so sending a beacon); anything else is noise. */
+    /* ?add-to-cart= URLs get requested by scrapers that never render a page
+       (the buttons no longer link to them, but crawlers remember old URLs).
+       A real visitor has always loaded a page first (and so sent a beacon). */
     $is_link = ! wp_doing_ajax() && empty( $_GET['wc-ajax'] ) && isset( $_GET['add-to-cart'] )
         && 'GET' === ( $_SERVER['REQUEST_METHOD'] ?? '' );
     if ( $is_link && ! cozy_events_session_has_beacon() ) return;
@@ -337,6 +337,7 @@ add_action( 'woocommerce_add_to_cart', function ( $cart_item_key, $product_id, $
     cozy_log_event( 'add_to_cart', [
         'product_id' => $product_id,
         'value'      => $product ? (float) $product->get_price() * $quantity : null,
+        'detail'     => $is_link ? 'link' : 'ajax',
     ] );
 }, 10, 3 );
 
