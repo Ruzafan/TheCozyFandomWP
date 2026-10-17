@@ -13,6 +13,8 @@
  * category/brand/tag title in Google.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 const COZY_SEO_SEED_VERSION = '2026-10-17';
 
 function cozy_seo_seed_data() {
