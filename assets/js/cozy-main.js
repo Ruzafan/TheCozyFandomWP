@@ -1838,16 +1838,29 @@ document.addEventListener('click', function (e) {
         setTimeout(formatCozyEmptyCart, 600);
         setTimeout(cleanEmptyNotices, 600);
 
-        // Auto-open newsletter popup modal for first-time visitors
+        // Auto-open newsletter popup modal for first-time visitors — only once they
+        // engage (scroll past half a screen, or desktop exit intent). Opening it on a
+        // timer made the modal the page's LCP element and is an intrusive interstitial
+        // on mobile; LCP stops being recorded at the first scroll, so this keeps it out.
         try {
             var modalDismissed = localStorage.getItem('cozy_newsletter_modal_dismissed');
-            if (!modalDismissed) {
-                setTimeout(function () {
-                    var modal = document.getElementById('cozy-newsletter-modal');
-                    if (modal && !localStorage.getItem('cozy_newsletter_modal_dismissed')) {
-                        window.openNewsletterModal();
-                    }
-                }, 1200);
+            if (!modalDismissed && document.getElementById('cozy-newsletter-modal')) {
+                var nlOpened = false;
+                var openNlOnce = function () {
+                    if (nlOpened || localStorage.getItem('cozy_newsletter_modal_dismissed')) return;
+                    nlOpened = true;
+                    window.removeEventListener('scroll', onNlScroll);
+                    document.removeEventListener('mouseout', onNlExit);
+                    window.openNewsletterModal();
+                };
+                var onNlScroll = function () {
+                    if (window.scrollY > window.innerHeight * 0.5) openNlOnce();
+                };
+                var onNlExit = function (e) {
+                    if (!e.relatedTarget && e.clientY <= 0) openNlOnce();
+                };
+                window.addEventListener('scroll', onNlScroll, { passive: true });
+                document.addEventListener('mouseout', onNlExit);
             }
         } catch (e) {}
 
