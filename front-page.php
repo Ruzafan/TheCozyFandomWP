@@ -58,10 +58,18 @@ $cozy_cats = [
     <!-- Banner image, fixed height, with overlay copy -->
     <div class="relative w-full h-[60vh] md:h-[80vh]">
 
-        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>"
-             alt="" aria-hidden="true" loading="eager" fetchpriority="high"
-             width="1920" height="800"
-             class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
+        <?php /* Portrait phones only ever see the centre of the 2400px banner (object-cover),
+                 so they get a pre-cropped square instead. Media query must match the
+                 preload in functions.php (cozy_hero_mobile_media()). */ ?>
+        <picture>
+            <source media="<?php echo esc_attr( cozy_hero_mobile_media() ); ?>"
+                    srcset="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner-mobile.webp' ); ?>"
+                    width="900" height="900">
+            <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>"
+                 alt="" aria-hidden="true" loading="eager" fetchpriority="high"
+                 width="2400" height="1018"
+                 class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
+        </picture>
 
         <!-- Copy: glass card aligned within max-w-7xl -->
         <div class="relative z-10 h-full flex items-center">

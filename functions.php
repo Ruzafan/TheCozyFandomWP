@@ -10,13 +10,22 @@ require_once get_stylesheet_directory() . '/inc/cozy-events.php';
 /* ------------------------------------------------------------------ */
 /*  RESOURCE PRELOADS (Critical Fonts & LCP Hero Banner)              */
 /* ------------------------------------------------------------------ */
+/* Viewports where the hero box (60vh tall below md) is narrower than it is
+   tall: the square banner-mobile.webp crop then shows exactly what the full
+   banner would under object-cover. width/(0.6*height) <= 1  <=>  aspect <= 3/5. */
+function cozy_hero_mobile_media() {
+    return '(max-width: 767px) and (max-aspect-ratio: 3/5)';
+}
+
 add_action( 'wp_head', function() {
     $font_dir = get_stylesheet_directory_uri() . '/assets/fonts/';
+    $img_dir  = get_stylesheet_directory_uri() . '/assets/images/';
     ?>
     <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlusJakartaSans-Variable.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="<?php echo esc_url( $font_dir . 'PlayfairDisplay-Variable.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
     <?php if ( is_front_page() ) : ?>
-    <link rel="preload" as="image" href="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>" fetchpriority="high">
+    <link rel="preload" as="image" href="<?php echo esc_url( $img_dir . 'banner-mobile.webp' ); ?>" media="<?php echo esc_attr( cozy_hero_mobile_media() ); ?>" fetchpriority="high">
+    <link rel="preload" as="image" href="<?php echo esc_url( $img_dir . 'banner.webp' ); ?>" media="not all and <?php echo esc_attr( cozy_hero_mobile_media() ); ?>" fetchpriority="high">
     <?php endif; ?>
     <?php
 }, 0 );
@@ -782,6 +791,25 @@ add_action( 'wp_enqueue_scripts', function() {
         wp_dequeue_script( 'wc-cart-fragments' );
     }
 }, 99 );
+
+/* Render-blocking CSS we don't need:
+   - Astra's Google Fonts stylesheet: the same families are self-hosted in
+     main.min.css, so it only adds two third-party connections before first paint.
+   - PhotoSwipe + Customer Reviews assets on the home: nothing there opens a
+     lightbox or shows a review widget; CusRev only prints its hidden .pswp shell. */
+add_action( 'wp_enqueue_scripts', function() {
+    wp_dequeue_style( 'astra-google-fonts' );
+
+    if ( is_front_page() ) {
+        foreach ( [ 'photoswipe', 'photoswipe-default-skin', 'cr-frontend-css' ] as $handle ) {
+            wp_dequeue_style( $handle );
+        }
+        foreach ( [ 'wc-photoswipe', 'wc-photoswipe-ui-default', 'cr-frontend-js', 'cr-colcade' ] as $handle ) {
+            wp_dequeue_script( $handle );
+        }
+        wp_add_inline_style( 'cozy-main-style', '.pswp{display:none!important}' );
+    }
+}, 100 );
 
 /* WooCommerce's core 'wc-cart' script AJAX-submits the "Actualizar carrito"
    form and injects the response into specific selectors it expects
@@ -1726,7 +1754,16 @@ function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon
             <!-- Product Image -->
             <div class="bg-white rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
                 <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block w-full h-full no-underline">
-                    <?php echo $product->get_image( 'woocommerce_thumbnail', [ 'class' => 'bg-white w-full h-full object-contain' ] ); // phpcs:ignore ?>
+                    <?php
+                    /* Always below the hero: lazy-load so they don't compete with the LCP
+                       banner (WP otherwise leaves the first ones eager and marks one
+                       fetchpriority=high). The h-56 box caps the square image at 224px. */
+                    echo $product->get_image( 'woocommerce_thumbnail', [ // phpcs:ignore
+                        'class'   => 'bg-white w-full h-full object-contain',
+                        'loading' => 'lazy',
+                        'sizes'   => '224px',
+                    ] );
+                    ?>
                 </a>
                 <?php if ( $rank > 0 ) : ?>
                 <div class="absolute top-3 left-3 w-8 h-8 bg-cozy-coffee rounded-[10px] flex items-center justify-center z-10 shadow-md">
