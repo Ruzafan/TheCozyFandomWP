@@ -75,6 +75,8 @@ $read_time = max( 1, (int) ceil( str_word_count( wp_strip_all_tags( get_the_cont
         <?php the_content(); ?>
     </div>
 
+    <?php cozy_render_post_licence_products(); // products of the licence this post is about (inc/licence-landings.php) ?>
+
     <!-- Tags -->
     <?php $tags = get_the_tags(); if ( $tags ) : ?>
     <div class="flex flex-wrap gap-2 mt-10 pt-8 border-t border-cozy-sand">

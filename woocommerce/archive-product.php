@@ -269,6 +269,8 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
 
     </div>
 
+    <?php cozy_render_landing_content(); // licence/category SEO copy + FAQ (inc/licence-landings.php) ?>
+
 <?php endif; ?>
 
 </div>

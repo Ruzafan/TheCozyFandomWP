@@ -4556,6 +4556,46 @@ body.single-post .ast-archive-description {
   color: inherit;
 }
 
+/* FAQ accordions (<details>) in licence/category landing content */
+.cozy-post-content details {
+  background: #FFFFFF;
+  border: 1px solid #F2E6D5;
+  border-radius: 16px;
+  padding: 0 1.25rem;
+  margin: 0 0 0.75rem;
+}
+
+.cozy-post-content summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  color: #3A3128;
+  padding: 1rem 1.75rem 1rem 0;
+  position: relative;
+}
+
+.cozy-post-content summary::-webkit-details-marker {
+  display: none;
+}
+
+.cozy-post-content summary::after {
+  content: '+';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  color: #88C4B5;
+}
+
+.cozy-post-content details[open] summary::after {
+  content: '–';
+}
+
+.cozy-post-content details > p:last-child {
+  margin-bottom: 1rem;
+}
+
 .cozy-post-content img {
   max-width: 100%;
   height: auto;
