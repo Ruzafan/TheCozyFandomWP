@@ -96,6 +96,12 @@ get_header( 'shop' );
             cozy_sitemap_section( 'Categorías', 'tag', $cat_links );
         }
 
+        /* ---- Licences (product_brand landings) ---- */
+        $licence_links = cozy_licence_landing_links();
+        if ( $licence_links ) {
+            cozy_sitemap_section( 'Licencias', 'star', $licence_links );
+        }
+
         /* ---- Legal & info ---- */
         function cozy_sitemap_legal_link( $slug ) {
             $page = get_page_by_path( $slug );

@@ -1704,7 +1704,7 @@ function cozy_fandom_render_footer() {
 
         <div class="max-w-7xl mx-auto relative z-10">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-white/10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-10 border-b border-white/10">
 
                 <!-- Brand + social -->
                 <div class="space-y-4">
@@ -1757,6 +1757,19 @@ function cozy_fandom_render_footer() {
                         <li><a href="<?php echo esc_url( home_url( '/mapa-del-sitio/' ) ); ?>" class="hover:text-cozy-mint transition-colors">Mapa del sitio</a></li>
                     </ul>
                 </div>
+
+                <!-- Licencias — sitewide links to the /marca/… landings (see inc/licence-landings.php) -->
+                <?php $footer_licences = cozy_licence_landing_links(); ?>
+                <?php if ( $footer_licences ) : ?>
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Licencias</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <?php foreach ( $footer_licences as $label => $url ) : ?>
+                        <li><a href="<?php echo esc_url( $url ); ?>" class="hover:text-cozy-mint transition-colors"><?php echo esc_html( $label ); ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
 
                 <!-- Contacto -->
                 <div>
