@@ -572,25 +572,40 @@ function cozy_licence_url( array $slugs ) {
     return $slugs ? add_query_arg( 'licencia', implode( ',', $slugs ), $shop ) : $shop;
 }
 
-/* Legacy /tienda/?licencia=snoopy links (home cards, old menu, shared URLs)
-   → 301 to the licence's own archive, carrying any other query args along. */
-add_action( 'template_redirect', function () {
-    if ( empty( $_GET['licencia'] ) || ! function_exists( 'is_shop' ) || ! is_shop() || is_search() ) return;
-    if ( (int) get_query_var( 'paged' ) > 1 ) return;
-
-    $slugs = array_filter( array_map( 'sanitize_title', explode( ',', sanitize_text_field( wp_unslash( $_GET['licencia'] ) ) ) ) );
-    if ( 1 !== count( $slugs ) ) return;
-
-    $target = cozy_licence_url( $slugs );
-    if ( false !== strpos( $target, 'licencia=' ) ) return; // unknown slug — nothing to redirect to
-
-    $other_args = array_diff_key( wp_unslash( $_GET ), [ 'licencia' => true ] );
-    if ( $other_args ) {
-        $target .= ( false === strpos( $target, '?' ) ? '?' : '&' ) . http_build_query( $other_args );
+/**
+ * Licences to offer in the shop filter. Inside a product category only the
+ * licences that actually have products there (incl. subcategories) — listing
+ * every licence led to empty results, e.g. Anime inside Accesorios. Licences
+ * currently selected always stay so they can be unticked.
+ */
+function cozy_filter_licences( array $selected = [] ) {
+    $all = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => true ] );
+    if ( is_wp_error( $all ) || ! is_product_category() ) {
+        return is_wp_error( $all ) ? [] : $all;
     }
-    wp_safe_redirect( $target, 301 );
-    exit;
-} );
+
+    $query = [
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+        'tax_query'      => [ [ 'taxonomy' => 'product_cat', 'field' => 'term_id', 'terms' => get_queried_object_id() ] ], // phpcs:ignore WordPress.DB.SlowDBQuery
+    ];
+    if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
+        $query['meta_query'] = [ [ 'key' => '_stock_status', 'value' => 'instock' ] ]; // phpcs:ignore WordPress.DB.SlowDBQuery
+    }
+    $ids = get_posts( $query );
+    $in_listing = $ids ? wp_get_object_terms( $ids, 'product_brand', [ 'fields' => 'slugs' ] ) : [];
+    if ( is_wp_error( $in_listing ) ) {
+        return $all;
+    }
+    $keep = array_merge( $in_listing, $selected );
+
+    return array_values( array_filter( $all, function( $term ) use ( $keep ) {
+        return in_array( $term->slug, $keep, true );
+    } ) );
+}
 
 /* ------------------------------------------------------------------ */
 /*  FILTERED LISTINGS — noindex,follow for facet/sort URLs             */

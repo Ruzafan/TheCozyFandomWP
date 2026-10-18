@@ -181,17 +181,19 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
         the_widget( 'WC_Widget_Price_Filter', [ 'title' => __( 'Precio', 'woocommerce' ) ], $cozy_widget_args );
 
         // Licencia filter — WooCommerce Brands (product_brand taxonomy)
-        $all_licenses = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => true ] );
-        if ( ! is_wp_error( $all_licenses ) && ! empty( $all_licenses ) ) :
-            $raw_sel      = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
-            $selected     = array_filter( array_map( 'sanitize_title', explode( ',', $raw_sel ) ) );
-            $base_url     = remove_query_arg( 'licencia' );
-            // Outside a category (shop root / a licence's own archive) a single
-            // licence links to its indexable archive; inside a category it
-            // stays a ?licencia= facet on that category.
-            $cozy_lic_to_archive = ! is_product_category() && ! is_search();
+        $raw_sel      = sanitize_text_field( wp_unslash( $_GET['licencia'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+        $selected     = array_filter( array_map( 'sanitize_title', explode( ',', $raw_sel ) ) );
+        $all_licenses = cozy_filter_licences( $selected );
+        if ( ! empty( $all_licenses ) ) :
+            // The filter is always a ?licencia= facet (noindex, see
+            // cozy_is_filtered_listing()) — it never sends shoppers to the
+            // /marca/… licence landing, which is there for Google and for
+            // editorial links (menu, home, blog). On a landing itself, the
+            // facet continues on the shop with that licence preselected.
+            $base_url = remove_query_arg( 'licencia' );
             if ( is_tax( 'product_brand' ) ) {
                 $selected[] = get_queried_object()->slug;
+                $base_url   = get_permalink( wc_get_page_id( 'shop' ) );
             }
             ?>
             <div class="cozy-filter-widget">
@@ -203,13 +205,9 @@ $cozy_show_category_grid = is_shop() && ! is_search() && ! $_cozy_has_filters &&
                         $new_sel = $checked
                             ? array_values( array_diff( $selected, [ $slug ] ) )
                             : array_merge( $selected, [ $slug ] );
-                        if ( $cozy_lic_to_archive ) {
-                            $href = cozy_licence_url( $new_sel );
-                        } else {
-                            $href = $new_sel
-                                ? add_query_arg( 'licencia', implode( ',', $new_sel ), $base_url )
-                                : $base_url;
-                        }
+                        $href = $new_sel
+                            ? add_query_arg( 'licencia', implode( ',', $new_sel ), $base_url )
+                            : $base_url;
                     ?>
                     <li>
                         <a href="<?php echo esc_url( $href ); ?>"
