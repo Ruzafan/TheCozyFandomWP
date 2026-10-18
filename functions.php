@@ -1739,84 +1739,44 @@ function cozy_fandom_render_footer() {
 add_action( 'wp_footer', 'cozy_fandom_render_footer' );
 
 /* ------------------------------------------------------------------ */
-/*  HOME PRODUCT CARD (shared by "Nuevos" and "Top ventas" sections)   */
+/*  PRODUCT GRID OUTSIDE THE SHOP LOOP (home, blog posts, empty cart)  */
 /* ------------------------------------------------------------------ */
-function cozy_fandom_home_product_card( $product, $badge_label = '', $badge_icon = '', $rank = 0 ) {
-    $cat_ids  = $product->get_category_ids();
-    $cat_name = '';
-    if ( ! empty( $cat_ids ) ) {
-        $term = get_term( reset( $cat_ids ), 'product_cat' );
-        if ( $term && ! is_wp_error( $term ) ) {
-            $cat_name = $term->name;
-        }
+/* Renders the same card as the shop archives (woocommerce/content-product.php)
+   so a product looks identical everywhere. The .woocommerce wrapper gives
+   pages that aren't WooCommerce pages the shop's ul.products grid CSS.
+   $layout: 'quad' (2 → 4 columns) or 'pair' (always 2, for narrow columns).
+   $card_args: callable( $product, $index ) returning content-product.php
+   args ('cozy_badge', 'cozy_rank'). */
+function cozy_render_product_grid( array $products, $list_name, $layout = 'quad', $card_args = null ) {
+    global $product, $post;
+
+    $products = array_filter( $products, function( $p ) {
+        return $p instanceof WC_Product && $p->is_visible();
+    } );
+    if ( ! $products ) {
+        return;
     }
-    ?>
-    <div class="bg-white rounded-[24px] p-4 border border-cozy-sand shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
-        <div>
-            <!-- Product Image -->
-            <div class="bg-white rounded-2xl h-56 flex items-center justify-center overflow-hidden mb-4 relative">
-                <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block w-full h-full no-underline">
-                    <?php
-                    /* Always below the hero: lazy-load so they don't compete with the LCP
-                       banner (WP otherwise leaves the first ones eager and marks one
-                       fetchpriority=high). The h-56 box caps the square image at 224px. */
-                    echo $product->get_image( 'woocommerce_thumbnail', [ // phpcs:ignore
-                        'class'   => 'bg-white w-full h-full object-contain',
-                        'loading' => 'lazy',
-                        'sizes'   => '224px',
-                    ] );
-                    ?>
-                </a>
-                <?php if ( $rank > 0 ) : ?>
-                <div class="absolute top-3 left-3 w-8 h-8 bg-cozy-coffee rounded-[10px] flex items-center justify-center z-10 shadow-md">
-                    <span class="font-sans text-xs font-bold text-white/80 leading-none"><?php echo absint( $rank ); ?></span>
-                </div>
-                <?php elseif ( $badge_label ) : ?>
-                <span class="absolute top-3 left-3 bg-cozy-mint text-cozy-coffee text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                    <?php echo esc_html( $badge_icon ); ?> <?php echo esc_html( $badge_label ); ?>
-                </span>
-                <?php endif; ?>
-                <button type="button" data-action="toggle-favorite"
-                        class="cozy-fav-btn cozy-fav-icon absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-cozy-coffee/40 hover:text-red-400 hover:bg-white shadow-sm"
-                        data-product-id="<?php echo absint( $product->get_id() ); ?>"
-                        data-product-name="<?php echo esc_attr( $product->get_name() ); ?>"
-                        data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
-                        aria-label="Guardar en favoritos">
-                    <svg class="cozy-fav-heart" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                </button>
-            </div>
-            <!-- Category label -->
-            <?php if ( $cat_name ) : ?>
-            <span class="text-[10px] text-cozy-mint font-bold uppercase tracking-wider block mb-1"><?php echo esc_html( $cat_name ); ?></span>
-            <?php endif; ?>
-            <!-- Name -->
-            <h3 class="font-bold text-sm text-cozy-coffee line-clamp-2">
-                <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="hover:text-cozy-mint transition-colors">
-                    <?php echo esc_html( $product->get_name() ); ?>
-                </a>
-            </h3>
-        </div>
-        <!-- Price + Add to cart -->
-        <div class="flex items-center justify-between pt-4 border-t border-cozy-sand mt-4 gap-1">
-            <span class="text-base font-bold text-cozy-coffee"><?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-            <?php
-            $is_ajax = $product->is_type( 'simple' ) && $product->is_in_stock() && $product->is_purchasable();
-            ?>
-            <a href="<?php echo esc_url( $is_ajax ? $product->get_permalink() : $product->add_to_cart_url() ); ?>" rel="nofollow"
-               <?php if ( $is_ajax ) : ?>
-               data-product_id="<?php echo absint( $product->get_id() ); ?>"
-               data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
-               data-product-name="<?php echo esc_attr( $product->get_name() ); ?>"
-               data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
-               data-quantity="1"
-               <?php endif; ?>
-               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> p-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 min-w-0 overflow-hidden no-underline">
-                <?php echo cozy_icon( $is_ajax ? 'basket-shopping' : ( $product->is_in_stock() ? 'eye' : 'ban' ), '14', 'shrink-0' ); ?>
-                <span class="truncate"><?php echo $is_ajax ? 'Añadir al carrito' : ( $product->is_in_stock() ? 'Ver opciones' : 'Sin stock' ); ?></span>
-            </a>
-        </div>
-    </div>
-    <?php
+
+    $prev_product = $product;
+    $prev_post    = $post;
+    $GLOBALS['cozy_ga_loop_index'] = 0;
+
+    echo '<div class="woocommerce" data-ga-list-name="' . esc_attr( $list_name ) . '">';
+    echo '<ul class="products cozy-grid-' . esc_attr( $layout ) . '">';
+    $index = 0;
+    foreach ( $products as $grid_product ) {
+        $product = $grid_product;
+        $post    = get_post( $grid_product->get_id() ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+        setup_postdata( $post );
+        $args = is_callable( $card_args ) ? (array) call_user_func( $card_args, $grid_product, $index ) : [];
+        wc_get_template( 'content-product.php', array_merge( [ 'cozy_lazy' => true ], $args ) );
+        $index++;
+    }
+    echo '</ul></div>';
+
+    $product = $prev_product;
+    $post    = $prev_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+    wp_reset_postdata();
 }
 
 /* ─── My Account menu tweaks ────────────────────────────────── */

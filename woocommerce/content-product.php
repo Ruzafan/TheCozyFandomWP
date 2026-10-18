@@ -14,6 +14,17 @@ global $product;
 if ( empty( $product ) || ! $product->is_visible() ) {
     return;
 }
+
+/* Optional args when rendered through cozy_render_product_grid() (home,
+   blog, empty cart) rather than the shop loop:
+   $cozy_badge (e.g. "✨ Nuevo"), $cozy_rank (top-sellers position) and
+   $cozy_lazy (grid is below the fold, so don't let WP mark it eager/high). */
+$cozy_badge = isset( $cozy_badge ) ? (string) $cozy_badge : '';
+$cozy_rank  = isset( $cozy_rank ) ? absint( $cozy_rank ) : 0;
+$cozy_img   = [ 'class' => 'bg-white w-full h-full object-contain' ];
+if ( ! empty( $cozy_lazy ) ) {
+    $cozy_img['loading'] = 'lazy';
+}
 ?>
 
 <li <?php wc_product_class( 'bg-white rounded-[24px] overflow-hidden border border-cozy-sand shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col', $product ); ?>
@@ -26,17 +37,25 @@ if ( empty( $product ) || ! $product->is_visible() ) {
     <div class="relative">
         <a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="block no-underline">
             <div class="bg-white h-40 sm:h-52 lg:h-64 overflow-hidden">
-                <?php echo $product->get_image( 'woocommerce_thumbnail', [ 'class' => 'bg-white w-full h-full object-contain' ] ); ?>
+                <?php echo $product->get_image( 'woocommerce_thumbnail', $cozy_img ); ?>
             </div>
         </a>
 
-        <?php if ( $product->is_on_sale() ) : ?>
+        <?php if ( $cozy_rank > 0 ) : ?>
+        <span class="absolute top-2 left-2 w-8 h-8 bg-cozy-coffee rounded-[10px] flex items-center justify-center text-xs font-bold text-white/80 leading-none shadow-md pointer-events-none z-[1]">
+            <?php echo absint( $cozy_rank ); ?>
+        </span>
+        <?php elseif ( $product->is_on_sale() ) : ?>
         <span class="absolute top-2 left-2 bg-cozy-mint text-cozy-coffee text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider pointer-events-none z-[1]">
             <?php esc_html_e( 'Oferta', 'woocommerce' ); ?>
         </span>
         <?php elseif ( ! $product->is_in_stock() ) : ?>
         <span class="absolute top-2 left-2 bg-cozy-sand text-cozy-coffee/70 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider pointer-events-none z-[1]">
             <?php esc_html_e( 'Agotado', 'woocommerce' ); ?>
+        </span>
+        <?php elseif ( '' !== $cozy_badge ) : ?>
+        <span class="absolute top-2 left-2 bg-cozy-mint text-cozy-coffee text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider pointer-events-none z-[1]">
+            <?php echo esc_html( $cozy_badge ); ?>
         </span>
         <?php endif; ?>
 
@@ -74,7 +93,9 @@ if ( empty( $product ) || ! $product->is_visible() ) {
         </div>
         <?php endif; ?>
 
-        <div class="flex items-center justify-between gap-1.5 pt-2 border-t border-cozy-sand/50">
+        <?php /* flex-wrap: in narrow grid cells (4 columns beside the filters
+                 sidebar) the button drops under the price instead of being clipped. */ ?>
+        <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t border-cozy-sand/50">
             <span class="text-sm font-bold text-cozy-coffee shrink-0">
                 <?php echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </span>
@@ -87,9 +108,10 @@ if ( empty( $product ) || ! $product->is_visible() ) {
                data-product-price="<?php echo esc_attr( $product->get_price() ); ?>"
                data-quantity="1"
                <?php endif; ?>
-               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> px-3 sm:px-3.5 py-2 rounded-full text-xs font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
+               aria-label="<?php echo esc_attr( ( $is_ajax ? 'Añadir al carrito: ' : 'Ver ' ) . $product->get_name() ); ?>"
+               class="<?php echo $product->is_in_stock() ? 'bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee' : 'bg-cozy-sand text-cozy-coffee/60 pointer-events-none'; ?> <?php echo $is_ajax ? 'add_to_cart_button ajax_add_to_cart' : ''; ?> ml-auto px-3 sm:px-3.5 py-2 rounded-full text-xs font-bold transition-colors flex items-center gap-1 no-underline shrink-0">
                 <?php echo cozy_icon( $is_ajax ? 'basket-shopping' : ( $product->is_in_stock() ? 'eye' : 'ban' ), '12' ); ?>
-                <span class="hidden sm:inline"><?php echo $is_ajax ? 'Añadir al carrito' : ( $product->is_in_stock() ? 'Ver opciones' : 'Sin stock' ); ?></span>
+                <span class="hidden sm:inline"><?php echo $is_ajax ? 'Añadir' : ( $product->is_in_stock() ? 'Ver opciones' : 'Sin stock' ); ?></span>
                 <span class="sm:hidden"><?php echo $is_ajax ? '+' : ( $product->is_in_stock() ? 'Ver' : '—' ); ?></span>
             </a>
         </div>

@@ -1161,7 +1161,8 @@ body.woocommerce-account .woocommerce form.register,
   }
 
   .woocommerce-shop ul.products,
-  .tax-product_cat ul.products {
+  .tax-product_cat ul.products,
+  .tax-product_brand ul.products {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 }
@@ -1169,8 +1170,31 @@ body.woocommerce-account .woocommerce form.register,
 @media (min-width: 1280px) {
 
   .woocommerce-shop ul.products,
-  .tax-product_cat ul.products {
+  .tax-product_cat ul.products,
+  .tax-product_brand ul.products {
     grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* Grids rendered by cozy_render_product_grid() outside the shop loop.
+   quad: 4 products (home, empty cart) — 2×2 until there's room for a row of 4.
+   pair: narrow blog column — always 2 per row. */
+@media (min-width: 640px) {
+
+  .woocommerce ul.products.cozy-grid-quad,
+  .woocommerce ul.products.cozy-grid-pair {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .woocommerce ul.products.cozy-grid-quad {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .woocommerce ul.products.cozy-grid-pair {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 

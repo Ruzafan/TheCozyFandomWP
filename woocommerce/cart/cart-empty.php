@@ -74,16 +74,11 @@ $return_url = apply_filters( 'woocommerce_return_to_shop_redirect', $shop_url );
 				<h2 class="font-serif text-xl md:text-2xl font-bold text-cozy-coffee m-0">Novedades que te encantarán ✨</h2>
 			</div>
 
-			<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-				<?php
-				foreach ( $product_ids as $pid ) {
-					$product = wc_get_product( $pid );
-					if ( $product && function_exists( 'cozy_fandom_home_product_card' ) ) {
-						cozy_fandom_home_product_card( $product, 'Novedad', '✨' );
-					}
-				}
-				?>
-			</div>
+			<?php
+			cozy_render_product_grid( array_filter( array_map( 'wc_get_product', $product_ids ) ), 'Carrito vacío: Novedades', 'quad', function() {
+				return [ 'cozy_badge' => '✨ Novedad' ];
+			} );
+			?>
 		</div>
 	<?php endif; ?>
 </div>

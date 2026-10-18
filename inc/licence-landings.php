@@ -138,7 +138,7 @@ add_filter( 'the_content', function( $content ) {
 // Product strip after the post body (called from single.php).
 function cozy_render_post_licence_products() {
     $term = cozy_post_licence_term();
-    if ( ! $term || ! function_exists( 'cozy_fandom_home_product_card' ) ) {
+    if ( ! $term || ! function_exists( 'cozy_render_product_grid' ) ) {
         return;
     }
     $ids = get_posts( [
@@ -153,16 +153,9 @@ function cozy_render_post_licence_products() {
         return;
     }
     ?>
-    <section class="cozy-post-licence-products mt-12 pt-10 border-t border-cozy-sand" data-ga-list-name="<?php echo esc_attr( 'Blog: ' . $term->name ); ?>">
+    <section class="cozy-post-licence-products mt-12 pt-10 border-t border-cozy-sand">
         <h2 class="font-serif text-2xl font-bold text-cozy-coffee m-0 mb-6">Regalos de <?php echo esc_html( $term->name ); ?> en la tienda</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <?php foreach ( $ids as $id ) {
-                $product = wc_get_product( $id );
-                if ( $product ) {
-                    cozy_fandom_home_product_card( $product );
-                }
-            } ?>
-        </div>
+        <?php cozy_render_product_grid( array_filter( array_map( 'wc_get_product', $ids ) ), 'Blog: ' . $term->name, 'pair' ); ?>
         <div class="text-center mt-8">
             <a href="<?php echo esc_url( get_term_link( $term ) ); ?>"
                class="inline-flex items-center gap-2 bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-semibold px-7 py-3.5 rounded-2xl shadow-md transition-all no-underline">

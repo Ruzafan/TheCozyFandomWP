@@ -137,9 +137,9 @@ $cozy_cats = [
             <?php endif; ?>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
         <?php
-        $new_pids     = function_exists( 'cozy_get_home_new_product_ids' ) ? cozy_get_home_new_product_ids() : [];
+        $new_pids    = function_exists( 'cozy_get_home_new_product_ids' ) ? cozy_get_home_new_product_ids() : [];
         $new_products = [];
         if ( ! empty( $new_pids ) && function_exists( 'wc_get_product' ) ) {
             foreach ( $new_pids as $pid ) {
@@ -151,9 +151,9 @@ $cozy_cats = [
         }
 
         if ( $new_products ) :
-            foreach ( $new_products as $product ) {
-                cozy_fandom_home_product_card( $product, 'Nuevo', '✨' );
-            }
+            cozy_render_product_grid( $new_products, 'Home: Nuevos', 'quad', function() {
+                return [ 'cozy_badge' => '✨ Nuevo' ];
+            } );
         else : ?>
             <div class="col-span-4 text-center py-16">
                 <?php echo cozy_icon( 'store', '48', 'text-cozy-coffee/20 block mb-4' ); ?>
@@ -246,7 +246,7 @@ $cozy_cats = [
         </div>
 
         <!-- Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div>
         <?php
         $top_pids     = function_exists( 'cozy_get_home_top_product_ids' ) ? cozy_get_home_top_product_ids() : [];
         $top_products = [];
@@ -260,11 +260,9 @@ $cozy_cats = [
         }
 
         if ( $top_products ) :
-            $rank = 0;
-            foreach ( $top_products as $product ) {
-                $rank++;
-                cozy_fandom_home_product_card( $product, '', '', $rank );
-            }
+            cozy_render_product_grid( $top_products, 'Home: Top ventas', 'quad', function( $product, $index ) {
+                return [ 'cozy_rank' => $index + 1 ];
+            } );
         else : ?>
             <div class="col-span-4 text-center py-16">
                 <?php echo cozy_icon( 'fire', '48', 'text-cozy-coffee/20 block mb-4' ); ?>
