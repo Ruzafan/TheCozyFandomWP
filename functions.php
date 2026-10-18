@@ -867,11 +867,46 @@ add_filter( 'woocommerce_package_rates', function( $rates ) {
  * Returns cached header navigation (categories + licenses).
  * Eliminates 10-15 SQL queries on every single page load.
  */
-function cozy_get_header_nav_data() {
-    $cached = get_transient( 'cozy_header_nav_data_v2' );
-    if ( false !== $cached && is_array( $cached ) ) {
-        return $cached;
+/* One-off full-page-cache purge after a deploy that changes markup on every
+   page (LiteSpeed would otherwise keep serving the old HTML until it expires).
+   Bump the value to purge again on a future deploy. */
+const COZY_DEPLOY_PURGE = '2026-10-18-nav-urls';
+add_action( 'init', function() {
+    if ( get_option( 'cozy_deploy_purge' ) === COZY_DEPLOY_PURGE ) {
+        return;
     }
+    update_option( 'cozy_deploy_purge', COZY_DEPLOY_PURGE, false );
+    do_action( 'litespeed_purge_all' );
+} );
+
+/* The transient holds term data only — never URLs. Links are built per
+   request so TranslatePress localises them for the page's language; caching
+   them once leaked /en/… (and its translated /en/brand/… base, a 404) into
+   the menu of every Spanish page. */
+function cozy_get_header_nav_data() {
+    $data = get_transient( 'cozy_header_nav_data_v3' );
+    if ( false === $data || ! is_array( $data ) ) {
+        $data = cozy_build_header_nav_data();
+        set_transient( 'cozy_header_nav_data_v3', $data, 12 * HOUR_IN_SECONDS );
+    }
+
+    $link = function( $item, $taxonomy ) {
+        $url = get_term_link( (int) $item['term_id'], $taxonomy );
+        return is_wp_error( $url ) ? null : $url;
+    };
+    foreach ( $data['cats'] as $i => $cat ) {
+        $data['cats'][ $i ]['url'] = $link( $cat, 'product_cat' );
+        foreach ( $cat['children'] as $j => $child ) {
+            $data['cats'][ $i ]['children'][ $j ]['url'] = $link( $child, 'product_cat' );
+        }
+    }
+    foreach ( $data['licenses'] as $i => $lic ) {
+        $data['licenses'][ $i ]['url'] = $link( $lic, 'product_brand' );
+    }
+    return $data;
+}
+
+function cozy_build_header_nav_data() {
 
     $uncategorised_id = absint( get_option( 'default_product_cat' ) );
     $nav_cats_raw = get_terms( [
@@ -901,12 +936,9 @@ function cozy_get_header_nav_data() {
             $children = [];
             if ( ! is_wp_error( $children_raw ) && ! empty( $children_raw ) ) {
                 foreach ( $children_raw as $child ) {
-                    $child_url = get_term_link( $child );
-                    if ( is_wp_error( $child_url ) ) continue;
                     $children[] = [
                         'term_id' => $child->term_id,
                         'name'    => $child->name,
-                        'url'     => $child_url,
                     ];
                 }
             }
@@ -914,7 +946,6 @@ function cozy_get_header_nav_data() {
             $nav_cats[] = [
                 'term_id'  => $cat->term_id,
                 'name'     => $cat->name,
-                'url'      => $cat_url,
                 'children' => $children,
             ];
         }
@@ -925,24 +956,18 @@ function cozy_get_header_nav_data() {
     $nav_licenses = [];
     if ( ! is_wp_error( $nav_licenses_raw ) && ! empty( $nav_licenses_raw ) ) {
         foreach ( $nav_licenses_raw as $lic ) {
-            $lic_url = get_term_link( $lic );
-            if ( is_wp_error( $lic_url ) ) continue;
             $nav_licenses[] = [
                 'term_id' => $lic->term_id,
                 'name'    => $lic->name,
                 'slug'    => $lic->slug,
-                'url'     => $lic_url,
             ];
         }
     }
 
-    $data = [
+    return [
         'cats'     => $nav_cats,
         'licenses' => $nav_licenses,
     ];
-
-    set_transient( 'cozy_header_nav_data_v2', $data, 12 * HOUR_IN_SECONDS );
-    return $data;
 }
 
 /**
@@ -994,6 +1019,7 @@ function cozy_get_home_top_product_ids() {
 function cozy_clear_performance_transients() {
     delete_transient( 'cozy_header_nav_data' ); // pre-licence-URL cache key
     delete_transient( 'cozy_header_nav_data_v2' );
+    delete_transient( 'cozy_header_nav_data_v3' );
     delete_transient( 'cozy_home_new_pids' );
     delete_transient( 'cozy_home_top_pids' );
 }
