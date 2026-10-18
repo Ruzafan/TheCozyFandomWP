@@ -75,11 +75,18 @@ function cozy_render_landing_content() {
     <?php
 }
 
-/* "Regalos de Snoopy" => URL for every licence with products, for the footer
-   and the HTML sitemap. URLs are built per request (never cache them: see
-   cozy_get_header_nav_data()). */
+/* "Regalos de Snoopy" => URL for every licence that has landing content (a
+   bare licence archive is just a product listing — not worth linking sitewide),
+   for the footer and the HTML sitemap. New landings appear automatically once
+   their content is filled in. URLs are built per request (never cache them:
+   see cozy_get_header_nav_data()). */
 function cozy_licence_landing_links() {
-    $terms = get_terms( [ 'taxonomy' => 'product_brand', 'hide_empty' => true, 'orderby' => 'name' ] );
+    $terms = get_terms( [
+        'taxonomy'   => 'product_brand',
+        'hide_empty' => true,
+        'orderby'    => 'name',
+        'meta_query' => [ [ 'key' => COZY_LANDING_META, 'value' => '', 'compare' => '!=' ] ], // phpcs:ignore WordPress.DB.SlowDBQuery
+    ] );
     $links = [];
     if ( is_wp_error( $terms ) ) {
         return $links;
