@@ -76,7 +76,7 @@ function cozy_shipping_announcement_html() {
     $reduced = cozy_reduced_shipping();
     if ( $reduced ) {
         return sprintf(
-            'Envío a <strong>%1$s</strong> desde %2$s · <strong>Gratis</strong> desde %3$s',
+            'Envío a solo <strong>%1$s</strong> desde %2$s y <strong>gratis</strong> desde %3$s',
             cozy_price_short( $reduced['cost'] ),
             cozy_price_short( $reduced['min'] ),
             $free
@@ -136,7 +136,7 @@ add_action( 'woocommerce_single_product_summary', function() {
             <span>
                 <strong class="text-cozy-coffee">Envío gratis</strong> desde <?php echo wp_kses_post( cozy_get_free_shipping_threshold_html() ); ?>
                 <?php if ( $reduced ) : ?>
-                · solo <?php echo wp_kses_post( cozy_price_short( $reduced['cost'] ) ); ?> desde <?php echo wp_kses_post( cozy_price_short( $reduced['min'] ) ); ?>
+                y solo <strong class="text-cozy-coffee"><?php echo wp_kses_post( cozy_price_short( $reduced['cost'] ) ); ?></strong> desde <?php echo wp_kses_post( cozy_price_short( $reduced['min'] ) ); ?>
                 <?php endif; ?>
             </span>
         </p>
