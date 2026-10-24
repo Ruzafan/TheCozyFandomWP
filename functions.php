@@ -700,6 +700,23 @@ add_filter( 'pre_option_woocommerce_thumbnail_cropping', function() {
    review plugins like Customer Reviews for WooCommerce (CusRev). */
 remove_action( 'woocommerce_review_before', 'woocommerce_review_display_gravatar', 10 );
 
+/* Hide the "Valoraciones (0)" tab while a product has no reviews — an empty
+   reviews section reads as "nobody buys here". It comes back on its own with
+   the first review, and stays visible for logged-in customers who bought the
+   product so they can still leave that first one (logged-in pages aren't
+   served from the LiteSpeed cache, so this per-user check is safe). */
+add_filter( 'woocommerce_product_tabs', function( $tabs ) {
+    global $product;
+    if ( ! isset( $tabs['reviews'] ) || ! $product instanceof WC_Product || $product->get_review_count() > 0 ) {
+        return $tabs;
+    }
+    if ( is_user_logged_in() && wc_customer_bought_product( '', get_current_user_id(), $product->get_id() ) ) {
+        return $tabs;
+    }
+    unset( $tabs['reviews'] );
+    return $tabs;
+}, 98 );
+
 
 /* ------------------------------------------------------------------ */
 /*  STYLES                                                              */
