@@ -889,7 +889,7 @@ add_filter( 'woocommerce_package_rates', function( $rates ) {
 /* One-off full-page-cache purge after a deploy that changes markup on every
    page (LiteSpeed would otherwise keep serving the old HTML until it expires).
    Bump the value to purge again on a future deploy. */
-const COZY_DEPLOY_PURGE = '2026-10-18-nav-urls-2';
+const COZY_DEPLOY_PURGE = '2026-10-24-delivery-inline';
 // wp_loaded, not init: LiteSpeed registers its litespeed_purge_all listener during init.
 add_action( 'wp_loaded', function() {
     if ( get_option( 'cozy_deploy_purge' ) === COZY_DEPLOY_PURGE ) {

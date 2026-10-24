@@ -123,13 +123,14 @@ add_action( 'woocommerce_single_product_summary', function() {
     <div class="cozy-product-assurance bg-white border border-cozy-sand rounded-2xl px-4 py-3.5 text-xs text-cozy-coffee/80 space-y-2.5">
         <p class="<?php echo esc_attr( $row ); ?>">
             <span class="shrink-0 text-cozy-mint"><?php echo cozy_icon( 'check', '14' ); ?></span>
-            <span><strong class="text-cozy-coffee">Producto oficial</strong> con licencia original</span>
+            <span><strong class="text-cozy-coffee">Producto original</strong> con licencia oficial</span>
         </p>
         <?php if ( $product->is_in_stock() ) : ?>
         <p class="<?php echo esc_attr( $row ); ?>">
             <span class="shrink-0 text-cozy-mint"><?php echo cozy_icon( 'truck', '14' ); ?></span>
             <span data-cozy-delivery data-min-days="3" data-max-days="5">Recíbelo en <strong class="text-cozy-coffee">3-5 días laborables</strong> (España peninsular)</span>
         </p>
+        <?php cozy_delivery_dates_script(); ?>
         <?php endif; ?>
         <p class="<?php echo esc_attr( $row ); ?>">
             <span class="shrink-0 text-cozy-mint"><?php echo cozy_icon( 'box', '14' ); ?></span>
@@ -143,6 +144,42 @@ add_action( 'woocommerce_single_product_summary', function() {
     </div>
     <?php
 }, 35 ); // right after the add-to-cart form (30)
+
+/* Estimated delivery dates, filled in the browser so cached pages never show a
+   stale date. Inline right after the element, and flagged data-no-optimize /
+   data-no-defer so LiteSpeed's "delay JS" doesn't hold it until the visitor
+   first interacts (cozy-main.js is delayed, so the dates can't live there).
+   Counts business days after today, skipping weekends and Spanish national
+   holidays (policy: 3-5 días laborables desde la confirmación del pedido). */
+function cozy_delivery_dates_script() {
+    ?>
+    <script data-no-optimize="1" data-no-defer="1">
+    (function () {
+        var H = ['01-01', '01-06', '05-01', '08-15', '10-12', '11-01', '12-06', '12-08', '12-25'];
+        function biz(d) {
+            var md = ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+            return d.getDay() !== 0 && d.getDay() !== 6 && H.indexOf(md) === -1;
+        }
+        function add(n) {
+            var d = new Date(); d.setHours(0, 0, 0, 0);
+            while (n > 0) { d.setDate(d.getDate() + 1); if (biz(d)) n--; }
+            return d;
+        }
+        function fmt(d, month) {
+            var o = { weekday: 'long', day: 'numeric' };
+            if (month) o.month = 'long';
+            return d.toLocaleDateString('es-ES', o).replace(',', '');
+        }
+        document.querySelectorAll('[data-cozy-delivery]').forEach(function (el) {
+            var a = add(parseInt(el.getAttribute('data-min-days'), 10) || 3);
+            var b = add(parseInt(el.getAttribute('data-max-days'), 10) || 5);
+            el.innerHTML = 'Pídelo hoy y recíbelo entre el <strong class="text-cozy-coffee">' + fmt(a, a.getMonth() !== b.getMonth()) +
+                '</strong> y el <strong class="text-cozy-coffee">' + fmt(b, true) + '</strong>';
+        });
+    })();
+    </script>
+    <?php
+}
 
 /* ------------------------------------------------------------------ */
 /*  Cart drawer: "Completa tu pedido"                                  */
