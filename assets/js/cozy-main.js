@@ -454,6 +454,44 @@ window.toggleFavorite = function (productId, productName, productPrice) {
         });
 };
 
+/* ---------- ESTIMATED DELIVERY DATES (product page) ----------
+   Filled in client-side because product pages come from the full-page cache:
+   a server-rendered date would go stale. Counts business days after today,
+   skipping weekends and Spanish national holidays (policy: 3-5 días
+   laborables desde la confirmación del pedido). */
+(function () {
+    var HOLIDAYS = ['01-01', '01-06', '05-01', '08-15', '10-12', '11-01', '12-06', '12-08', '12-25'];
+    function isBusinessDay(d) {
+        var day = d.getDay();
+        var mmdd = ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+        return day !== 0 && day !== 6 && HOLIDAYS.indexOf(mmdd) === -1;
+    }
+    function addBusinessDays(from, n) {
+        var d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+        while (n > 0) {
+            d.setDate(d.getDate() + 1);
+            if (isBusinessDay(d)) n--;
+        }
+        return d;
+    }
+    function fmt(d, withMonth) {
+        var opts = { weekday: 'long', day: 'numeric' };
+        if (withMonth) opts.month = 'long';
+        return d.toLocaleDateString('es-ES', opts).replace(',', ''); // "viernes 30 de octubre"
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-cozy-delivery]').forEach(function (el) {
+            var today = new Date();
+            var from  = addBusinessDays(today, parseInt(el.getAttribute('data-min-days'), 10) || 3);
+            var to    = addBusinessDays(today, parseInt(el.getAttribute('data-max-days'), 10) || 5);
+            var sameMonth = from.getMonth() === to.getMonth();
+            el.innerHTML = 'Pídelo hoy y recíbelo entre el <strong class="text-cozy-coffee">' +
+                fmt(from, !sameMonth) + '</strong> y el <strong class="text-cozy-coffee">' +
+                fmt(to, true) + '</strong>';
+        });
+    });
+})();
+
 /* ---------- PRODUCT GALLERY SLIDER (main image strip, not the lightbox) ---------- */
 function cozyGalleryUpdate(gallery, index) {
     var track  = gallery.querySelector('.cozy-gallery__track');

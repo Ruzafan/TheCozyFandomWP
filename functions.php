@@ -8,6 +8,8 @@ require_once get_stylesheet_directory() . '/inc/coming-soon.php';
 require_once get_stylesheet_directory() . '/inc/cozy-events.php';
 require_once get_stylesheet_directory() . '/inc/seo-meta-seed.php';
 require_once get_stylesheet_directory() . '/inc/licence-landings.php';
+require_once get_stylesheet_directory() . '/inc/shop-incentives.php';
+require_once get_stylesheet_directory() . '/inc/trust-pages.php';
 
 /* ------------------------------------------------------------------ */
 /*  RESOURCE PRELOADS (Critical Fonts & LCP Hero Banner)              */
@@ -1636,12 +1638,16 @@ function cozy_render_mini_cart() {
                         ¡Enhorabuena! Tienes <strong class="text-cozy-mintDark">Envío GRATIS</strong>
                     </span>
                 <?php else : ?>
-                    <span>Te faltan <strong class="text-cozy-mintDark"><?php echo wc_price( $remaining ); ?></strong> para <strong class="text-cozy-coffee">Envío GRATIS</strong></span>
+                    <span><?php echo wp_kses_post( cozy_shipping_progress_html( $subtotal ) ); // inc/shop-incentives.php ?></span>
                 <?php endif; ?>
                 <span class="text-[11px] text-cozy-coffee/60 font-bold ml-1"><?php echo round( $percent ); ?>%</span>
             </div>
-            <div class="w-full h-2 bg-white rounded-full overflow-hidden border border-cozy-sand/60">
+            <?php $reduced = cozy_reduced_shipping(); ?>
+            <div class="relative w-full h-2 bg-white rounded-full overflow-hidden border border-cozy-sand/60">
                 <div class="h-full bg-cozy-mint rounded-full transition-all duration-500 <?php echo $subtotal >= $threshold ? 'cozy-free-shipping-glow' : ''; ?>" style="width: <?php echo $percent; ?>%"></div>
+                <?php if ( $reduced && $threshold > 0 ) : // tick at the reduced-shipping step ?>
+                <span class="absolute top-0 bottom-0 w-0.5 bg-cozy-coffee/25" style="left: <?php echo esc_attr( round( $reduced['min'] / $threshold * 100, 2 ) ); ?>%" aria-hidden="true"></span>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -1674,6 +1680,7 @@ function cozy_render_mini_cart() {
                 </a>
             </div>
             <?php endforeach; ?>
+            <?php cozy_render_cart_suggestions( $subtotal ); // "Completa tu pedido" — inc/shop-incentives.php ?>
         <?php endif; ?>
         </div>
     </div>
@@ -1748,6 +1755,11 @@ function cozy_fandom_render_footer() {
                 <div>
                     <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Información</h4>
                     <ul class="space-y-2.5 text-xs">
+                        <?php foreach ( [ 'sobre-nosotros' => 'Sobre nosotros', 'preguntas-frecuentes' => 'Preguntas frecuentes' ] as $trust_slug => $trust_label ) :
+                            $trust_url = cozy_published_page_link( $trust_slug ); // only once published (inc/trust-pages.php)
+                            if ( $trust_url ) : ?>
+                        <li><a href="<?php echo esc_url( $trust_url ); ?>" class="hover:text-cozy-mint transition-colors"><?php echo esc_html( $trust_label ); ?></a></li>
+                        <?php endif; endforeach; ?>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'envios-y-devoluciones' ) ); ?>" class="hover:text-cozy-mint transition-colors">Envíos y devoluciones</a></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-privacidad' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de privacidad</a></li>
                         <li><a href="<?php echo esc_url( cozy_fandom_legal_link( 'politica-de-cookies' ) ); ?>" class="hover:text-cozy-mint transition-colors">Política de cookies</a></li>

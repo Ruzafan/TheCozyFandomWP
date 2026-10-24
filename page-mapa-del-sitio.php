@@ -108,7 +108,12 @@ get_header( 'shop' );
             return $page ? get_permalink( $page ) : '#';
         }
 
-        cozy_sitemap_section( 'Información', 'circle-info', [
+        // Trust pages only once published (Sobre nosotros starts as a draft).
+        $info_links = array_filter( [
+            'Sobre nosotros'       => cozy_published_page_link( 'sobre-nosotros' ),
+            'Preguntas frecuentes' => cozy_published_page_link( 'preguntas-frecuentes' ),
+        ] );
+        cozy_sitemap_section( 'Información', 'circle-info', $info_links + [
             'Envíos y devoluciones' => cozy_sitemap_legal_link( 'envios-y-devoluciones' ),
             'Política de privacidad' => cozy_sitemap_legal_link( 'politica-de-privacidad' ),
             'Política de cookies' => cozy_sitemap_legal_link( 'politica-de-cookies' ),
