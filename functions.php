@@ -10,6 +10,7 @@ require_once get_stylesheet_directory() . '/inc/seo-meta-seed.php';
 require_once get_stylesheet_directory() . '/inc/licence-landings.php';
 require_once get_stylesheet_directory() . '/inc/shop-incentives.php';
 require_once get_stylesheet_directory() . '/inc/trust-pages.php';
+require_once get_stylesheet_directory() . '/inc/ga4-item-export.php';
 
 /* ------------------------------------------------------------------ */
 /*  RESOURCE PRELOADS (Critical Fonts & LCP Hero Banner)              */
