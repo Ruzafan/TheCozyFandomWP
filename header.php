@@ -82,8 +82,9 @@ window.cozyLoadGTM = function () {
 
             <!-- Search -->
             <div class="cozy-hdr-search-wrap relative flex-1 min-w-0">
-                <form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" class="cozy-hdr-search">
-                    <input type="search" name="s"
+                <form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" class="cozy-hdr-search"
+                      toolname="search_store" tooldescription="Busca productos en la tienda The Cozy Fandom y abre la página de resultados.">
+                    <input type="search" name="s" toolparamdescription="Texto a buscar, p. ej. taza snoopy o book nook"
                            value="<?php echo esc_attr( get_search_query() ); ?>"
                            placeholder="<?php esc_attr_e( 'Buscar productos...', 'woocommerce' ); ?>"
                            class="cozy-hdr-search__input"

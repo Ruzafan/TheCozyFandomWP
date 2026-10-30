@@ -11,6 +11,7 @@ require_once get_stylesheet_directory() . '/inc/licence-landings.php';
 require_once get_stylesheet_directory() . '/inc/shop-incentives.php';
 require_once get_stylesheet_directory() . '/inc/trust-pages.php';
 require_once get_stylesheet_directory() . '/inc/ga4-item-export.php';
+require_once get_stylesheet_directory() . '/inc/agent-ready.php';
 
 /* ------------------------------------------------------------------ */
 /*  RESOURCE PRELOADS (Critical Fonts & LCP Hero Banner)              */
@@ -1773,7 +1774,7 @@ function cozy_fandom_render_footer() {
                 <div>
                     <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Información</h4>
                     <ul class="space-y-2.5 text-xs">
-                        <?php foreach ( [ 'sobre-nosotros' => 'Sobre nosotros', 'preguntas-frecuentes' => 'Preguntas frecuentes' ] as $trust_slug => $trust_label ) :
+                        <?php foreach ( [ 'sobre-nosotros' => 'Sobre nosotros', 'contacto' => 'Contacto', 'preguntas-frecuentes' => 'Preguntas frecuentes' ] as $trust_slug => $trust_label ) :
                             $trust_url = cozy_published_page_link( $trust_slug ); // only once published (inc/trust-pages.php)
                             if ( $trust_url ) : ?>
                         <li><a href="<?php echo esc_url( $trust_url ); ?>" class="hover:text-cozy-mint transition-colors"><?php echo esc_html( $trust_label ); ?></a></li>

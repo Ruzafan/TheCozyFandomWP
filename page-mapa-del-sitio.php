@@ -111,6 +111,7 @@ get_header( 'shop' );
         // Trust pages only once published (Sobre nosotros starts as a draft).
         $info_links = array_filter( [
             'Sobre nosotros'       => cozy_published_page_link( 'sobre-nosotros' ),
+            'Contacto'             => cozy_published_page_link( 'contacto' ),
             'Preguntas frecuentes' => cozy_published_page_link( 'preguntas-frecuentes' ),
         ] );
         cozy_sitemap_section( 'Información', 'circle-info', $info_links + [

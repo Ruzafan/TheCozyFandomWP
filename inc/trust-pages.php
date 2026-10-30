@@ -38,7 +38,7 @@ add_shortcode( 'cozy_contact_options', function() {
     $whatsapp = preg_replace( '/[^0-9]/', '', (string) get_option( 'cozy_whatsapp_number', '' ) );
     $items    = [ sprintf( '📧 Email: <a href="mailto:%1$s">%1$s</a>', esc_html( $email ) ) ];
     if ( $whatsapp ) {
-        $items[] = sprintf( '💬 WhatsApp: <a href="%s" target="_blank" rel="noopener">escríbenos aquí</a>', esc_url( 'https://wa.me/' . $whatsapp ) );
+        $items[] = sprintf( '💬 WhatsApp: <a href="%s" target="_blank" rel="noopener">escríbenos aquí</a> (+%s)', esc_url( 'https://wa.me/' . $whatsapp ), esc_html( $whatsapp ) );
     }
     return '<ul><li>' . implode( '</li><li>', $items ) . '</li></ul>';
 } );
@@ -52,7 +52,7 @@ function cozy_published_page_link( $slug ) {
 /* ------------------------------------------------------------------ */
 /*  One-shot page seed                                                 */
 /* ------------------------------------------------------------------ */
-const COZY_TRUST_PAGES_SEED_VERSION = '2026-10-24';
+const COZY_TRUST_PAGES_SEED_VERSION = '2026-10-30';
 
 function cozy_trust_pages_faq_content() {
     $q = function( $question, $answer ) {
@@ -105,11 +105,41 @@ function cozy_trust_pages_about_content() {
         . "<!-- wp:shortcode -->\n[cozy_contact_options]\n<!-- /wp:shortcode -->";
 }
 
+function cozy_trust_pages_contact_content() {
+    $p = function( $text ) {
+        return "<!-- wp:paragraph -->
+<p>{$text}</p>
+<!-- /wp:paragraph -->
+
+";
+    };
+    $h = function( $title ) {
+        return "<!-- wp:heading -->
+<h2 class=\"wp-block-heading\">{$title}</h2>
+<!-- /wp:heading -->
+
+";
+    };
+    $faq     = esc_url( home_url( '/preguntas-frecuentes/' ) );
+    $returns = esc_url( home_url( '/envios-y-devoluciones/' ) );
+    return $p( '¿Tienes una duda sobre un producto, un pedido o una devolución? Escríbenos y te respondemos nosotros mismos, normalmente en menos de 24 horas laborables.' )
+        . "<!-- wp:shortcode -->
+[cozy_contact_options]
+<!-- /wp:shortcode -->
+
+"
+        . $h( 'Dónde estamos' )
+        . $p( 'The Cozy Fandom es una tienda online con sede en Lliçà de Vall (08185, Barcelona, España). Enviamos a toda la España peninsular; no tenemos tienda física.' )
+        . $h( 'Antes de escribirnos' )
+        . $p( "Puede que tu respuesta ya esté en las <a href=\"{$faq}\">preguntas frecuentes</a> o en nuestra <a href=\"{$returns}\">política de envíos y devoluciones</a>." );
+}
+
 function cozy_trust_pages_seed_run() {
     $log   = [];
     $pages = [
         'preguntas-frecuentes' => [ 'Preguntas frecuentes', 'publish', 'cozy_trust_pages_faq_content' ],
         'sobre-nosotros'       => [ 'Sobre nosotros', 'draft', 'cozy_trust_pages_about_content' ],
+        'contacto'             => [ 'Contacto', 'publish', 'cozy_trust_pages_contact_content' ],
     ];
     foreach ( $pages as $slug => [ $title, $status, $content_fn ] ) {
         if ( get_page_by_path( $slug, OBJECT, 'page' ) ) {
@@ -128,11 +158,23 @@ function cozy_trust_pages_seed_run() {
     return $log;
 }
 
-add_action( 'admin_init', function() {
-    if ( get_option( 'cozy_trust_pages_seed_version' ) === COZY_TRUST_PAGES_SEED_VERSION || ! current_user_can( 'manage_options' ) ) {
+/* Runs on the first request after a deploy (not only in wp-admin), so new
+   pages go live straight away. add_option() fails when the option already
+   exists, which makes it a lock against two requests seeding at once. */
+add_action( 'init', function() {
+    if ( get_option( 'cozy_trust_pages_seed_version' ) === COZY_TRUST_PAGES_SEED_VERSION ) {
+        return;
+    }
+    $lock = get_option( 'cozy_trust_pages_seed_lock' );
+    if ( $lock && time() - (int) $lock < 300 ) {
+        return;
+    }
+    delete_option( 'cozy_trust_pages_seed_lock' );
+    if ( ! add_option( 'cozy_trust_pages_seed_lock', time(), '', false ) ) {
         return;
     }
     update_option( 'cozy_trust_pages_seed_log', cozy_trust_pages_seed_run(), false );
     update_option( 'cozy_trust_pages_seed_version', COZY_TRUST_PAGES_SEED_VERSION, false );
+    delete_option( 'cozy_trust_pages_seed_lock' );
     do_action( 'litespeed_purge_all' );
-} );
+}, 20 );
