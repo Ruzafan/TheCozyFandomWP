@@ -747,7 +747,8 @@ add_action( 'wp_footer', function() {
         'cartUrl'  => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : cozy_agent_site_url( '/es/cart/' ),
     ];
     ?>
-<script id="cozy-webmcp">
+<?php /* data-no-optimize/no-defer: LiteSpeed would otherwise delay it until user interaction, and agents need the tools on load. */ ?>
+<script id="cozy-webmcp" data-no-optimize="1" data-no-defer="1" data-cfasync="false">
 (function () {
     var mc = document.modelContext || navigator.modelContext;
     if (!mc || typeof mc.registerTool !== 'function') return;
