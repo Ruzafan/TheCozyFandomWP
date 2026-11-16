@@ -219,6 +219,7 @@ do_action( 'woocommerce_before_cart' );
                            class="w-full bg-cozy-mint hover:bg-cozy-mintDark text-cozy-coffee font-bold py-3.5 px-6 rounded-2xl transition-all shadow-sm hover:shadow-md text-sm text-center block no-underline">
                             Finalizar compra →
                         </a>
+                        <?php if ( function_exists( 'cozy_checkout_reassurance' ) ) echo cozy_checkout_reassurance(); // phpcs:ignore -- escaped inside ?>
                     </div>
                 </div>
             </div>

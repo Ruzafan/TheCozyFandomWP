@@ -278,7 +278,7 @@ add_action( 'rest_api_init', function () {
 
             $body = json_decode( $request->get_body(), true );
             $type = is_array( $body ) ? ( $body['type'] ?? '' ) : '';
-            $allowed = [ 'page_view', 'view_item', 'view_item_list', 'view_cart', 'add_to_wishlist', 'search', 'add_shipping_info', 'add_payment_info' ];
+            $allowed = [ 'page_view', 'view_item', 'view_item_list', 'view_cart', 'add_to_wishlist', 'search', 'add_shipping_info', 'add_payment_info', 'checkout_error' ];
             if ( ! in_array( $type, $allowed, true ) ) {
                 return new WP_REST_Response( null, 400 );
             }
@@ -323,6 +323,10 @@ add_action( 'rest_api_init', function () {
                (same rule as the query-string stripping above). */
             if ( 'search' === $type ) {
                 $args['detail'] = 'results:' . min( absint( $body['results'] ?? 0 ), 999 );
+            }
+            if ( 'checkout_error' === $type ) {
+                $args['detail'] = 'block'; // the classic-checkout hook below stores the error codes instead
+                $args['value']  = min( max( (float) ( $body['value'] ?? 0 ), 0 ), 99999 );
             }
             if ( in_array( $type, [ 'add_shipping_info', 'add_payment_info' ], true ) ) {
                 $args['value'] = min( max( (float) ( $body['value'] ?? 0 ), 0 ), 99999 );

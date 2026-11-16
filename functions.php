@@ -10,6 +10,7 @@ require_once get_stylesheet_directory() . '/inc/seo-meta-seed.php';
 require_once get_stylesheet_directory() . '/inc/licence-landings.php';
 require_once get_stylesheet_directory() . '/inc/shop-incentives.php';
 require_once get_stylesheet_directory() . '/inc/trust-pages.php';
+require_once get_stylesheet_directory() . '/inc/trust-signals.php';
 require_once get_stylesheet_directory() . '/inc/ga4-item-export.php';
 require_once get_stylesheet_directory() . '/inc/agent-ready.php';
 
@@ -254,24 +255,78 @@ add_action( 'wp_footer', function() {
 
         ga('begin_checkout', { currency: 'EUR', value: checkoutValue, items: items });
 
-        var firedShipping = false, firedPayment = false;
+        /* The store uses the Checkout BLOCK (page "checkout"), whose radios
+           are React inputs (no #shipping_method / name="payment_method"), so
+           the old classic-checkout listeners never fired. Shipping and
+           payment are pre-selected, so a visitor may never "change" them:
+           each step fires on the first explicit change OR, at the latest,
+           when "Realizar el pedido" is pressed. Classic selectors are kept
+           in case the page is ever switched back to the shortcode. */
+        var firedShipping = false, firedPayment = false, shippingTier = '', paymentType = '';
+        function shipping(tier) {
+            if (tier) shippingTier = tier;
+            if (firedShipping) return;
+            firedShipping = true;
+            ga('add_shipping_info', { currency: 'EUR', value: checkoutValue, shipping_tier: shippingTier, items: items });
+            log('add_shipping_info', { value: checkoutValue, method: shippingTier });
+        }
+        function payment(type) {
+            if (type) paymentType = type;
+            if (firedPayment) return;
+            firedPayment = true;
+            ga('add_payment_info', { currency: 'EUR', value: checkoutValue, payment_type: paymentType, items: items });
+            log('add_payment_info', { value: checkoutValue, method: paymentType });
+        }
+        function checkedValue(selector) {
+            var el = document.querySelector(selector + ':checked');
+            return el ? el.value : '';
+        }
+        var SHIP_SEL = '.wc-block-components-shipping-rates-control input[type="radio"], .woocommerce-shipping-methods input, #shipping_method input';
+        var PAY_SEL  = 'input[name="radio-control-wc-payment-method-options"], input[name="payment_method"]';
+
         document.body.addEventListener('change', function (e) {
-            if (!firedShipping && e.target.closest && e.target.closest('.woocommerce-shipping-methods, #shipping_method')) {
-                firedShipping = true;
-                ga('add_shipping_info', { currency: 'EUR', value: checkoutValue, shipping_tier: e.target.value || '', items: items });
-                log('add_shipping_info', { value: checkoutValue, method: e.target.value || '' });
-            }
-            if (!firedPayment && e.target.name === 'payment_method') {
-                firedPayment = true;
-                ga('add_payment_info', { currency: 'EUR', value: checkoutValue, payment_type: e.target.value || '', items: items });
-                log('add_payment_info', { value: checkoutValue, method: e.target.value || '' });
-            }
+            if (!e.target.matches) return;
+            if (e.target.matches(SHIP_SEL)) shipping(e.target.value);
+            if (e.target.matches(PAY_SEL))  payment(e.target.value);
         });
 
-        // WooCommerce triggers this jQuery event when the order is rejected
-        // (missing field, card declined…). Error codes stay server-side; GA4
-        // only gets that it happened.
+        var submittedAt = 0;
+        document.body.addEventListener('click', function (e) {
+            if (!e.target.closest || !e.target.closest('.wc-block-components-checkout-place-order-button, #place_order')) return;
+            submittedAt = Date.now();
+            shipping(checkedValue(SHIP_SEL));
+            payment(checkedValue(PAY_SEL));
+        }, true);
+
+        /* checkout_error — the order was rejected (missing field, card
+           declined…). Block checkout shows an error notice banner; classic
+           checkout triggers a jQuery event. Only the fact is reported, never
+           the message (it can echo what the visitor typed). */
+        var lastError = 0;
+        function checkoutError() {
+            if (Date.now() - lastError < 3000) return; // one per attempt
+            lastError = Date.now();
+            ga('checkout_error', { currency: 'EUR', value: checkoutValue });
+            log('checkout_error', { value: checkoutValue });
+        }
+        if (window.MutationObserver) {
+            new MutationObserver(function (mutations) {
+                if (!submittedAt || Date.now() - submittedAt > 30000) return;
+                for (var i = 0; i < mutations.length; i++) {
+                    for (var j = 0; j < mutations[i].addedNodes.length; j++) {
+                        var n = mutations[i].addedNodes[j];
+                        if (n.nodeType === 1 && (n.matches('.wc-block-components-notice-banner.is-error, .wc-block-components-validation-error') ||
+                            n.querySelector('.wc-block-components-notice-banner.is-error, .wc-block-components-validation-error'))) {
+                            checkoutError();
+                            return;
+                        }
+                    }
+                }
+            }).observe(document.body, { childList: true, subtree: true });
+        }
         if (window.jQuery) {
+            // Classic checkout: the internal log already gets this server-side
+            // (woocommerce_after_checkout_validation, with error codes).
             window.jQuery(document.body).on('checkout_error', function () {
                 ga('checkout_error', { currency: 'EUR', value: checkoutValue });
             });

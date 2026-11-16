@@ -351,6 +351,7 @@ window.cozyLoadGTM = function () {
            class="block w-full text-center border border-cozy-sand hover:border-cozy-coffee text-cozy-coffee font-medium py-3 rounded-2xl transition-colors text-sm">
             Ver carrito
         </a>
+        <?php if ( function_exists( 'cozy_checkout_reassurance' ) ) echo cozy_checkout_reassurance( 'drawer' ); // phpcs:ignore -- escaped inside ?>
         <?php endif; ?>
     </div>
 </div>

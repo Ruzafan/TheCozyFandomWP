@@ -31,6 +31,7 @@ if ( ! comments_open() ) {
 			}
 			?>
 		</h2>
+		<?php if ( function_exists( 'cozy_reviews_disclosure' ) ) echo cozy_reviews_disclosure(); // phpcs:ignore -- escaped inside ?>
 
 		<?php if ( have_comments() ) : ?>
 			<ol class="commentlist woocommerce-Reviews-list">

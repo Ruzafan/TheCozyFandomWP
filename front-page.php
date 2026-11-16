@@ -282,6 +282,9 @@ $cozy_cats = [
 </section>
 
 
+<?php /* Customer reviews — renders nothing until there are enough (inc/trust-signals.php) */
+if ( function_exists( 'cozy_render_home_reviews' ) ) cozy_render_home_reviews(); ?>
+
 <!-- ============================================================ -->
 <!--  NEWSLETTER                                                   -->
 <!-- ============================================================ -->
