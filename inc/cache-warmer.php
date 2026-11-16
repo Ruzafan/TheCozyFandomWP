@@ -36,8 +36,10 @@ add_action( 'init', function () {
     if ( ! wp_next_scheduled( COZY_WARM_HOOK ) ) {
         wp_schedule_event( time() + 300, 'cozy_20min', COZY_WARM_HOOK );
     }
-    cozy_warm_check_deploy();
 } );
+
+// wp_loaded, not init: LiteSpeed only hooks its litespeed_purge_all listener during init.
+add_action( 'wp_loaded', 'cozy_warm_check_deploy' );
 
 /* ------------------------------------------------------------------ */
 /*  Purge once per deploy                                              */
