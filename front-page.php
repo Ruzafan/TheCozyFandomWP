@@ -66,9 +66,9 @@ $cozy_cats = [
                     srcset="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner-mobile.webp' ); ?>"
                     width="900" height="900">
             <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/banner.webp' ); ?>"
-                 alt="" aria-hidden="true" loading="eager" fetchpriority="high"
+                 alt="" aria-hidden="true" loading="eager" fetchpriority="high" data-no-lazy="1" data-skip-lazy="1"
                  width="2400" height="1018"
-                 class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
+                 class="skip-lazy absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none">
         </picture>
 
         <!-- Copy: glass card aligned within max-w-7xl -->
