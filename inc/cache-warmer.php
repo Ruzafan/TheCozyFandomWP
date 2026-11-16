@@ -1,6 +1,6 @@
 <?php
 /**
- * Cache warmer + purge-on-deploy.
+ * Cache warmer (re-warms after each deploy; purging stays manual).
  *
  * Why: with a few visits a day almost every visitor lands on a page whose
  * LiteSpeed cache entry has expired (1-week TTL) or was never built, so they
@@ -12,7 +12,7 @@
  * LiteSpeed without PHP, so a pass is cheap.
  *
  * Also: git deploys don't purge LiteSpeed, so visitors kept seeing the old
- * HTML. When the theme's code changes, purge everything once and re-warm.
+ * HTML. Purge manually (LiteSpeed + hPanel CDN together), then this re-warms.
  *
  * WP-Cron only fires on visits; for a reliable schedule add a server cron in
  * hPanel: every 15 min → wget -q -O - "https://thecozyfandom.com/wp-cron.php?doing_wp_cron" >/dev/null 2>&1
@@ -70,7 +70,10 @@ function cozy_warm_check_deploy() {
 
     update_option( 'cozy_deploy_version', $ver, false );
 
-    do_action( 'litespeed_purge_all' );
+    // NO automatic purge here. litespeed_purge_all also deletes LiteSpeed's
+    // combined CSS/JS files, while the Hostinger CDN (hcdn) keeps serving old
+    // HTML that points at them → 404 JS on the live site (2026-11-16). After a
+    // deploy, purge manually: LiteSpeed "Purge All" + hPanel CDN "Flush cache".
     delete_transient( 'cozy_warm_urls' );
     update_option( 'cozy_warm_offset', 0, false );
     if ( ! wp_next_scheduled( 'cozy_cache_warm_once' ) ) {
