@@ -11,6 +11,7 @@ require_once get_stylesheet_directory() . '/inc/licence-landings.php';
 require_once get_stylesheet_directory() . '/inc/shop-incentives.php';
 require_once get_stylesheet_directory() . '/inc/trust-pages.php';
 require_once get_stylesheet_directory() . '/inc/trust-signals.php';
+require_once get_stylesheet_directory() . '/inc/review-requests.php';
 require_once get_stylesheet_directory() . '/inc/ga4-item-export.php';
 require_once get_stylesheet_directory() . '/inc/agent-ready.php';
 

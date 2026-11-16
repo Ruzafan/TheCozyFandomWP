@@ -105,9 +105,10 @@ add_filter( 'render_block_woocommerce/checkout', function ( $content ) {
 /* ------------------------------------------------------------------ */
 function cozy_reviews_disclosure() {
     $verified_only = 'yes' === get_option( 'woocommerce_review_rating_verification_required' );
-    $text = $verified_only
+    $text = ( $verified_only
         ? 'Solo pueden opinar clientes que han comprado este producto en nuestra tienda.'
-        : 'Las opiniones marcadas como «propietario verificado» son de clientes que han comprado el producto en nuestra tienda.';
+        : 'Las opiniones marcadas como «propietario verificado» son de clientes que han comprado el producto en nuestra tienda.' )
+        . ' Pedimos opinión a todos los clientes tras la entrega y publicamos todas, buenas y malas.';
     return '<p class="cozy-reviews-disclosure text-[11px] text-cozy-coffee/55 mt-1 mb-4">ⓘ ' . esc_html( $text ) . '</p>';
 }
 
