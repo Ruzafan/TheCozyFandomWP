@@ -57,8 +57,8 @@ function cozy_checkout_reassurance( $variant = 'default' ) {
     $rows   = [];
     $rows[] = [ $lock, '<strong>Pago 100% seguro</strong>' . ( $methods ? ' · ' . esc_html( implode( ', ', array_slice( $methods, 0, 4 ) ) ) : '' ) ];
     $rows[] = [ $back, $returns_url
-        ? '<a href="' . esc_url( $returns_url ) . '" class="underline hover:text-cozy-mint">Devolución en 14 días</a> si no te encanta'
-        : 'Devolución en 14 días si no te encanta' ];
+        ? '<a href="' . esc_url( $returns_url ) . '" class="underline hover:text-cozy-mint">14 días para devolverlo</a> · gratis si llega dañado o defectuoso'
+        : '14 días para devolverlo · gratis si llega dañado o defectuoso' ];
     $rows[] = [ $check, 'Productos <strong>oficiales con licencia</strong>' ];
     if ( $contact_url ) {
         $rows[] = [ $chat, '¿Dudas? <a href="' . esc_url( $contact_url ) . '" class="underline hover:text-cozy-mint">Te respondemos nosotros</a>' ];
