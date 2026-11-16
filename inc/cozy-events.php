@@ -150,13 +150,23 @@ function cozy_events_session_has_beacon() {
 /* ------------------------------------------------------------------ */
 /*  LOGGER                                                              */
 /* ------------------------------------------------------------------ */
+/* Whether the current request is one we log: not wp-admin, not the store
+   owner, not a bot. Server-to-server callbacks (payment gateway IPN/webhooks)
+   bypass this via 'force', because they carry no visitor at all. */
+function cozy_events_should_log() {
+    if ( is_admin() && ! wp_doing_ajax() ) return false;                 // skip wp-admin screens
+    if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) return false; // skip the store owner's own traffic
+    if ( cozy_events_is_bot() ) return false;
+    return true;
+}
+
 function cozy_log_event( $event_type, $args = [] ) {
-    if ( is_admin() && ! wp_doing_ajax() ) return;                 // skip wp-admin screens
-    if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) return; // skip the store owner's own traffic
-    if ( cozy_events_is_bot() ) return;
+    if ( empty( $args['force'] ) && ! cozy_events_should_log() ) return;
 
     global $wpdb;
     $defaults = [
+        'session_hash'   => null,   // null = this request's visitor; set when logging on someone else's behalf (IPN)
+        'force'          => false,
         'item_list_name' => null,
         'product_id'     => null,
         'value'          => null,
@@ -178,7 +188,7 @@ function cozy_log_event( $event_type, $args = [] ) {
     $wpdb->insert(
         cozy_events_table_name(),
         [
-            'session_hash'   => cozy_events_session_hash(),
+            'session_hash'   => $args['session_hash'] ?: cozy_events_session_hash(),
             'event_type'     => $event_type,
             'item_list_name' => $args['item_list_name'],
             'product_id'     => $args['product_id'],
@@ -268,7 +278,8 @@ add_action( 'rest_api_init', function () {
 
             $body = json_decode( $request->get_body(), true );
             $type = is_array( $body ) ? ( $body['type'] ?? '' ) : '';
-            if ( ! in_array( $type, [ 'page_view', 'view_item', 'view_item_list', 'view_cart' ], true ) ) {
+            $allowed = [ 'page_view', 'view_item', 'view_item_list', 'view_cart', 'add_to_wishlist', 'search', 'add_shipping_info', 'add_payment_info' ];
+            if ( ! in_array( $type, $allowed, true ) ) {
                 return new WP_REST_Response( null, 400 );
             }
 
@@ -308,7 +319,18 @@ add_action( 'rest_api_init', function () {
                 $args['detail'] = 'drawer';
                 $args['value']  = min( max( (float) ( $body['value'] ?? 0 ), 0 ), 99999 );
             }
-            if ( 'view_item' === $type ) {
+            /* search — only the result count is kept, never the typed term
+               (same rule as the query-string stripping above). */
+            if ( 'search' === $type ) {
+                $args['detail'] = 'results:' . min( absint( $body['results'] ?? 0 ), 999 );
+            }
+            if ( in_array( $type, [ 'add_shipping_info', 'add_payment_info' ], true ) ) {
+                $args['value'] = min( max( (float) ( $body['value'] ?? 0 ), 0 ), 99999 );
+                if ( ! empty( $body['method'] ) && is_string( $body['method'] ) ) {
+                    $args['detail'] = mb_substr( sanitize_key( $body['method'] ), 0, 64 );
+                }
+            }
+            if ( in_array( $type, [ 'view_item', 'add_to_wishlist' ], true ) ) {
                 $product = wc_get_product( absint( $body['product_id'] ?? 0 ) );
                 if ( ! $product ) return new WP_REST_Response( null, 400 );
                 $args['product_id'] = $product->get_id();
@@ -381,32 +403,69 @@ add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors )
    this and purchase is abandoned/failed payments. Classic and block checkout. */
 function cozy_events_log_place_order( $order ) {
     if ( ! $order instanceof WC_Order ) return;
+    if ( ! cozy_events_should_log() ) return;
     cozy_log_event( 'place_order', [
         'value'  => (float) $order->get_total(),
         'detail' => mb_substr( (string) $order->get_payment_method(), 0, 191 ),
     ] );
+    /* Remember which anonymous visit placed it, so a purchase confirmed later
+       by the payment gateway (a server-to-server call with no visitor) is
+       still attributed to the same session. Its presence also marks the order
+       as a real storefront order — owner test orders never get it. */
+    $order->update_meta_data( '_cozy_events_session', cozy_events_session_hash() );
+    $order->save();
 }
 add_action( 'woocommerce_checkout_order_processed', function ( $order_id, $posted_data, $order ) {
     cozy_events_log_place_order( $order );
 }, 10, 3 );
 add_action( 'woocommerce_store_api_checkout_order_processed', 'cozy_events_log_place_order' );
 
-/* purchase */
-add_action( 'woocommerce_thank_you', function ( $order_id ) {
-    if ( ! $order_id ) return;
-    $order = wc_get_order( $order_id );
+/* purchase — one row per line item, logged once per order.
+   Two triggers, whichever comes first wins (deduped by _cozy_events_tracked):
+   1. the thank-you page (visitor's own request), hook "woocommerce_thankyou"
+      — note: NOT "woocommerce_thank_you", which WooCommerce never fires and
+      which silently kept purchases out of this log until 2026-11;
+   2. the gateway confirming payment (payment_complete / processing), which
+      covers buyers who pay by card/PayPal and never come back to the
+      thank-you page. */
+function cozy_events_log_purchase( $order_id, $server_side = false ) {
+    $order = $order_id ? wc_get_order( $order_id ) : null;
     if ( ! $order || $order->get_meta( '_cozy_events_tracked' ) ) return;
+    if ( $order->has_status( [ 'failed', 'cancelled', 'pending' ] ) && $server_side ) return;
+    if ( $order->has_status( 'failed' ) ) return;
+
+    $session = (string) $order->get_meta( '_cozy_events_session' );
+    if ( $server_side && '' === $session ) return; // not a storefront order (owner test, admin-created)
+    if ( ! $server_side && '' === $session && ! cozy_events_should_log() ) return;
 
     foreach ( $order->get_items() as $item ) {
         cozy_log_event( 'purchase', [
-            'product_id' => $item->get_product_id(),
-            'value'      => (float) $order->get_item_total( $item, false, false ) * $item->get_quantity(),
-            'page_path'  => false, // the thank-you URL carries the order number
+            'product_id'   => $item->get_product_id(),
+            'value'        => (float) $order->get_item_total( $item, false, false ) * $item->get_quantity(),
+            'page_path'    => false, // the thank-you URL carries the order number
+            'detail'       => mb_substr( (string) $order->get_payment_method(), 0, 191 ),
+            'session_hash' => $session ?: null,
+            'force'        => true,
         ] );
     }
     $order->update_meta_data( '_cozy_events_tracked', 1 );
     $order->save();
+}
+add_action( 'woocommerce_thankyou', function ( $order_id ) {
+    cozy_events_log_purchase( $order_id, false );
 }, 20 );
+add_action( 'woocommerce_payment_complete', function ( $order_id ) {
+    cozy_events_log_purchase( $order_id, true );
+} );
+add_action( 'woocommerce_order_status_processing', function ( $order_id ) {
+    cozy_events_log_purchase( $order_id, true );
+} );
+
+/* sign_up — account created from the storefront (checkout or My Account).
+   Accounts created from wp-admin are skipped by cozy_events_should_log(). */
+add_action( 'user_register', function () {
+    cozy_log_event( 'sign_up', [ 'page_path' => null ] );
+} );
 
 /* ------------------------------------------------------------------ */
 /*  RETENTION — purge anything older than 13 months, weekly             */
@@ -436,7 +495,7 @@ function cozy_events_render_report() {
     $since = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days} days" ) );
 
     // Funnel step counts (distinct sessions per step, so a step isn't inflated by repeat views)
-    $steps = [ 'page_view', 'view_item_list', 'view_item', 'add_to_cart', 'view_cart', 'begin_checkout', 'place_order', 'purchase' ];
+    $steps = [ 'page_view', 'view_item_list', 'view_item', 'add_to_cart', 'view_cart', 'begin_checkout', 'add_shipping_info', 'add_payment_info', 'checkout_error', 'place_order', 'purchase' ];
     $funnel = [];
     foreach ( $steps as $step ) {
         $funnel[ $step ] = (int) $wpdb->get_var( $wpdb->prepare(
@@ -488,6 +547,21 @@ function cozy_events_render_report() {
     echo '<label>Últimos días: <input type="number" name="days" value="' . esc_attr( $days ) . '" min="1" style="width:70px"></label> ';
     submit_button( 'Actualizar', 'secondary', '', false );
     echo '</form>';
+
+    /* Sanity check: real WooCommerce orders vs purchases this log recorded.
+       A gap here means tracking is broken (as the wrong thank-you hook was). */
+    $real_orders = function_exists( 'wc_get_orders' ) ? count( wc_get_orders( [
+        'status'       => [ 'processing', 'completed', 'on-hold' ],
+        'date_created' => '>=' . strtotime( "-{$days} days" ),
+        'limit'        => -1,
+        'return'       => 'ids',
+    ] ) ) : 0;
+    $logged_orders = (int) $wpdb->get_var( $wpdb->prepare(
+        "SELECT COUNT(DISTINCT session_hash, DATE(created_at)) FROM {$table} WHERE event_type = 'purchase' AND created_at >= %s",
+        $since
+    ) );
+    $gap_style = $real_orders > $logged_orders ? 'color:#b32d2e' : 'color:#008a20';
+    echo '<p style="' . esc_attr( $gap_style ) . '"><strong>Control:</strong> ' . esc_html( $real_orders ) . ' pedidos reales en WooCommerce · ' . esc_html( $logged_orders ) . ' compras registradas en este log. Incluye pedidos de prueba propios solo en la primera cifra.</p>';
 
     echo '<h2>Funnel (sesiones únicas por paso)</h2><table class="widefat striped" style="max-width:500px"><tbody>';
     foreach ( $funnel as $step => $count ) {

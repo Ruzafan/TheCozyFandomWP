@@ -133,7 +133,7 @@ add_action( 'wp_footer', function() {
 /* ------------------------------------------------------------------ */
 /*  GA4 ECOMMERCE — core funnel events (view_item, purchase)            */
 /*  add_to_cart is pushed client-side (cozy-main.js, added_to_cart hook) */
-/*  begin_checkout is pushed client-side (data-action="begin-checkout") */
+/*  begin_checkout is pushed on the checkout page itself (see below)     */
 /* ------------------------------------------------------------------ */
 add_action( 'wp_footer', function() {
     if ( ! function_exists( 'is_product' ) || ! is_product() ) return;
@@ -223,31 +223,63 @@ add_action( 'wp_footer', function() {
     <?php
 }, 21 );
 
-/* add_shipping_info / add_payment_info — classic single-page checkout, so these
-   fire on the visitor's first interaction with each block (shipping method /
-   payment method selection) rather than as separate steps. */
+/* Checkout page: begin_checkout on load + add_shipping_info / add_payment_info
+   on the visitor's first interaction with each block (classic single-page
+   checkout) + checkout_error when "Realizar pedido" bounces.
+   begin_checkout used to be pushed only from the drawer's "Finalizar pedido"
+   button, so visitors who went through the Cart page (or landed on
+   /finalizar-compra/ directly) were never counted. Firing it on the page
+   itself covers every route in. Each step is mirrored to the internal log
+   (inc/cozy-events.php) via window.cozyLogEvent. */
 add_action( 'wp_footer', function() {
     if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_order_received_page() || WC()->cart->is_empty() ) return;
+
+    $items = [];
+    foreach ( WC()->cart->get_cart() as $cart_item ) {
+        $product = $cart_item['data'];
+        $items[] = [
+            'item_id'   => (string) $cart_item['product_id'],
+            'item_name' => $product->get_name(),
+            'price'     => (float) wc_get_price_to_display( $product ),
+            'quantity'  => $cart_item['quantity'],
+        ];
+    }
     ?>
     <script>
     (function () {
-        if (typeof gtag !== 'function') return;
         var checkoutValue = <?php echo wp_json_encode( (float) WC()->cart->get_cart_contents_total() ); ?>;
+        var items = <?php echo wp_json_encode( $items ); ?>;
+        function ga(name, params) { if (typeof gtag === 'function') gtag('event', name, params); }
+        function log(type, extra) { if (typeof window.cozyLogEvent === 'function') window.cozyLogEvent(type, extra); }
+
+        ga('begin_checkout', { currency: 'EUR', value: checkoutValue, items: items });
+
         var firedShipping = false, firedPayment = false;
         document.body.addEventListener('change', function (e) {
             if (!firedShipping && e.target.closest && e.target.closest('.woocommerce-shipping-methods, #shipping_method')) {
                 firedShipping = true;
-                gtag('event', 'add_shipping_info', { currency: 'EUR', value: checkoutValue });
+                ga('add_shipping_info', { currency: 'EUR', value: checkoutValue, shipping_tier: e.target.value || '', items: items });
+                log('add_shipping_info', { value: checkoutValue, method: e.target.value || '' });
             }
             if (!firedPayment && e.target.name === 'payment_method') {
                 firedPayment = true;
-                gtag('event', 'add_payment_info', { currency: 'EUR', value: checkoutValue });
+                ga('add_payment_info', { currency: 'EUR', value: checkoutValue, payment_type: e.target.value || '', items: items });
+                log('add_payment_info', { value: checkoutValue, method: e.target.value || '' });
             }
         });
+
+        // WooCommerce triggers this jQuery event when the order is rejected
+        // (missing field, card declined…). Error codes stay server-side; GA4
+        // only gets that it happened.
+        if (window.jQuery) {
+            window.jQuery(document.body).on('checkout_error', function () {
+                ga('checkout_error', { currency: 'EUR', value: checkoutValue });
+            });
+        }
     })();
     </script>
     <?php
-}, 20 );
+}, 35 ); // after cozy-events.php defines window.cozyLogEvent (priority 30)
 
 /* Full-fidelity view_cart (with items[]) on the real Cart page.
    The drawer also pushes a lighter view_cart (value only) when opened —
@@ -276,10 +308,13 @@ add_action( 'wp_footer', function() {
     <?php
 }, 20 );
 
-add_action( 'woocommerce_thank_you', function( $order_id ) {
+/* purchase — the hook is "woocommerce_thankyou" (fired by
+   woocommerce/checkout/thankyou.php). It used to be "woocommerce_thank_you",
+   which WooCommerce never fires, so no purchase reached GA4 until 2026-11. */
+add_action( 'woocommerce_thankyou', function( $order_id ) {
     if ( ! $order_id ) return;
     $order = wc_get_order( $order_id );
-    if ( ! $order || $order->get_meta( '_cozy_ga4_tracked' ) ) return;
+    if ( ! $order || $order->has_status( 'failed' ) || $order->get_meta( '_cozy_ga4_tracked' ) ) return;
 
     $items = [];
     foreach ( $order->get_items() as $item ) {
@@ -1576,9 +1611,19 @@ function cozy_ajax_add_to_cart() {
 
             $fragments = apply_filters( 'woocommerce_add_to_cart_fragments', $fragments );
 
+            // GA4 add_to_cart item — the single-product button has no data-*
+            // attributes, so the JS takes the item from here.
+            $added = wc_get_product( $variation_id ?: $product_id );
+
             wp_send_json_success( [
                 'fragments' => $fragments,
                 'cart_hash' => WC()->cart->get_cart_hash(),
+                'ga_item'   => $added ? [
+                    'item_id'   => (string) $product_id,
+                    'item_name' => $added->get_name(),
+                    'price'     => (float) wc_get_price_to_display( $added ),
+                    'quantity'  => (int) $quantity,
+                ] : null,
             ] );
         }
     }

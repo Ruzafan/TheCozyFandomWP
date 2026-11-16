@@ -391,6 +391,9 @@ function cozyFetchWishlistItemsHtml(ids, callback) {
 
 /* ---------- TOGGLE FAVORITE ---------- */
 function cozyTrackAddToWishlist(productId, productName, productPrice) {
+    if (typeof window.cozyLogEvent === 'function') {
+        window.cozyLogEvent('add_to_wishlist', { product_id: productId });
+    }
     if (typeof gtag !== 'function') return;
     gtag('event', 'add_to_wishlist', {
         currency: 'EUR',
@@ -628,14 +631,8 @@ document.addEventListener('click', function (e) {
         case 'close-newsletter-modal':
             window.closeNewsletterModal();
             break;
-        case 'begin-checkout':
-            if (typeof gtag === 'function') {
-                gtag('event', 'begin_checkout', {
-                    currency: 'EUR',
-                    value: parseFloat(el.getAttribute('data-value')) || 0
-                });
-            }
-            break;
+        /* begin_checkout is no longer pushed from the drawer link — it fires on
+           the checkout page itself (functions.php), which counts every route in. */
     }
 });
 
@@ -780,16 +777,24 @@ document.addEventListener('click', function (e) {
                     el.remove();
                 });
 
-                if (typeof gtag === 'function' && $button && $button.length) {
+                /* Item data: the single-product form passes the server's own
+                   figures (window.cozyLastAddedItem, set just before triggering);
+                   loop/AJAX buttons carry it as data-* attributes. */
+                var gaItem = window.cozyLastAddedItem || null;
+                window.cozyLastAddedItem = null;
+                if (!gaItem && $button && $button.length && $button.data('product_id')) {
+                    gaItem = {
+                        item_id:   String($button.data('product_id')),
+                        item_name: $button.data('product-name') || '',
+                        price:     parseFloat($button.data('product-price')) || 0,
+                        quantity:  parseInt($button.data('quantity'), 10) || 1
+                    };
+                }
+                if (typeof gtag === 'function' && gaItem) {
                     gtag('event', 'add_to_cart', {
                         currency: 'EUR',
-                        value: parseFloat($button.data('product-price')) || 0,
-                        items: [{
-                            item_id:   String($button.data('product_id') || ''),
-                            item_name: $button.data('product-name') || '',
-                            price:     parseFloat($button.data('product-price')) || 0,
-                            quantity:  parseInt($button.data('quantity'), 10) || 1
-                        }]
+                        value: (gaItem.price || 0) * (gaItem.quantity || 1),
+                        items: [gaItem]
                     });
                 }
             });
@@ -882,6 +887,7 @@ document.addEventListener('click', function (e) {
                     if (res.data && res.data.fragments) {
                         cozyReplaceFragments(res.data.fragments);
                     }
+                    window.cozyLastAddedItem = (res.data && res.data.ga_item) ? res.data.ga_item : null;
                     if (typeof jQuery !== 'undefined') {
                         jQuery(document.body).trigger('added_to_cart', [res.data ? res.data.fragments : null, res.data ? res.data.cart_hash : '', submitBtn ? jQuery(submitBtn) : null]);
                     } else {
@@ -1030,12 +1036,22 @@ document.addEventListener('click', function (e) {
                     .then(function (res) {
                         var results = (res.success && res.data) ? res.data : [];
                         renderSuggestions(results);
-                        if (typeof gtag === 'function') {
-                            gtag('event', 'search', {
-                                search_term: term,
-                                results_count: results.length
-                            });
-                        }
+                        /* The suggestions fetch is debounced per keystroke, so
+                           only report a term once it settles (1.2 s without
+                           typing) — otherwise "h", "ha", "har"… each counted
+                           as a separate search. */
+                        clearTimeout(window.cozySearchTrackTimer);
+                        window.cozySearchTrackTimer = setTimeout(function () {
+                            if (typeof gtag === 'function') {
+                                gtag('event', 'search', {
+                                    search_term: term,
+                                    results_count: results.length
+                                });
+                            }
+                            if (typeof window.cozyLogEvent === 'function') {
+                                window.cozyLogEvent('search', { results: results.length });
+                            }
+                        }, 1200);
                     })
                     .catch(function () {
                         suggestionsContainer.innerHTML = '<div class="cozy-suggestion-empty">Error de conexión.</div>';
