@@ -149,20 +149,131 @@ function cozy_stars_html( $rating, $size = 14 ) {
     return $out . '</span>';
 }
 
+/**
+ * Latest approved product reviews (rating > 0) from distinct customers,
+ * newest first regardless of rating (at most one review per customer so a
+ * multi-item order never fills all slots with the same name).
+ *
+ * @param int $limit Maximum number of reviews to return.
+ * @return WP_Comment[]
+ */
+function cozy_latest_distinct_author_reviews( $limit = 3 ) {
+    global $wpdb;
+
+    $limit       = max( 1, (int) $limit );
+    $batch_size  = 50;
+    $offset      = 0;
+    $ids         = [];
+    $seen_ids    = [];
+    $seen_emails = [];
+    $seen_users  = [];
+    $seen_names  = [];
+
+    while ( count( $ids ) < $limit ) {
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT c.comment_ID, c.user_id, c.comment_author_email, c.comment_author
+                 FROM {$wpdb->comments} c
+                 JOIN {$wpdb->posts} p ON p.ID = c.comment_post_ID AND p.post_type = 'product' AND p.post_status = 'publish'
+                 JOIN {$wpdb->commentmeta} m ON m.comment_id = c.comment_ID AND m.meta_key = 'rating'
+                 WHERE c.comment_approved = '1' AND c.comment_type = 'review' AND m.meta_value > 0
+                 ORDER BY c.comment_date_gmt DESC, c.comment_ID DESC
+                 LIMIT %d OFFSET %d",
+                $batch_size,
+                $offset
+            )
+        );
+
+        if ( empty( $rows ) ) {
+            break;
+        }
+
+        foreach ( $rows as $row ) {
+            $cid      = (int) $row->comment_ID;
+            $email    = strtolower( trim( (string) $row->comment_author_email ) );
+            $uid      = (int) $row->user_id;
+            $raw_name = trim( (string) $row->comment_author );
+            $name     = '' !== $raw_name ? mb_strtolower( cozy_review_author_short( $row ) ) : '';
+
+            if ( isset( $seen_ids[ $cid ] ) ) {
+                continue;
+            }
+            if ( '' !== $email && isset( $seen_emails[ $email ] ) ) {
+                continue;
+            }
+            if ( $uid > 0 && isset( $seen_users[ $uid ] ) ) {
+                continue;
+            }
+            if ( '' === $email && 0 === $uid && '' !== $name && isset( $seen_names[ $name ] ) ) {
+                continue;
+            }
+
+            $seen_ids[ $cid ] = true;
+            if ( '' !== $email ) {
+                $seen_emails[ $email ] = true;
+            }
+            if ( $uid > 0 ) {
+                $seen_users[ $uid ] = true;
+            }
+            if ( '' !== $name ) {
+                $seen_names[ $name ] = true;
+            }
+
+            $ids[] = $cid;
+            if ( count( $ids ) >= $limit ) {
+                break;
+            }
+        }
+
+        if ( count( $rows ) < $batch_size ) {
+            break;
+        }
+        $offset += $batch_size;
+    }
+
+    if ( empty( $ids ) ) {
+        return [];
+    }
+
+    $comments = get_comments( [
+        'comment__in' => $ids,
+        'type'        => 'review',
+        'status'      => 'approve',
+        'number'      => count( $ids ),
+    ] );
+    if ( ! is_array( $comments ) ) {
+        return [];
+    }
+
+    $by_id = [];
+    foreach ( $comments as $comment ) {
+        $by_id[ (int) $comment->comment_ID ] = $comment;
+    }
+    $ordered = [];
+    foreach ( $ids as $id ) {
+        if ( isset( $by_id[ $id ] ) ) {
+            $ordered[] = $by_id[ $id ];
+        }
+    }
+
+    return $ordered;
+}
+
 function cozy_render_home_reviews() {
     $stats = cozy_store_review_stats();
     if ( $stats['count'] < COZY_HOME_REVIEWS_MIN ) return;
 
-    $reviews = get_comments( [
-        'post_type'  => 'product',
-        'type'       => 'review',
-        'status'     => 'approve',
-        'number'     => 3,
-        'orderby'    => 'comment_date_gmt',
-        'order'      => 'DESC',
-        'meta_query' => [ [ 'key' => 'rating', 'value' => 0, 'compare' => '>', 'type' => 'NUMERIC' ] ],
-    ] );
+    $reviews = cozy_latest_distinct_author_reviews( 3 );
     if ( ! $reviews ) return;
+
+    $review_count = count( $reviews );
+    if ( 1 === $review_count ) {
+        $grid_class = 'grid grid-cols-1 max-w-xl mx-auto gap-5';
+    } elseif ( 2 === $review_count ) {
+        $grid_class = 'grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-5';
+    } else {
+        $grid_class = 'grid grid-cols-1 md:grid-cols-3 gap-5';
+    }
     ?>
     <section id="opiniones" class="py-16 px-6 md:px-12 max-w-7xl mx-auto" aria-labelledby="opiniones-title">
         <div class="text-center mb-10">
@@ -177,7 +288,7 @@ function cozy_render_home_reviews() {
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="<?php echo esc_attr( $grid_class ); ?>">
             <?php foreach ( $reviews as $review ) :
                 $rating   = (int) get_comment_meta( $review->comment_ID, 'rating', true );
                 $verified = (bool) get_comment_meta( $review->comment_ID, 'verified', true );
@@ -197,7 +308,7 @@ function cozy_render_home_reviews() {
                 </figure>
             <?php endforeach; ?>
         </div>
-        <p class="text-center text-[11px] text-cozy-coffee/50 mt-5 mb-0">Mostramos las opiniones más recientes, sin filtrar por puntuación.</p>
+        <p class="text-center text-[11px] text-cozy-coffee/50 mt-5 mb-0">Mostramos las opiniones más recientes de distintos clientes, sin filtrar por puntuación.</p>
     </section>
     <?php
 }
